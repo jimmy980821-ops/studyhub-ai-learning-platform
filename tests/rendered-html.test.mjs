@@ -57,6 +57,9 @@ test("bundles the complete study system and iOS metadata", async () => {
   assert.match(physics, /physics-theme\.css/);
   assert.match(physics, /function showExamsForNode\(nodeId\)/);
   assert.match(physics, /onclick="showExamsForNode\('\$\{nodeId\}'\)"/);
+  assert.match(physics, /interaction-compat\.js\?v=5/);
+  const compatibilityScript = await readFile(new URL("../public/interaction-compat.js", import.meta.url), "utf8");
+  assert.match(compatibilityScript, /a\[onclick\]:not\(\[href\]\)/);
   assert.match(theme, /--paper:\s*#fbfaf5/);
   assert.equal(JSON.parse(manifest).short_name, "物理筆記");
 });

@@ -207,6 +207,14 @@ a {
   color: var(--blue);
 }
 
+a[onclick],
+button,
+[role="button"] {
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(47, 125, 75, 0.18);
+}
+
 button:focus-visible,
 select:focus-visible,
 input:focus-visible,
