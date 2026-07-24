@@ -55,6 +55,8 @@ test("bundles the complete study system and iOS metadata", async () => {
 
   assert.match(physics, /rel="apple-touch-icon"/);
   assert.match(physics, /physics-theme\.css/);
+  assert.match(physics, /function showExamsForNode\(nodeId\)/);
+  assert.match(physics, /onclick="showExamsForNode\('\$\{nodeId\}'\)"/);
   assert.match(theme, /--paper:\s*#fbfaf5/);
   assert.equal(JSON.parse(manifest).short_name, "物理筆記");
 });
