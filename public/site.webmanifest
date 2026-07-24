@@ -1,0 +1,17 @@
+{
+  "name": "學測物理學習筆記",
+  "short_name": "物理筆記",
+  "description": "108 課綱學測物理複習系統",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fbfaf5",
+  "theme_color": "#18201b",
+  "icons": [
+    {
+      "src": "/physics-icon.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

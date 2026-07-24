@@ -1,0 +1,236 @@
+:root {
+  --ink: #18201b !important;
+  --paper: #fbfaf5;
+  --cream: #f1eadb;
+  --line: #d7cdbb;
+  --green: #2f7d4b;
+  --blue: #2d6694;
+  --red: #bc4b36;
+  --gold: #9a6b20;
+  --muted: #746d62;
+  --highlight: #fff2b8;
+  --bg-body: var(--paper) !important;
+  --bg-sidebar: var(--ink) !important;
+  --bg-card: #fffef9 !important;
+  --text-main: var(--ink) !important;
+  --text-muted: var(--muted) !important;
+  --border-color: var(--line) !important;
+  --primary-blue: var(--green) !important;
+  --primary-blue-light: #e7f0e8 !important;
+  --accent-cyan: var(--green) !important;
+  --accent-green: var(--green) !important;
+  --accent-green-light: #e7f0e8 !important;
+  --accent-orange: var(--gold) !important;
+  --accent-orange-light: #f7eedb !important;
+  --accent-rose: var(--red) !important;
+  --accent-rose-light: #f9ebe7 !important;
+  --shadow-neon: 0 1px 2px rgba(24, 32, 27, 0.04), 0 8px 22px rgba(24, 32, 27, 0.055) !important;
+  --shadow-neon-hover: 0 2px 4px rgba(24, 32, 27, 0.06), 0 14px 30px rgba(24, 32, 27, 0.09) !important;
+}
+
+body {
+  background:
+    linear-gradient(rgba(251, 250, 245, 0.9), rgba(251, 250, 245, 0.9)),
+    repeating-linear-gradient(0deg, transparent 0, transparent 31px, rgba(47, 125, 75, 0.055) 32px),
+    var(--paper) !important;
+  color: var(--ink) !important;
+  font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif !important;
+  line-height: 1.75 !important;
+}
+
+#sidebar {
+  background: var(--ink) !important;
+  border-right: 0 !important;
+  box-shadow: 8px 0 28px rgba(24, 32, 27, 0.12) !important;
+}
+
+.sidebar-brand {
+  border-bottom: 4px solid var(--green) !important;
+}
+
+.sidebar-brand h1,
+.sidebar-brand-title {
+  color: #fff !important;
+  letter-spacing: 0.04em !important;
+}
+
+.sidebar-brand p,
+.sidebar-brand-subtitle,
+.nav-section-title {
+  color: #cfc7ba !important;
+}
+
+.nav-item,
+.nav-item-node {
+  border-radius: 3px !important;
+  color: #e8e3da !important;
+}
+
+.nav-item:hover,
+.nav-item.active,
+.nav-item-node:hover,
+.nav-item-node.active {
+  background: var(--green) !important;
+  color: #fff !important;
+  transform: none !important;
+}
+
+.node-code-badge,
+.nav-badge,
+.code-badge,
+.content-badge {
+  background: #e7f0e8 !important;
+  border: 1px solid #bed2c2 !important;
+  color: var(--green) !important;
+  border-radius: 3px !important;
+}
+
+#main-content {
+  background: transparent !important;
+}
+
+.content-header {
+  border-bottom: 0 !important;
+}
+
+.content-header::after {
+  height: 6px !important;
+  background:
+    linear-gradient(var(--line), var(--line)) left bottom / 100% 1px no-repeat,
+    repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px 12px) left bottom / 100% 5px no-repeat !important;
+}
+
+.content-title,
+.handout-section-title,
+.edu-card-title,
+.quiz-title,
+.q-card-title {
+  color: var(--ink) !important;
+  text-shadow: none !important;
+}
+
+.content-title {
+  font-family: Georgia, "Noto Serif TC", "Noto Sans TC", serif !important;
+  letter-spacing: -0.025em !important;
+}
+
+.handout-section-title {
+  border-bottom-color: var(--line) !important;
+}
+
+.edu-card,
+.formula-card,
+.quiz-card,
+.q-card,
+.bank-filter-bar,
+.exam-item,
+.concept-map-container,
+.feature-guide-box,
+.info-alert,
+.soil-tabs {
+  background: #fffef9 !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 4px !important;
+  box-shadow: var(--shadow-neon) !important;
+}
+
+.edu-card:hover,
+.formula-card:hover,
+.quiz-card:hover,
+.q-card:hover,
+.exam-item:hover {
+  border-color: #a9bda9 !important;
+  box-shadow: var(--shadow-neon-hover) !important;
+  transform: translateY(-1px) !important;
+}
+
+.edu-card-title {
+  border-left: 3px solid var(--green) !important;
+}
+
+.formula-display {
+  background: var(--cream) !important;
+  border-color: var(--line) !important;
+}
+
+.edu-table th {
+  color: var(--ink) !important;
+  background: var(--cream) !important;
+}
+
+.edu-table td,
+.edu-table th {
+  border-color: var(--line) !important;
+}
+
+.soil-tabs,
+.bank-filter-bar {
+  background: var(--cream) !important;
+}
+
+.soil-tab-btn.active,
+.bank-chip-btn.active,
+.quiz-btn-primary,
+.print-btn,
+.exam-sol-btn {
+  background: var(--green) !important;
+  border-color: var(--green) !important;
+  color: #fff !important;
+  box-shadow: none !important;
+}
+
+.quiz-btn:not(.quiz-btn-primary),
+.soil-tab-btn,
+.bank-chip-btn,
+select,
+input {
+  border-color: var(--line) !important;
+  border-radius: 3px !important;
+}
+
+.feature-trigger {
+  background: #f8eee8 !important;
+  border-color: #e2c3b8 !important;
+}
+
+.feature-bridge {
+  background: #eaf2eb !important;
+  border-color: #bed2c2 !important;
+}
+
+.feature-trap {
+  background: #f7eedb !important;
+  border-color: #decaa2 !important;
+}
+
+a {
+  color: var(--blue);
+}
+
+button:focus-visible,
+select:focus-visible,
+input:focus-visible,
+a:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid rgba(47, 125, 75, 0.32) !important;
+  outline-offset: 3px !important;
+}
+
+::selection {
+  background: var(--highlight);
+  color: var(--ink);
+}
+
+@media (max-width: 768px) {
+  #sidebar {
+    border-bottom: 4px solid var(--green) !important;
+    box-shadow: 0 8px 24px rgba(24, 32, 27, 0.12) !important;
+  }
+
+  .mobile-nav-toggle {
+    border: 1px solid #566158 !important;
+    background: transparent !important;
+    color: #fff !important;
+    border-radius: 3px !important;
+  }
+}
