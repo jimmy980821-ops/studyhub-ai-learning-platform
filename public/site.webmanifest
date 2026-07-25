@@ -8,7 +8,7 @@
   "theme_color": "#18201b",
   "icons": [
     {
-      "src": "/physics-icon.png",
+      "src": "/physics-icon.png?v=20260725",
       "sizes": "1024x1024",
       "type": "image/png",
       "purpose": "any"

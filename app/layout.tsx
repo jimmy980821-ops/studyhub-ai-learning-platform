@@ -16,9 +16,9 @@ export async function generateMetadata(): Promise<Metadata> {
     description,
     manifest: "/site.webmanifest",
     icons: {
-      icon: [{ url: "/physics-icon.png", type: "image/png" }],
-      shortcut: "/physics-icon.png",
-      apple: [{ url: "/physics-icon.png", sizes: "1024x1024", type: "image/png" }],
+      icon: [{ url: "/physics-icon.png?v=20260725", type: "image/png" }],
+      shortcut: "/physics-icon.png?v=20260725",
+      apple: [{ url: "/physics-icon.png?v=20260725", sizes: "1024x1024", type: "image/png" }],
     },
     appleWebApp: {
       capable: true,
