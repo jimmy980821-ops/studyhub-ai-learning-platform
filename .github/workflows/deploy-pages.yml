@@ -30,7 +30,7 @@ jobs:
           mkdir -p _site
           cp -R public/studyhub/. _site/
           cp public/favicon.svg _site/favicon.svg
-          cp public/studyhub-og.png _site/studyhub-og.png
+          cp public/studyhub-og-v2.png _site/studyhub-og-v2.png
           touch _site/.nojekyll
 
       - name: Configure GitHub Pages

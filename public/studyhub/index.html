@@ -7,7 +7,7 @@
   <meta name="description" content="StudyHub AI 高中生學習平台">
   <meta property="og:title" content="StudyHub｜AI 高中生學習平台">
   <meta property="og:description" content="整合錯題、閱讀、分析、知識卡與升學探索的學習工作台。">
-  <meta property="og:image" content="https://jimmy980821-ops.github.io/studyhub-ai-learning-platform/studyhub-og.png">
+  <meta property="og:image" content="https://jimmy980821-ops.github.io/studyhub-ai-learning-platform/studyhub-og-v2.png">
   <title>StudyHub｜AI 高中生學習平台</title>
   <link rel="icon" href="favicon.svg">
   <link rel="stylesheet" href="style.css">
@@ -24,7 +24,7 @@
       <nav class="nav-list">
         <p class="nav-label">學習空間</p>
         <a class="nav-item active" href="#home" data-page-link="home"><span class="nav-icon">⌂</span>首頁</a>
-        <a class="nav-item" href="#mistakes" data-page-link="mistakes"><span class="nav-icon">✎</span>AI 錯題本<span class="nav-count" id="mistakeNavCount">3</span></a>
+        <a class="nav-item" href="#mistakes" data-page-link="mistakes"><span class="nav-icon">✎</span>AI 錯題本<span class="nav-count" id="mistakeNavCount">0</span></a>
         <a class="nav-item" href="#reader" data-page-link="reader"><span class="nav-icon">文</span>閱讀助手</a>
         <a class="nav-item" href="#analytics" data-page-link="analytics"><span class="nav-icon">⌁</span>學習分析</a>
         <a class="nav-item" href="#knowledge" data-page-link="knowledge"><span class="nav-icon">◇</span>知識中心</a>
@@ -39,8 +39,8 @@
         <p>先複習 1 道錯題，再開始新章節，記憶會更穩固。</p>
       </div>
       <div class="profile-mini">
-        <span class="avatar">林</span>
-        <span><strong>林同學</strong><small>學測衝刺中</small></span>
+        <span class="avatar">李</span>
+        <span><strong>李同學</strong><small>學測衝刺中</small></span>
         <button class="icon-btn" data-action="theme" aria-label="切換深色模式" title="切換深色模式">◐</button>
       </div>
     </aside>
@@ -57,7 +57,7 @@
         </div>
         <div class="top-actions">
           <button class="icon-btn desktop-theme" data-action="theme" aria-label="切換深色模式" title="切換深色模式">◐</button>
-          <button class="streak-pill" data-page-link="analytics" aria-label="查看連續學習紀錄"><span>🔥</span><strong id="streakTop">12</strong> 天</button>
+          <button class="streak-pill" data-page-link="analytics" aria-label="查看連續學習紀錄"><span>🔥</span><strong id="streakTop">0</strong> 天</button>
         </div>
       </header>
 
@@ -66,7 +66,7 @@
           <div class="page-head home-head">
             <div>
               <p class="eyebrow" id="todayDate">7 月 28 日・星期二</p>
-              <h1 id="homeTitle">嗨，林同學 <span>👋</span></h1>
+              <h1 id="homeTitle">嗨，李同學 <span>👋</span></h1>
               <p>今天也一起向目標前進一點點。</p>
             </div>
             <button class="primary-btn ripple" data-action="quick-add"><span>＋</span> 新增學習內容</button>
@@ -74,14 +74,14 @@
 
           <section class="hero-card">
             <div class="hero-copy">
-              <span class="status-badge">今日進度</span>
-              <h2>保持節奏，你已完成<br><em>本週目標的 68%</em></h2>
-              <p>再專注 45 分鐘，就能達成今天的學習目標。</p>
-              <div class="hero-progress"><span style="width:68%"></span></div>
-              <div class="hero-meta"><span>4 / 6 項任務</span><span>68%</span></div>
+              <span class="status-badge" id="heroStatus">尚未開始記錄</span>
+              <h2>你的學習進度，<br><em>只會依實際紀錄計算</em></h2>
+              <p id="heroMessage">目前沒有本週學習資料。記錄後，這裡才會顯示真實進度。</p>
+              <div class="hero-progress"><span id="weekProgressBar" style="width:0%"></span></div>
+              <div class="hero-meta"><span id="weekRecordDays">本週 0 天有紀錄</span><span id="weekProgressLabel">尚未設定目標</span></div>
             </div>
-            <div class="focus-ring" aria-label="今日專注 2 小時 35 分">
-              <div><strong>2<small>h</small> 35<small>m</small></strong><span>今日專注</span></div>
+            <div class="focus-ring" id="focusRing" aria-label="今日尚未記錄學習時間">
+              <div><strong id="todayFocus">0<small>h</small> 00<small>m</small></strong><span>今日專注</span></div>
             </div>
           </section>
 
@@ -90,11 +90,11 @@
             <button class="text-btn" data-page-link="analytics">查看完整分析 →</button>
           </div>
           <div class="stats-grid">
-            <article class="stat-card"><span class="stat-icon violet">✓</span><div><p>今日完成任務</p><strong>4 <small>/ 6</small></strong><span class="trend up">↑ 2 項</span></div></article>
-            <article class="stat-card"><span class="stat-icon amber">🔥</span><div><p>累積學習天數</p><strong id="streakCard">12 <small>天</small></strong><span class="trend">保持中</span></div></article>
-            <article class="stat-card"><span class="stat-icon blue">◷</span><div><p>今日學習時間</p><strong>2h 35m</strong><span class="trend up">↑ 18%</span></div></article>
+            <article class="stat-card"><span class="stat-icon violet">✓</span><div><p>今日完成任務</p><strong>0 <small>項</small></strong><span class="trend">尚未建立任務</span></div></article>
+            <article class="stat-card"><span class="stat-icon amber">🔥</span><div><p>累積學習天數</p><strong id="streakCard">0 <small>天</small></strong><span class="trend" id="streakNote">尚未開始記錄</span></div></article>
+            <article class="stat-card"><span class="stat-icon blue">◷</span><div><p>今日學習時間</p><strong id="todayStudyTime">0h 00m</strong><span class="trend" id="todayStudyNote">尚未記錄</span></div></article>
             <article class="stat-card"><span class="stat-icon pink">♡</span><div><p>收藏知識卡</p><strong id="favoriteStat">0 <small>張</small></strong><span class="trend">隨時複習</span></div></article>
-            <article class="stat-card"><span class="stat-icon red">!</span><div><p>錯題總數</p><strong id="mistakeStat">3 <small>題</small></strong><span class="trend down">待複習 2</span></div></article>
+            <article class="stat-card"><span class="stat-icon red">!</span><div><p>錯題總數</p><strong id="mistakeStat">0 <small>題</small></strong><span class="trend">依實際新增計算</span></div></article>
           </div>
 
           <div class="dashboard-grid">
@@ -103,13 +103,12 @@
               <div class="recent-list" id="recentList"></div>
             </section>
             <section class="panel">
-              <div class="panel-head"><div><h3>本週科目分配</h3><p>共學習 14 小時 20 分</p></div><span class="soft-badge">本週</span></div>
-              <div class="subject-bars">
-                <div><span><i class="dot math"></i>數學 <b>4h 10m</b></span><progress value="82" max="100"></progress></div>
-                <div><span><i class="dot english"></i>英文 <b>3h 05m</b></span><progress value="63" max="100"></progress></div>
-                <div><span><i class="dot science"></i>自然 <b>2h 45m</b></span><progress value="56" max="100"></progress></div>
-                <div><span><i class="dot chinese"></i>國文 <b>2h 20m</b></span><progress value="47" max="100"></progress></div>
-                <div><span><i class="dot social"></i>社會 <b>2h 00m</b></span><progress value="40" max="100"></progress></div>
+              <div class="panel-head"><div><h3>本週學習紀錄</h3><p id="weekStudyTotal">目前共 0 小時</p></div><span class="soft-badge">依你的紀錄</span></div>
+              <div class="record-empty" id="weekRecordEmpty">
+                <span class="stat-icon violet">◷</span>
+                <h3>還沒有本週資料</h3>
+                <p>點擊下方按鈕，每次記錄 30 分鐘；也可到熱力圖調整。</p>
+                <button class="secondary-btn" data-action="record-today">＋ 記錄今天 30 分鐘</button>
               </div>
             </section>
           </div>
@@ -124,7 +123,7 @@
             <label class="search-field"><span>⌕</span><input id="mistakeSearch" type="search" placeholder="搜尋題目、標籤或筆記…" aria-label="搜尋錯題"></label>
             <label><span class="sr-only">科目</span><select id="mistakeSubject"><option value="">所有科目</option><option>國文</option><option>英文</option><option>數學</option><option>自然</option><option>社會</option></select></label>
             <label><span class="sr-only">標籤</span><select id="mistakeTag"><option value="">所有標籤</option></select></label>
-            <span class="result-count" id="mistakeResultCount">共 3 題</span>
+            <span class="result-count" id="mistakeResultCount">共 0 題</span>
           </div>
           <div class="mistake-grid" id="mistakeGrid"></div>
           <div class="empty-state hidden" id="mistakeEmpty"><span>⌕</span><h3>找不到符合的錯題</h3><p>換個關鍵字或新增第一道錯題吧。</p></div>
@@ -158,9 +157,9 @@
             <span class="save-state" id="analysisSaveState">✓ 已自動儲存</span>
           </div>
           <div class="insight-grid">
-            <article class="insight-card weak"><span>優先加強</span><h3 id="weakSubject">數學</h3><p id="weakNote">建議本週增加 2 次重點複習</p></article>
-            <article class="insight-card strong"><span>目前最強</span><h3 id="strongSubject">國文</h3><p id="strongNote">繼續維持穩定輸出</p></article>
-            <article class="insight-card plan"><span>建議順序</span><h3 id="priorityOrder">數學 → 自然 → 英文</h3><p>依自評分數由低至高排序</p></article>
+            <article class="insight-card weak"><span>優先加強</span><h3 id="weakSubject">尚未評分</h3><p id="weakNote">拖曳下方滑桿後才會分析</p></article>
+            <article class="insight-card strong"><span>目前最強</span><h3 id="strongSubject">尚未評分</h3><p id="strongNote">不會使用預設分數猜測</p></article>
+            <article class="insight-card plan"><span>建議順序</span><h3 id="priorityOrder">等待你的輸入</h3><p>依自評分數由低至高排序</p></article>
           </div>
           <section class="panel subject-analysis">
             <div class="panel-head"><div><h3>科目熟悉程度</h3><p>拖曳滑桿，系統會即時更新學習建議</p></div><span class="soft-badge">0–100 分</span></div>
@@ -186,6 +185,7 @@
             <div class="filter-bar">
               <label class="search-field"><span>⌕</span><input id="formulaSearch" type="search" placeholder="搜尋公式名稱、說明或考點…" aria-label="搜尋公式"></label>
               <label><span class="sr-only">公式科目</span><select id="formulaSubject"><option value="">全部領域</option><option>數學</option><option>物理</option><option>化學</option></select></label>
+              <span class="result-count" id="formulaResultCount">共 0 個公式</span>
             </div>
             <div class="formula-grid" id="formulaGrid"></div>
           </div>
@@ -264,7 +264,7 @@
       <div class="quick-grid">
         <button data-action="quick-mistake"><span class="stat-icon violet">✎</span><strong>新增錯題</strong><small>記錄原因與解法</small></button>
         <button data-page-link="reader" data-action="close-quick"><span class="stat-icon blue">文</span><strong>分析文章</strong><small>整理翻譯與考點</small></button>
-        <button data-page-link="analytics" data-action="close-quick"><span class="stat-icon amber">◷</span><strong>記錄學習</strong><small>更新今日熱力圖</small></button>
+        <button data-action="record-today"><span class="stat-icon amber">◷</span><strong>記錄 30 分鐘</strong><small>更新今天的真實紀錄</small></button>
       </div>
     </div>
   </div>

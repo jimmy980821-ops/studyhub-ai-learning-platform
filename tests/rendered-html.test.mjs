@@ -20,7 +20,7 @@ test("server-renders the StudyHub shell and metadata", async () => {
   const html = await response.text();
   assert.match(html, /<title>StudyHub｜AI 高中生學習平台<\/title>/);
   assert.match(html, /studyhub\/index\.html/);
-  assert.match(html, /studyhub-og\.png/);
+  assert.match(html, /studyhub-og-v2\.png/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/);
 });
 
@@ -40,6 +40,14 @@ test("bundles the complete StudyHub local-first application", async () => {
   assert.match(script, /saveMistake/);
   assert.match(script, /renderGlobalSearch/);
   assert.match(script, /toggleTheme/);
+  assert.match(html, /李同學/);
+  assert.doesNotMatch(html, /林同學|本週目標的 68%|2h 35m/);
+  assert.match(script, /mistakes-v2/);
+  assert.match(script, /heat-v2/);
+  assert.match(script, /尚未評分/);
+  assert.ok((script.match(/subject:"數學"/g) ?? []).length >= 20);
+  assert.ok((script.match(/subject:"物理"/g) ?? []).length >= 18);
+  assert.ok((script.match(/subject:"化學"/g) ?? []).length >= 14);
   assert.match(css, /@media \(max-width: 640px\)/);
   assert.match(css, /prefers-reduced-motion/);
   assert.equal(JSON.parse(manifest).short_name, "StudyHub");

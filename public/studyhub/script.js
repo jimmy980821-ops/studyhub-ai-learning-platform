@@ -47,12 +47,67 @@
           { id: "m3", subject: "自然", unit: "牛頓運動定律", difficulty: "中等", question: "物體在粗糙斜面上等速下滑，請判斷合力與摩擦力方向。", tags: ["力學", "受力分析"], reason: "把運動方向誤認為合力方向。", mySolution: "合力沿斜面向下。", correctSolution: "等速代表加速度為零，因此合力為零；摩擦力沿斜面向上。", note: "先由運動狀態判斷加速度。", date: "2026-07-25", favorite: true, image: "" }
         ],
         formulas: [
-          { id:"f1", subject:"數學", name:"等差級數總和", formula:"Sₙ = n(a₁ + aₙ) / 2", description:"首項與末項平均後乘以項數。", point:"常與通項 aₙ = a₁ + (n−1)d 搭配。", example:"1+4+7+…+28 = 10×(1+28)/2 = 145" },
-          { id:"f2", subject:"物理", name:"牛頓第二運動定律", formula:"ΣF = ma", description:"物體所受合力等於質量乘以加速度。", point:"向量式，列式前先決定正方向。", example:"2 kg 物體受 10 N 合力，加速度為 5 m/s²。" },
-          { id:"f3", subject:"化學", name:"理想氣體方程式", formula:"PV = nRT", description:"描述理想氣體壓力、體積、莫耳數與溫度關係。", point:"溫度必須換算為絕對溫標 K。", example:"定溫下壓力加倍，體積變為一半。" },
-          { id:"f4", subject:"數學", name:"二次方程式公式解", formula:"x = (−b ± √(b²−4ac)) / 2a", description:"用於求解 ax²+bx+c=0 的根。", point:"判別式 Δ 決定實根數量。", example:"x²−5x+6=0，得 x=2 或 3。" },
-          { id:"f5", subject:"物理", name:"等加速度位移公式", formula:"x = v₀t + ½at²", description:"加速度固定時，計算時間 t 內的位移。", point:"各物理量正負號需符合座標正方向。", example:"自由落下 2 秒，位移約 19.6 m。" },
-          { id:"f6", subject:"化學", name:"稀釋公式", formula:"M₁V₁ = M₂V₂", description:"稀釋前後溶質莫耳數不變。", point:"兩側體積單位需一致。", example:"1 M 溶液 20 mL 稀釋至 0.2 M，終體積 100 mL。" }
+          { id:"m01", subject:"數學", name:"二次方程式公式解", formula:"x = (−b ± √(b²−4ac)) / 2a", description:"求 ax²+bx+c=0 的根。", point:"先確認 a ≠ 0，並留意 ± 會產生兩個可能解。", example:"x²−5x+6=0，得 x=2 或 3。" },
+          { id:"m02", subject:"數學", name:"判別式", formula:"Δ = b² − 4ac", description:"判斷二次方程式實根的個數。", point:"Δ>0 兩相異實根；Δ=0 重根；Δ<0 無實根。", example:"x²+2x+5=0 的 Δ=−16，無實根。" },
+          { id:"m03", subject:"數學", name:"根與係數關係", formula:"α+β = −b/a；αβ = c/a", description:"連結二次方程式兩根與係數。", point:"不必真正解出兩根，也能求對稱式。", example:"2x²−5x+3=0，兩根和為 5/2、積為 3/2。" },
+          { id:"m04", subject:"數學", name:"等差數列通項", formula:"aₙ = a₁ + (n−1)d", description:"由首項與公差求第 n 項。", point:"項數從 1 開始，因此是 n−1 個公差。", example:"3,7,11,… 的第 10 項為 39。" },
+          { id:"m05", subject:"數學", name:"等差級數總和", formula:"Sₙ = n(a₁+aₙ)/2", description:"首末項平均後乘以項數。", point:"也可寫成 Sₙ=n[2a₁+(n−1)d]/2。", example:"1+4+…+28 = 10×29/2 = 145。" },
+          { id:"m06", subject:"數學", name:"等比數列通項", formula:"aₙ = a₁rⁿ⁻¹", description:"由首項與公比求第 n 項。", point:"公比 r 可為負數，需注意正負交錯。", example:"2,6,18,… 的第 5 項為 162。" },
+          { id:"m07", subject:"數學", name:"等比級數總和", formula:"Sₙ = a₁(1−rⁿ)/(1−r)", description:"計算有限等比級數，條件為 r≠1。", point:"若 r=1，則 Sₙ=na₁。", example:"1+2+4+8=15。" },
+          { id:"m08", subject:"數學", name:"排列數", formula:"P(n,r) = n!/(n−r)!", description:"從 n 個相異物中取 r 個並排列。", point:"排列重視順序。", example:"5 人選正副班長：P(5,2)=20。" },
+          { id:"m09", subject:"數學", name:"組合數", formula:"C(n,r) = n!/[r!(n−r)!]", description:"從 n 個相異物中選 r 個，不計順序。", point:"C(n,r)=C(n,n−r)。", example:"5 人選 2 人代表：C(5,2)=10。" },
+          { id:"m10", subject:"數學", name:"二項式定理", formula:"(a+b)ⁿ = Σ C(n,k)aⁿ⁻ᵏbᵏ", description:"展開二項式的 n 次方。", point:"第 k+1 項係數為 C(n,k)。", example:"(a+b)³=a³+3a²b+3ab²+b³。" },
+          { id:"m11", subject:"數學", name:"條件機率", formula:"P(A|B) = P(A∩B)/P(B)", description:"已知 B 發生時 A 發生的機率。", point:"分母是已知條件 B 的機率。", example:"由撲克牌已知為紅牌，抽到紅心的機率為 1/2。" },
+          { id:"m12", subject:"數學", name:"貝氏定理", formula:"P(A|B)=P(B|A)P(A)/P(B)", description:"由結果反推原因的條件機率。", point:"常搭配全機率公式求 P(B)。", example:"利用檢驗陽性率與盛行率估計真正患病機率。" },
+          { id:"m13", subject:"數學", name:"三角基本關係", formula:"sin²θ + cos²θ = 1", description:"正弦與餘弦最重要的基本恆等式。", point:"可推得 1+tan²θ=sec²θ。", example:"若 sinθ=3/5 且 θ 為銳角，則 cosθ=4/5。" },
+          { id:"m14", subject:"數學", name:"正弦定理", formula:"a/sinA = b/sinB = c/sinC = 2R", description:"連結三角形邊長、對角與外接圓半徑。", point:"已知兩角一邊或兩邊一對角時常用。", example:"a=6、A=30°，則外接圓半徑 R=6。" },
+          { id:"m15", subject:"數學", name:"餘弦定理", formula:"c² = a²+b²−2ab cosC", description:"非直角三角形的畢氏定理推廣。", point:"已知兩邊夾角或三邊求角時使用。", example:"a=b=5、C=60°，則 c=5。" },
+          { id:"m16", subject:"數學", name:"兩點距離", formula:"d = √[(x₂−x₁)²+(y₂−y₁)²]", description:"求平面座標中兩點的直線距離。", point:"本質為畢氏定理。", example:"(1,2) 與 (4,6) 距離為 5。" },
+          { id:"m17", subject:"數學", name:"直線斜率", formula:"m = (y₂−y₁)/(x₂−x₁)", description:"表示直線的傾斜程度。", point:"鉛直線 x₂=x₁，斜率不存在。", example:"(1,2)、(3,6) 所在直線斜率為 2。" },
+          { id:"m18", subject:"數學", name:"圓的標準式", formula:"(x−h)²+(y−k)² = r²", description:"圓心為 (h,k)、半徑為 r 的圓。", point:"一般式可用配方法化為標準式。", example:"(x−2)²+(y+1)²=9，圓心 (2,−1)、半徑 3。" },
+          { id:"m19", subject:"數學", name:"對數運算律", formula:"log(ab)=log a+log b", description:"將乘除與次方轉換成加減與倍數。", point:"另有 log(a/b)=log a−log b、log(aʳ)=r log a。", example:"log₂8=3。" },
+          { id:"m20", subject:"數學", name:"算術平均數", formula:"x̄ = Σxᵢ/n", description:"資料總和除以資料個數。", point:"易受極端值影響。", example:"2,4,9 的平均數為 5。" },
+          { id:"m21", subject:"數學", name:"標準差", formula:"σ = √[Σ(xᵢ−x̄)²/n]", description:"衡量資料離散程度。", point:"標準差越大，資料越分散。", example:"所有數值相同時標準差為 0。" },
+          { id:"m22", subject:"數學", name:"導數定義", formula:"f′(x)=limₕ→₀ [f(x+h)−f(x)]/h", description:"函數在某點的瞬時變化率與切線斜率。", point:"冪次法則：(xⁿ)′=nxⁿ⁻¹。", example:"f(x)=x²，則 f′(x)=2x。" },
+          { id:"m23", subject:"數學", name:"定積分與面積", formula:"∫ₐᵇ f(x)dx = F(b)−F(a)", description:"由反導函數計算帶符號面積。", point:"圖形在 x 軸下方時積分值為負。", example:"∫₀² x dx = 2。" },
+
+          { id:"p01", subject:"物理", name:"平均速度", formula:"v̄ = Δx/Δt", description:"位移變化量除以時間。", point:"速度含方向，與速率不同。", example:"向東 100 m 用時 20 s，平均速度為向東 5 m/s。" },
+          { id:"p02", subject:"物理", name:"等加速度速度公式", formula:"v = v₀ + at", description:"加速度固定時的末速度。", point:"正負號必須符合選定的正方向。", example:"由靜止以 2 m/s² 加速 3 s，末速 6 m/s。" },
+          { id:"p03", subject:"物理", name:"等加速度位移公式", formula:"Δx = v₀t + ½at²", description:"加速度固定時的位移。", point:"自由落體可令 a=g，方向決定正負。", example:"靜止落下 2 s，位移約 19.6 m。" },
+          { id:"p04", subject:"物理", name:"無時間等加速度公式", formula:"v² = v₀² + 2aΔx", description:"題目未給時間時連結速度與位移。", point:"只適用等加速度運動。", example:"由靜止加速 10 m、a=2 m/s²，末速 √40 m/s。" },
+          { id:"p05", subject:"物理", name:"牛頓第二運動定律", formula:"ΣF = ma", description:"合力等於質量乘以加速度。", point:"先畫自由體圖，再依方向分量列式。", example:"2 kg 物體受 10 N 合力，加速度 5 m/s²。" },
+          { id:"p06", subject:"物理", name:"摩擦力", formula:"fₛ ≤ μₛN；fₖ = μₖN", description:"靜摩擦力會隨外力調整；動摩擦力為定值模型。", point:"靜摩擦力不一定等於 μₛN。", example:"最大靜摩擦力為 μₛN。" },
+          { id:"p07", subject:"物理", name:"功", formula:"W = Fs cosθ", description:"恆力對物體位移所做的功。", point:"力與位移垂直時不做功。", example:"10 N 力同向推 3 m，做功 30 J。" },
+          { id:"p08", subject:"物理", name:"動能", formula:"K = ½mv²", description:"物體因運動具有的能量。", point:"功—能定理：W合=ΔK。", example:"2 kg 物體速率 3 m/s，動能 9 J。" },
+          { id:"p09", subject:"物理", name:"重力位能", formula:"U = mgh", description:"近地表重力場中的位能差。", point:"零位能面可自行選擇，只看位能差。", example:"2 kg 物體升高 5 m，位能增加約 98 J。" },
+          { id:"p10", subject:"物理", name:"動量與衝量", formula:"p = mv；J = FΔt = Δp", description:"衝量等於動量變化量。", point:"動量是向量，碰撞前後方向要帶正負。", example:"平均力 20 N 作用 0.5 s，衝量 10 N·s。" },
+          { id:"p11", subject:"物理", name:"向心加速度", formula:"a꜀ = v²/r = ω²r", description:"圓周運動加速度指向圓心。", point:"向心力不是新種類的力，而是指向圓心的合力。", example:"v=4 m/s、r=2 m，a꜀=8 m/s²。" },
+          { id:"p12", subject:"物理", name:"萬有引力", formula:"F = Gm₁m₂/r²", description:"兩質點間引力與質量乘積成正比、距離平方成反比。", point:"r 是兩物體質心距離。", example:"距離加倍，引力變為 1/4。" },
+          { id:"p13", subject:"物理", name:"庫侖定律", formula:"F = k|q₁q₂|/r²", description:"兩點電荷間靜電力。", point:"同號相斥、異號相吸，方向沿兩電荷連線。", example:"距離變 3 倍，電力變為 1/9。" },
+          { id:"p14", subject:"物理", name:"電場與電位", formula:"E = F/q；V = U/q", description:"單位正電荷受到的力與具有的位能。", point:"E 是向量；V 是純量。", example:"2 C 電荷在 10 V 處的電位能為 20 J。" },
+          { id:"p15", subject:"物理", name:"歐姆定律", formula:"V = IR", description:"歐姆元件兩端電壓與電流成正比。", point:"斜率依圖軸可能代表 R 或 1/R。", example:"12 V 加在 4 Ω 電阻，電流 3 A。" },
+          { id:"p16", subject:"物理", name:"電功率", formula:"P = IV = I²R = V²/R", description:"電能轉換的速率。", point:"依已知量選最方便的形式。", example:"110 V、2 A 電器功率 220 W。" },
+          { id:"p17", subject:"物理", name:"電阻串並聯", formula:"R串=ΣR；1/R並=Σ(1/R)", description:"串聯電流相同；並聯電壓相同。", point:"並聯等效電阻小於任一支路電阻。", example:"兩個 6 Ω 並聯，等效 3 Ω。" },
+          { id:"p18", subject:"物理", name:"波速", formula:"v = fλ", description:"波速等於頻率乘以波長。", point:"跨介質時頻率不變，波速與波長改變。", example:"f=500 Hz、λ=0.68 m，v=340 m/s。" },
+          { id:"p19", subject:"物理", name:"薄透鏡公式", formula:"1/f = 1/p + 1/q", description:"連結焦距、物距與像距。", point:"正負號依課本採用的符號規則判定。", example:"f=10 cm、p=30 cm，像距 q=15 cm。" },
+          { id:"p20", subject:"物理", name:"光子能量", formula:"E = hf = hc/λ", description:"單一光子的能量。", point:"頻率越高、波長越短，光子能量越大。", example:"紫光光子能量高於紅光。" },
+
+          { id:"c01", subject:"化學", name:"莫耳數", formula:"n = m/M", description:"質量除以莫耳質量。", point:"m 與 M 的質量單位要一致。", example:"18 g 水為 1 mol。" },
+          { id:"c02", subject:"化學", name:"粒子數", formula:"N = nNₐ", description:"莫耳數乘以亞佛加厥常數。", point:"Nₐ≈6.02×10²³ mol⁻¹。", example:"1 mol 氧分子含 6.02×10²³ 個 O₂。" },
+          { id:"c03", subject:"化學", name:"體積莫耳濃度", formula:"M = n/V", description:"每公升溶液所含溶質莫耳數。", point:"V 必須以 L 代入。", example:"0.5 mol 溶質配成 2 L，濃度 0.25 M。" },
+          { id:"c04", subject:"化學", name:"稀釋公式", formula:"M₁V₁ = M₂V₂", description:"稀釋前後溶質莫耳數不變。", point:"兩側體積單位需一致。", example:"1 M、20 mL 稀釋成 0.2 M，終體積 100 mL。" },
+          { id:"c05", subject:"化學", name:"理想氣體方程式", formula:"PV = nRT", description:"連結理想氣體壓力、體積、莫耳數與溫度。", point:"溫度必須使用 K，R 的數值需配合單位。", example:"定溫下壓力加倍，體積變為一半。" },
+          { id:"c06", subject:"化學", name:"道耳頓分壓定律", formula:"P總 = ΣPᵢ；Pᵢ = XᵢP總", description:"混合氣體總壓等於各成分分壓總和。", point:"莫耳分率 Xᵢ=nᵢ/n總。", example:"等莫耳兩氣體混合，各分壓為總壓一半。" },
+          { id:"c07", subject:"化學", name:"反應速率", formula:"rate = −Δ[反應物]/Δt", description:"單位時間內濃度變化量。", point:"依化學計量係數換算各物種速率。", example:"反應物 10 s 內減少 0.2 M，平均速率 0.02 M/s。" },
+          { id:"c08", subject:"化學", name:"平衡常數", formula:"Kc = [C]ᶜ[D]ᵈ / [A]ᵃ[B]ᵇ", description:"aA+bB⇌cC+dD 的濃度平衡常數。", point:"純固體與純液體不列入 Kc。", example:"Kc 很大代表平衡偏向生成物。" },
+          { id:"c09", subject:"化學", name:"水的離子積", formula:"Kw = [H⁺][OH⁻] = 1.0×10⁻¹⁴", description:"25°C 水溶液中氫離子與氫氧根濃度乘積。", point:"pH+pOH=14 僅適用 25°C。", example:"[H⁺]=10⁻³ M，則 [OH⁻]=10⁻¹¹ M。" },
+          { id:"c10", subject:"化學", name:"酸鹼值", formula:"pH = −log[H⁺]", description:"以對數表示氫離子濃度。", point:"強酸完全解離時仍要先依係數求 [H⁺]。", example:"[H⁺]=10⁻⁴ M，pH=4。" },
+          { id:"c11", subject:"化學", name:"弱酸解離常數", formula:"Ka = [H⁺][A⁻]/[HA]", description:"衡量弱酸在水中的解離程度。", point:"Ka 越大，酸性越強。", example:"同濃度下 Ka 較大的酸通常 pH 較低。" },
+          { id:"c12", subject:"化學", name:"氧化數總和", formula:"Σ(氧化數×原子數) = 粒子電荷", description:"判定元素氧化數並配平氧化還原反應。", point:"氧化數上升為氧化，下降為還原。", example:"SO₄²⁻ 中 S 的氧化數為 +6。" },
+          { id:"c13", subject:"化學", name:"電解法拉第定律", formula:"Q = It；n(e⁻)=Q/F", description:"電量與通過的電子莫耳數關係。", point:"F≈96500 C/mol e⁻。", example:"通過 96500 C 約等於 1 mol 電子。" },
+          { id:"c14", subject:"化學", name:"熱量計算", formula:"q = mcΔT", description:"物質因溫度改變吸收或放出的熱量。", point:"系統吸熱 q>0；放熱 q<0，注意題目定義。", example:"100 g 水升溫 10°C，吸熱約 4180 J。" },
+          { id:"c15", subject:"化學", name:"反應焓與生成焓", formula:"ΔH°rxn = ΣnΔH°f(生成物) − ΣnΔH°f(反應物)", description:"由標準生成焓計算反應焓。", point:"各物質前係數要乘進去。", example:"燃燒反應通常 ΔH<0。" },
+          { id:"c16", subject:"化學", name:"溶度積", formula:"Ksp = [Mᵐ⁺]ᵃ[Xⁿ⁻]ᵇ", description:"難溶鹽溶解平衡的平衡常數。", point:"離子積 Qsp>Ksp 時會產生沉澱。", example:"AgCl 的 Ksp=[Ag⁺][Cl⁻]。" }
         ],
         majors: [
           { id:"u1", icon:"心", name:"心理學系", intro:"研究人類行為、認知與情緒，結合科學方法理解人的內在世界。", skills:"觀察力、統計分析、溝通與同理", personality:"喜歡理解人、耐心傾聽、重視證據", future:"臨床、工商、教育與認知科學", jobs:"心理師、人資、使用者研究員、研究人員" },
@@ -69,16 +124,14 @@
           { id:"c4", subject:"數學 · 數列", question:"等比數列前 n 項和公式為何？", answer:"當 r ≠ 1 時，Sₙ = a₁(1−rⁿ)/(1−r)。" },
           { id:"c5", subject:"化學 · 氣體", question:"理想氣體方程式中的溫度單位是什麼？", answer:"必須使用絕對溫標 Kelvin（K），換算方式為 K = ℃ + 273.15。" }
         ],
-        scores: { "國文": 82, "英文": 68, "數學": 48, "自然": 61, "社會": 75 }
+        scores: { "國文": 0, "英文": 0, "數學": 0, "自然": 0, "社會": 0 }
       };
 
-      this.mistakes = this.store.get("mistakes", this.seed.mistakes);
-      this.favorites = this.store.get("favorites", [
-        { type: "mistake", id: "m1" }, { type: "mistake", id: "m3" },
-        { type: "formula", id: "f2" }, { type: "major", id: "u2" }, { type: "card", id: "c3" }
-      ]);
-      this.scores = this.store.get("scores", this.seed.scores);
-      this.heat = this.store.get("heat", this.makeHeatSeed());
+      // 個人資料一律從空白開始，避免把示範內容誤當成李同學的紀錄。
+      this.mistakes = this.store.get("mistakes-v2", []);
+      this.favorites = this.store.get("favorites-v2", []);
+      this.scores = this.store.get("scores-v2", this.seed.scores);
+      this.heat = this.store.get("heat-v2", {});
     }
 
     init() {
@@ -98,18 +151,6 @@
     setToday() {
       const text = new Intl.DateTimeFormat("zh-TW", { month:"long", day:"numeric", weekday:"long" }).format(new Date());
       $("#todayDate").textContent = text.replace("星期", "・星期");
-    }
-
-    makeHeatSeed() {
-      const result = {};
-      for (let i = 0; i < 365; i += 1) {
-        const date = new Date();
-        date.setDate(date.getDate() - i);
-        const key = date.toISOString().slice(0, 10);
-        const pattern = (i * 7 + date.getDate() * 3) % 11;
-        result[key] = pattern < 3 ? 0 : pattern < 6 ? 1 : pattern < 8 ? 2 : pattern < 10 ? 3 : 4;
-      }
-      return result;
     }
 
     bindEvents() {
@@ -184,6 +225,7 @@
         "quick-add": () => this.openModal("quickModal"),
         "add-mistake": () => this.openMistake(),
         "quick-mistake": () => { this.closeModals(); this.openMistake(); },
+        "record-today": () => this.recordToday(),
         "close-modal": () => this.closeModals(),
         "close-quick": () => this.closeModals(),
         "edit-mistake": () => this.openMistake(element.dataset.id),
@@ -240,16 +282,23 @@
       this.renderMajors();
       this.renderFavorites();
       this.updateCounts();
+      this.updateDashboard();
     }
 
     renderRecent() {
       const items = [...this.mistakes].sort((a,b) => b.date.localeCompare(a.date)).slice(0, 3);
-      $("#recentList").innerHTML = items.map((item) => `
+      $("#recentList").innerHTML = items.length ? items.map((item) => `
         <a class="recent-item" href="#mistakes" data-page-link="mistakes">
           <span>${escapeHTML(item.subject.slice(0,1))}</span>
           <span><strong>${escapeHTML(item.question)}</strong><small>${escapeHTML(item.subject)} · ${escapeHTML(item.unit)}</small></span>
           <time>${escapeHTML(item.date.slice(5).replace("-", "/"))}</time>
-        </a>`).join("");
+        </a>`).join("") : `
+        <div class="record-empty">
+          <span class="stat-icon violet">✎</span>
+          <h3>還沒有新增內容</h3>
+          <p>你新增的錯題會顯示在這裡。</p>
+          <button class="secondary-btn" data-action="add-mistake">＋ 新增第一題</button>
+        </div>`;
     }
 
     renderMistakes() {
@@ -331,7 +380,7 @@
       };
       const index = this.mistakes.findIndex((entry) => entry.id === id);
       if (index >= 0) this.mistakes[index] = item; else this.mistakes.unshift(item);
-      if (!this.store.set("mistakes", this.mistakes)) { this.toast("儲存空間不足，請移除較大的圖片"); return; }
+      if (!this.store.set("mistakes-v2", this.mistakes)) { this.toast("儲存空間不足，請移除較大的圖片"); return; }
       this.closeModals();
       this.renderMistakes(); this.renderRecent(); this.updateCounts();
       this.toast(index >= 0 ? "錯題已更新" : "錯題已加入");
@@ -342,8 +391,8 @@
       if (!item || !confirm(`確定刪除「${item.question.slice(0, 18)}…」？`)) return;
       this.mistakes = this.mistakes.filter((entry) => entry.id !== id);
       this.favorites = this.favorites.filter((entry) => !(entry.type === "mistake" && entry.id === id));
-      this.store.set("mistakes", this.mistakes);
-      this.store.set("favorites", this.favorites);
+      this.store.set("mistakes-v2", this.mistakes);
+      this.store.set("favorites-v2", this.favorites);
       this.renderMistakes(); this.renderRecent(); this.renderFavorites(); this.updateCounts();
       this.toast("錯題已刪除");
     }
@@ -416,7 +465,7 @@
         this.scores[event.target.dataset.subject] = value;
         event.target.style.setProperty("--value", `${value}%`);
         event.target.nextElementSibling.value = value;
-        this.store.set("scores", this.scores);
+        this.store.set("scores-v2", this.scores);
         this.updateInsights();
       }));
       this.updateInsights();
@@ -424,6 +473,15 @@
 
     updateInsights() {
       const sorted = Object.entries(this.scores).sort((a,b) => a[1] - b[1]);
+      const hasRatings = sorted.some(([, score]) => score > 0);
+      if (!hasRatings) {
+        $("#weakSubject").textContent = "尚未評分";
+        $("#strongSubject").textContent = "尚未評分";
+        $("#priorityOrder").textContent = "等待你的輸入";
+        $("#weakNote").textContent = "拖曳下方滑桿後才會分析";
+        $("#strongNote").textContent = "不會使用預設分數猜測";
+        return;
+      }
       const weak = sorted[0], strong = sorted.at(-1);
       $("#weakSubject").textContent = `${weak[0]} · ${weak[1]}分`;
       $("#strongSubject").textContent = `${strong[0]} · ${strong[1]}分`;
@@ -446,9 +504,65 @@
 
     updateHeat(date) {
       this.heat[date] = ((this.heat[date] || 0) + 1) % 5;
-      this.store.set("heat", this.heat);
+      this.store.set("heat-v2", this.heat);
       this.renderHeatmap();
+      this.updateDashboard();
       this.toast(this.heat[date] ? `已記錄 ${this.heat[date] * .5} 小時` : "已清除該日紀錄");
+    }
+
+    recordToday() {
+      const today = new Date().toISOString().slice(0, 10);
+      this.heat[today] = Math.min((this.heat[today] || 0) + 1, 4);
+      this.store.set("heat-v2", this.heat);
+      this.closeModals();
+      this.renderHeatmap();
+      this.updateDashboard();
+      this.toast(`今天已記錄 ${this.heat[today] * 30} 分鐘`);
+    }
+
+    updateDashboard() {
+      const today = new Date();
+      const todayKey = today.toISOString().slice(0, 10);
+      const todayLevel = this.heat[todayKey] || 0;
+      const todayMinutes = todayLevel * 30;
+      const mondayOffset = (today.getDay() + 6) % 7;
+      const weekStart = new Date(today);
+      weekStart.setDate(today.getDate() - mondayOffset);
+      weekStart.setHours(0, 0, 0, 0);
+
+      let weekMinutes = 0;
+      let weekDays = 0;
+      for (let i = 0; i < 7; i += 1) {
+        const date = new Date(weekStart);
+        date.setDate(weekStart.getDate() + i);
+        const level = this.heat[date.toISOString().slice(0, 10)] || 0;
+        if (level > 0) weekDays += 1;
+        weekMinutes += level * 30;
+      }
+
+      let streak = 0;
+      const cursor = new Date(today);
+      while (this.heat[cursor.toISOString().slice(0, 10)] > 0) {
+        streak += 1;
+        cursor.setDate(cursor.getDate() - 1);
+      }
+
+      const formatTime = (minutes) => `${Math.floor(minutes / 60)}h ${String(minutes % 60).padStart(2, "0")}m`;
+      $("#todayFocus").innerHTML = `${Math.floor(todayMinutes / 60)}<small>h</small> ${String(todayMinutes % 60).padStart(2, "0")}<small>m</small>`;
+      $("#focusRing").setAttribute("aria-label", todayMinutes ? `今日專注 ${formatTime(todayMinutes)}` : "今日尚未記錄學習時間");
+      $("#todayStudyTime").textContent = formatTime(todayMinutes);
+      $("#todayStudyNote").textContent = todayMinutes ? "依今日紀錄計算" : "尚未記錄";
+      $("#streakTop").textContent = streak;
+      $("#streakCard").innerHTML = `${streak} <small>天</small>`;
+      $("#streakNote").textContent = streak ? "依連續紀錄計算" : "尚未開始記錄";
+      $("#weekRecordDays").textContent = `本週 ${weekDays} 天有紀錄`;
+      $("#weekStudyTotal").textContent = `目前共 ${formatTime(weekMinutes)}`;
+      $("#heroStatus").textContent = weekMinutes ? "已有真實學習紀錄" : "尚未開始記錄";
+      $("#heroMessage").textContent = weekMinutes
+        ? `本週已記錄 ${formatTime(weekMinutes)}，尚未設定目標，因此不顯示虛構完成率。`
+        : "目前沒有本週學習資料。記錄後，這裡才會顯示真實進度。";
+      $("#weekRecordEmpty h3").textContent = weekMinutes ? `本週已記錄 ${formatTime(weekMinutes)}` : "還沒有本週資料";
+      $("#weekRecordEmpty p").textContent = weekMinutes ? "每次點擊可再增加 30 分鐘，也可到熱力圖逐日調整。" : "點擊下方按鈕，每次記錄 30 分鐘；也可到熱力圖調整。";
     }
 
     renderFormulas() {
@@ -458,6 +572,7 @@
         const text = [item.name,item.formula,item.description,item.point,item.example].join(" ").toLowerCase();
         return (!keyword || text.includes(keyword)) && (!subject || item.subject === subject);
       });
+      $("#formulaResultCount").textContent = `共 ${items.length} 個公式`;
       $("#formulaGrid").innerHTML = items.map((item) => `
         <article class="formula-card">
           <div class="card-top"><span class="subject-chip">${item.subject}</span><button class="favorite-btn ${this.isFavorite("formula",item.id) ? "active" : ""}" data-action="favorite-formula" data-id="${item.id}" aria-label="收藏${item.name}">♥</button></div>
@@ -525,9 +640,9 @@
       if (type === "mistake") {
         const mistake = this.mistakes.find((item) => item.id === id);
         if (mistake) mistake.favorite = index < 0;
-        this.store.set("mistakes", this.mistakes);
+        this.store.set("mistakes-v2", this.mistakes);
       }
-      this.store.set("favorites", this.favorites);
+      this.store.set("favorites-v2", this.favorites);
       this.renderMistakes(); this.renderFormulas(); this.renderMajors(); this.renderFlashcard(); this.renderFavorites(); this.updateCounts();
       this.toast(index >= 0 ? "已取消收藏" : "已加入收藏");
     }

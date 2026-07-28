@@ -20,13 +20,13 @@ export async function generateMetadata(): Promise<Metadata> {
       title: "StudyHub｜讓每次學習都有方向",
       description: "整合錯題、閱讀、分析、知識卡與升學探索的 AI 學習工作台。",
       type: "website",
-      images: [{ url: "/studyhub-og.png", width: 1536, height: 1024, alt: "StudyHub 學習工作台" }],
+      images: [{ url: "/studyhub-og-v2.png", width: 1536, height: 1024, alt: "StudyHub 學習工作台" }],
     },
     twitter: {
       card: "summary_large_image",
       title: "StudyHub｜讓每次學習都有方向",
       description: "整合錯題、閱讀、分析、知識卡與升學探索的 AI 學習工作台。",
-      images: ["/studyhub-og.png"],
+      images: ["/studyhub-og-v2.png"],
     },
   };
 }
