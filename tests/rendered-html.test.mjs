@@ -51,11 +51,14 @@ test("bundles the complete StudyHub local-first application", async () => {
   assert.match(html, /id="todayTaskStat"/);
   assert.match(script, /尚未評分/);
   assert.match(html, /formulaVolume/);
-  assert.match(html, /公式符號/);
+  assert.doesNotMatch(html, /公式符號|symbol-guide/);
   assert.match(script, /formulaCatalog/);
   assert.match(script, /analyzeChinese/);
   assert.match(script, /開張聖聽/);
   assert.match(script, /廣泛地聽取臣下的意見/);
+  assert.match(script, /學而時習之/);
+  assert.match(script, /這段文字本身已接近現代白話/);
+  assert.doesNotMatch(script, /目前本機字詞庫尚未收錄/);
   assert.match(script, /本機分析已完成/);
   assert.doesNotMatch(`${html}${formulas}`, /\u20d7/);
   assert.ok((formulas.match(/"數學"/g) ?? []).length >= 40);

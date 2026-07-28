@@ -307,11 +307,6 @@ input[type="range"]::-webkit-slider-thumb { width: 17px; height: 17px; appearanc
 .heat-legend i:nth-of-type(2) { background:#c9c9fa }.heat-legend i:nth-of-type(3) { background:#a3a3ef }.heat-legend i:nth-of-type(4) { background:#7777dc }.heat-legend i:nth-of-type(5) { background:#5050b9 }
 
 .knowledge-view { display: none; }.knowledge-view.active { display: block; animation: fadeIn .25s ease; }
-.symbol-guide { margin-bottom: 14px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface-2); }
-.symbol-guide p { margin-bottom: 9px; color: var(--muted); font-size: 11px; }
-.symbol-row { display: flex; flex-wrap: wrap; gap: 7px; }
-.symbol-row span { padding: 5px 8px; border: 1px solid var(--line); border-radius: 8px; color: var(--muted); background: var(--surface); font-size: 10px; }
-.symbol-row b { margin-right: 4px; color: var(--brand); font-size: 13px; }
 .formula-card .formula { margin: 14px 0; padding: 16px; border-radius: 12px; color: var(--brand-deep); background: var(--brand-soft); font: 700 19px Georgia, serif; text-align: center; }
 .formula-card .symbol-legend { margin: -4px 0 13px; padding: 9px 10px; border-radius: 9px; color: var(--muted); background: var(--surface-2); font-size: 10px; line-height: 1.65; }
 .formula-card .symbol-legend strong { margin-right: 7px; color: var(--text); }

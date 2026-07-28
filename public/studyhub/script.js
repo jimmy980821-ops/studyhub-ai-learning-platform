@@ -444,6 +444,16 @@ import { formulaCatalog } from "./formula-data.js";
     analyzeChinese(text) {
       const original = text.replace(/\s+/g, " ").trim();
       const entries = [
+        ["學而時習之","學習後按時溫習所學","「時」是按時；「習」是溫習、實踐。"],
+        ["不亦說乎","不也是很喜悅的事嗎","「說」通「悅」；「不亦……乎」表反問。"],
+        ["有朋自遠方來","有志同道合的朋友從遠方來","「朋」在此指志同道合的人。"],
+        ["人不知而不慍","別人不了解我，我卻不生氣","「慍」是生氣、怨恨。"],
+        ["溫故而知新","溫習舊知識，進而領悟新知識","「故」指舊知識；「新」指新體會。"],
+        ["三人行必有我師焉","多人同行，其中一定有可以做我老師的人","「三」可泛指多數；「焉」相當於「於此」。"],
+        ["擇其善者而從之","選擇他們的優點來學習","「善者」指優點；「從」是學習、跟從。"],
+        ["其不善者而改之","看見他們的缺點，就反省並改正自己","末句省略了反省自身的意思。"],
+        ["知之為知之","知道就是知道","「之」代指所學的事。"],
+        ["不知為不知","不知道就是不知道","強調誠實面對自己的認知。"],
         ["誠宜","實在應當","副詞「誠」表確實；「宜」是應當。"],
         ["開張聖聽","廣泛聽取意見","「開張」是擴大、廣開；「聖聽」敬稱皇帝的聽聞。"],
         ["開張","擴大、廣開","古今異義；此處不是開店營業。"],
@@ -452,33 +462,73 @@ import { formulaCatalog } from "./formula-data.js";
         ["恢弘志士之氣","振奮並擴大忠志之士的士氣","「恢弘」在此作動詞。"],
         ["妄自菲薄","過分看輕自己","「菲薄」在此是輕視、鄙薄。"],
         ["引喻失義","說話譬喻不合道理","「義」指合宜的道理。"],
-        ["塞忠諫之路","堵塞忠臣進諫的道路","「塞」讀作阻塞之意。"]
+        ["塞忠諫之路","堵塞忠臣進諫的道路","「塞」讀作阻塞之意。"],
+        ["芳草鮮美","花草鮮嫩美麗","「鮮美」古義是鮮豔美麗。"],
+        ["阡陌交通","田間小路交錯相通","「交通」古義是交錯相通。"],
+        ["率妻子邑人","帶領妻子、兒女和同鄉","「妻子」古義包含妻子和兒女。"],
+        ["無論魏晉","更不必說魏、晉兩朝","「無論」古義是不要說、更不必說。"],
+        ["先帝不以臣卑鄙","先帝不因為我身分低微、見識淺陋","「卑鄙」古義指社會地位低微、見識淺陋。"],
+        ["臨表涕零","面對這篇表文流下眼淚","「涕」是眼淚；「零」是落下。"],
+        ["何陋之有","有什麼簡陋的呢","賓語前置，正常語序是「有何陋」。"],
+        ["但少閑人如吾兩人者耳","只是缺少像我們兩人這樣清閒的人罷了","「但」是只是；「耳」是罷了。"],
+        ["肉食者鄙","居高位、享厚祿的人見識淺陋","「肉食者」借指有權位的人。"],
+        ["小大之獄","大大小小的訴訟案件","「獄」古義是案件。"],
+        ["一鼓作氣","第一次擊鼓能振作士氣","「作」是振作。"],
+        ["吾","我","第一人稱代詞。"],["汝","你","第二人稱代詞。"],["爾","你、你的","第二人稱代詞。"],
+        ["曰","說","常用來引出人物說話。"],["皆","都","表示全部。"],["遂","於是、就","承接前文結果。"],
+        ["故","所以、緣故","依語境可作連詞或名詞。"],["欲","想要","表示意願。"],["弗","不","否定副詞。"],
+        ["莫","沒有人、不要","依語境表示無人或禁止。"],["嘗","曾經","表示過去經驗。"],["既","已經、……之後","表示完成或承接。"],
+        ["善","好、擅長","可作名詞、形容詞或動詞。"],["走","跑","古義常指奔跑。"],["去","離開","古義常指離開。"],
+        ["亡","逃亡、失去","依上下文判斷。"],["食","吃、食物","讀音與詞性依語境判斷。"],["聞","聽見、聽說","也可指名聲。"]
       ];
-      const matched = entries.filter(([term]) => original.includes(term));
+      const matched = entries.filter(([term]) => original.includes(term)).slice(0, 14);
       const isOpenListening = original.includes("開張聖聽");
-      let translation = "";
+      const modernMarkers = (original.match(/的|了|我們|你們|因為|所以|但是|覺得|已經|正在/g) || []).length;
+      const classicalMarkers = (original.match(/[吾汝爾曰矣焉兮遂乃蓋豈]|不亦|何以|何故|者也/g) || []).length;
+      const looksClassical = matched.length > 0 || classicalMarkers > modernMarkers;
+      let translation = original;
       if (original.replace(/[，。！？；、\s]/g, "") === "開張聖聽") {
         translation = "廣泛地聽取臣下的意見，也就是勸皇帝廣開言路、接納忠言。";
       } else if (original.includes("誠宜開張聖聽，以光先帝遺德，恢弘志士之氣")) {
         translation = "實在應當廣泛聽取臣下的意見，來發揚先帝遺留下來的美德，振奮忠志之士的士氣。";
-      } else if (matched.length) {
-        translation = matched.map(([term, meaning]) => `「${term}」可譯為「${meaning}」`).join("；") + "。";
       } else {
-        translation = `目前本機字詞庫尚未收錄這段文字的完整譯文。原文為：「${original}」。可先從關鍵實詞、虛詞與上下文逐句判讀。`;
+        [...matched]
+          .sort((a, b) => b[0].length - a[0].length)
+          .forEach(([term, meaning]) => { translation = translation.split(term).join(meaning); });
+        if (translation === original) {
+          translation = looksClassical
+            ? `依字面可理解為：${original}。閱讀時需補出古文省略的主語，並依前後文確認人名與代詞所指。`
+            : `這段文字本身已接近現代白話。換句話說，它主要表達的是：「${original}」`;
+        }
       }
 
       const wordList = matched.length
         ? matched.map(([term, meaning, note]) => `<li><mark>${escapeHTML(term)}</mark>：${escapeHTML(meaning)}。${escapeHTML(note)}</li>`).join("")
-        : "<li>目前未比對到內建古文字詞；已保留原文，不會套用無關文章的答案。</li>";
-      const rhetoric = isOpenListening
-        ? "<ul><li><mark>借代／敬稱</mark>：「聖聽」以皇帝的聽聞代指皇帝接納臣下意見。</li><li><mark>勸說語氣</mark>：省略主語，以精簡動賓結構直接提出建議。</li></ul>"
-        : "<p>此段目前沒有比對到明確修辭。判讀時應先確認上下文，避免只憑單一句子硬套修辭名稱。</p>";
+        : `<li><mark>句意判讀</mark>：本文共 ${[...original].length} 字，先從重複詞、轉折詞與因果詞確認句間關係。</li>`;
+      const rhetoricItems = [];
+      if (isOpenListening) rhetoricItems.push("<li><mark>借代／敬稱</mark>：「聖聽」以皇帝的聽聞代指皇帝接納臣下意見。</li>");
+      if (/不亦.+乎|豈|何.+[乎哉]|安得/.test(original)) rhetoricItems.push("<li><mark>反問</mark>：以問句加強肯定或否定語氣。</li>");
+      if (/如|若|猶|譬/.test(original)) rhetoricItems.push("<li><mark>譬喻線索</mark>：出現「如、若、猶、譬」等比況詞，需比較本體與喻體。</li>");
+      if (/曰|云/.test(original)) rhetoricItems.push("<li><mark>引用</mark>：引出人物言語，使觀點或情節更直接。</li>");
+      if (/但是|然而|卻|而/.test(original)) rhetoricItems.push("<li><mark>轉折／承接</mark>：留意前後語意是相反、遞進或並列。</li>");
+      const rhetoric = `<ul>${rhetoricItems.length ? rhetoricItems.join("") : "<li><mark>句式</mark>：依停頓分層，先找主語、動作與受詞，再判斷語氣。</li>"}</ul>`;
+      const themes = [
+        [/學|習|師|知|教/,"學習方法、知識與自我反省"],
+        [/君|臣|帝|國|民|政|諫/,"政治責任、治國與君臣關係"],
+        [/山|水|月|花|鳥|風|景/,"景物描寫及其寄託的情感"],
+        [/父|母|親|友|朋|兄|弟/,"人際關係、親情或友情"],
+        [/兵|軍|戰|將|卒/,"戰爭、決策與士氣"],
+        [/志|德|仁|義|善/,"品德修養、志向與價值選擇"]
+      ];
+      const detectedTheme = themes.find(([pattern]) => pattern.test(original))?.[1] || "人物的行動、觀點與前後句關係";
       const focus = isOpenListening
         ? "語意核心是「廣開言路」。諸葛亮勸後主劉禪廣泛接納臣下意見，不要堵塞忠臣進諫的管道。"
-        : `本段共 ${[...original].length} 字。先圈出人物、行動與目的，再依前後句確認主旨。`;
+        : `本段共 ${[...original].length} 字、${original.split(/[。！？；]+/).filter(Boolean).length} 個主要語意單位，內容可先從「${detectedTheme}」方向整理。`;
       const exam = isOpenListening
         ? "<ul><li><mark>出處</mark>：諸葛亮〈出師表〉。</li><li><mark>古今異義</mark>：「開張」古義是擴大、廣開；今義常指商店開業。</li><li><mark>語境</mark>：「聖聽」不是聽力特別好，而是敬稱皇帝聽取意見。</li><li><mark>主旨</mark>：廣開言路、親賢納諫。</li></ul>"
-        : "<ul><li>辨認重要實詞與虛詞。</li><li>結合作者、篇名與上下文判斷語意。</li><li>翻譯時補出省略的主語與受詞，但不可加入原文沒有的意思。</li></ul>";
+        : looksClassical
+          ? "<ul><li>辨認古今異義、通假字與詞類活用。</li><li>確認「之、其、而、以、於」等虛詞在句中的作用。</li><li>翻譯時補出省略成分，但不可增加原文沒有的意思。</li></ul>"
+          : "<ul><li>找出中心句、關鍵詞與段落主旨。</li><li>辨認因果、轉折、舉例與比較關係。</li><li>區分作者主張、事實說明與情感態度。</li></ul>";
 
       return {
         mode: "chinese",
