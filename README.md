@@ -57,4 +57,4 @@ OpenAI API、Firebase 或 Supabase 的資料存取層，不需重寫畫面結構
 
 ## 線上版本
 
-[開啟 StudyHub](https://gsat-physics-notes.fumin081.chatgpt.site)
+[開啟 GitHub Pages 版 StudyHub](https://jimmy980821-ops.github.io/studyhub-ai-learning-platform/)
