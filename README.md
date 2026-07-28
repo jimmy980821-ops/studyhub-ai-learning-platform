@@ -4,7 +4,7 @@
 
 ## 主要功能
 
-- 今日學習摘要與 Dashboard
+- 今日學習摘要與可新增、完成、編輯、刪除的每日任務
 - 可新增、編輯、刪除、搜尋及收藏的 AI 錯題本
 - 國文與英文閱讀助手示範介面
 - 科目熟悉程度分析與 GitHub 風格學習熱力圖
@@ -18,9 +18,10 @@
 
 ```text
 public/studyhub/
-├── index.html   # 頁面結構
-├── style.css    # 視覺、動畫、深色模式與響應式設計
-└── script.js    # 資料、互動、搜尋、分析與 localStorage
+├── index.html       # 頁面結構
+├── style.css        # 視覺、動畫、深色模式與響應式設計
+├── formula-data.js  # 數學與物理公式資料
+└── script.js        # 互動、搜尋、分析與 localStorage
 ```
 
 `app/page.tsx` 提供部署環境的入口，並載入 StudyHub 前端介面。

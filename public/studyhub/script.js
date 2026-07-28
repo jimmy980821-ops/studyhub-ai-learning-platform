@@ -145,6 +145,7 @@ import { formulaCatalog } from "./formula-data.js";
       this.favorites = this.store.get("favorites-v2", []);
       this.scores = this.store.get("scores-v2", this.seed.scores);
       this.heat = this.store.get("heat-v2", {});
+      this.tasks = this.store.get("tasks-v1", []);
     }
 
     init() {
@@ -193,6 +194,7 @@ import { formulaCatalog } from "./formula-data.js";
       });
       $("#mistakeForm").addEventListener("submit", (event) => this.saveMistake(event));
       $("#mistakeForm [name='image']").addEventListener("change", (event) => this.readImage(event));
+      $("#taskForm").addEventListener("submit", (event) => this.addTask(event));
     }
 
     handleClick(event) {
@@ -240,6 +242,10 @@ import { formulaCatalog } from "./formula-data.js";
         "add-mistake": () => this.openMistake(),
         "quick-mistake": () => { this.closeModals(); this.openMistake(); },
         "record-today": () => this.recordToday(),
+        "focus-task": () => this.focusTaskForm(),
+        "toggle-task": () => this.toggleTask(element.dataset.id, element.checked),
+        "edit-task": () => this.editTask(element.dataset.id),
+        "delete-task": () => this.deleteTask(element.dataset.id),
         "close-modal": () => this.closeModals(),
         "close-quick": () => this.closeModals(),
         "edit-mistake": () => this.openMistake(element.dataset.id),
@@ -295,6 +301,7 @@ import { formulaCatalog } from "./formula-data.js";
       this.renderFlashcard();
       this.renderMajors();
       this.renderFavorites();
+      this.renderTasks();
       this.updateCounts();
       this.updateDashboard();
     }
@@ -766,6 +773,106 @@ import { formulaCatalog } from "./formula-data.js";
           <button class="favorite-btn active" data-action="remove-favorite" data-type="${item.type}" data-id="${item.id}" aria-label="取消收藏">♥</button>
         </article>`).join("");
       $("#favoriteEmpty").classList.toggle("hidden", items.length > 0);
+    }
+
+    getLocalDateKey(date = new Date()) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    focusTaskForm() {
+      $("#todayTasks").scrollIntoView({ behavior: "smooth", block: "center" });
+      window.setTimeout(() => $("#taskTitle").focus(), 350);
+    }
+
+    addTask(event) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const title = form.elements.title.value.trim();
+      if (!title) { form.elements.title.focus(); return; }
+      this.tasks.unshift({
+        id: crypto.randomUUID?.() || `task-${Date.now()}`,
+        title,
+        subject: form.elements.subject.value,
+        date: this.getLocalDateKey(),
+        done: false,
+        createdAt: Date.now()
+      });
+      if (!this.store.set("tasks-v1", this.tasks)) {
+        this.tasks.shift();
+        this.toast("任務儲存失敗，請確認瀏覽器儲存空間");
+        return;
+      }
+      form.elements.title.value = "";
+      this.renderTasks();
+      form.elements.title.focus();
+      this.toast("今日任務已新增");
+    }
+
+    toggleTask(id, done) {
+      const task = this.tasks.find((item) => item.id === id);
+      if (!task) return;
+      task.done = Boolean(done);
+      if (!this.store.set("tasks-v1", this.tasks)) {
+        task.done = !task.done;
+        this.toast("任務狀態儲存失敗");
+      }
+      this.renderTasks();
+    }
+
+    editTask(id) {
+      const task = this.tasks.find((item) => item.id === id);
+      if (!task) return;
+      const nextTitle = prompt("編輯任務內容", task.title);
+      if (nextTitle === null) return;
+      const title = nextTitle.trim();
+      if (!title) { this.toast("任務內容不可空白"); return; }
+      const previous = task.title;
+      task.title = title.slice(0, 80);
+      if (!this.store.set("tasks-v1", this.tasks)) {
+        task.title = previous;
+        this.toast("任務更新失敗");
+        return;
+      }
+      this.renderTasks();
+      this.toast("任務已更新");
+    }
+
+    deleteTask(id) {
+      const task = this.tasks.find((item) => item.id === id);
+      if (!task || !confirm(`確定刪除「${task.title}」？`)) return;
+      const previous = this.tasks;
+      this.tasks = this.tasks.filter((item) => item.id !== id);
+      if (!this.store.set("tasks-v1", this.tasks)) {
+        this.tasks = previous;
+        this.toast("任務刪除失敗");
+        return;
+      }
+      this.renderTasks();
+      this.toast("任務已刪除");
+    }
+
+    renderTasks() {
+      const today = this.getLocalDateKey();
+      const items = this.tasks
+        .filter((item) => item.date === today)
+        .sort((a, b) => Number(a.done) - Number(b.done) || b.createdAt - a.createdAt);
+      const completed = items.filter((item) => item.done).length;
+      $("#todayTaskStat").innerHTML = `${completed} <small>項</small>`;
+      $("#todayTaskNote").textContent = items.length ? `今日 ${completed} / ${items.length} 完成` : "新增今日任務";
+      $("#taskProgress").textContent = `${completed} / ${items.length} 完成`;
+      $("#taskEmpty").classList.toggle("hidden", items.length > 0);
+      $("#todayTaskList").innerHTML = items.map((item) => `
+        <div class="task-item ${item.done ? "done" : ""}">
+          <input type="checkbox" ${item.done ? "checked" : ""} data-action="toggle-task" data-id="${item.id}" aria-label="${item.done ? "取消完成" : "標記完成"}：${escapeHTML(item.title)}">
+          <div class="task-copy"><strong>${escapeHTML(item.title)}</strong><small>${escapeHTML(item.subject)} · 今天</small></div>
+          <div class="task-actions">
+            <button data-action="edit-task" data-id="${item.id}" aria-label="編輯${escapeHTML(item.title)}">編輯</button>
+            <button class="delete-task" data-action="delete-task" data-id="${item.id}" aria-label="刪除${escapeHTML(item.title)}">刪除</button>
+          </div>
+        </div>`).join("");
     }
 
     updateCounts() {

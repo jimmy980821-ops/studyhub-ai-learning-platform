@@ -90,12 +90,30 @@
             <button class="text-btn" data-page-link="analytics">查看完整分析 →</button>
           </div>
           <div class="stats-grid">
-            <article class="stat-card"><span class="stat-icon violet">✓</span><div><p>今日完成任務</p><strong>0 <small>項</small></strong><span class="trend">尚未建立任務</span></div></article>
+            <article class="stat-card"><span class="stat-icon violet">✓</span><div><p>今日完成任務</p><strong id="todayTaskStat">0 <small>項</small></strong><button class="trend task-stat-link" id="todayTaskNote" data-action="focus-task">新增今日任務</button></div></article>
             <article class="stat-card"><span class="stat-icon amber">🔥</span><div><p>累積學習天數</p><strong id="streakCard">0 <small>天</small></strong><span class="trend" id="streakNote">尚未開始記錄</span></div></article>
             <article class="stat-card"><span class="stat-icon blue">◷</span><div><p>今日學習時間</p><strong id="todayStudyTime">0h 00m</strong><span class="trend" id="todayStudyNote">尚未記錄</span></div></article>
             <article class="stat-card"><span class="stat-icon pink">♡</span><div><p>收藏知識卡</p><strong id="favoriteStat">0 <small>張</small></strong><span class="trend">隨時複習</span></div></article>
             <article class="stat-card"><span class="stat-icon red">!</span><div><p>錯題總數</p><strong id="mistakeStat">0 <small>題</small></strong><span class="trend">依實際新增計算</span></div></article>
           </div>
+
+          <section class="panel today-task-panel" id="todayTasks">
+            <div class="panel-head">
+              <div><h3>今日任務</h3><p>只計算你親自建立並完成的任務</p></div>
+              <span class="soft-badge" id="taskProgress">0 / 0 完成</span>
+            </div>
+            <form class="task-form" id="taskForm">
+              <label class="sr-only" for="taskTitle">任務內容</label>
+              <input id="taskTitle" name="title" maxlength="80" required autocomplete="off" placeholder="例如：完成數學第 3 章題目">
+              <label class="sr-only" for="taskSubject">任務科目</label>
+              <select id="taskSubject" name="subject" aria-label="任務科目">
+                <option>國文</option><option>英文</option><option selected>數學</option><option>自然</option><option>社會</option><option>其他</option>
+              </select>
+              <button class="primary-btn ripple" type="submit">＋ 新增任務</button>
+            </form>
+            <div class="task-list" id="todayTaskList"></div>
+            <div class="task-empty" id="taskEmpty"><span>✓</span><p>今天還沒有任務，從上方建立第一項。</p></div>
+          </section>
 
           <div class="dashboard-grid">
             <section class="panel recent-panel">

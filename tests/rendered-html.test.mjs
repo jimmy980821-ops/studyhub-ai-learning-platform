@@ -45,6 +45,10 @@ test("bundles the complete StudyHub local-first application", async () => {
   assert.doesNotMatch(html, /林同學|本週目標的 68%|2h 35m/);
   assert.match(script, /mistakes-v2/);
   assert.match(script, /heat-v2/);
+  assert.match(script, /tasks-v1/);
+  assert.match(script, /renderTasks/);
+  assert.match(html, /id="taskForm"/);
+  assert.match(html, /id="todayTaskStat"/);
   assert.match(script, /尚未評分/);
   assert.match(html, /formulaVolume/);
   assert.match(html, /公式符號/);
