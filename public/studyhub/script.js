@@ -1,3 +1,5 @@
+import { formulaCatalog } from "./formula-data.js";
+
 (() => {
   "use strict";
 
@@ -127,6 +129,16 @@
         scores: { "國文": 0, "英文": 0, "數學": 0, "自然": 0, "社會": 0 }
       };
 
+      // 化學暫沿用原學測整理；數學與物理改讀獨立資料模組，方便持續擴充。
+      const chemistryFormulas = this.seed.formulas
+        .filter((item) => item.subject === "化學")
+        .map((item) => ({
+          ...item,
+          volume: "學測化學",
+          symbols: "各代號依題目所給物理量與單位判讀。"
+        }));
+      this.seed.formulas = [...formulaCatalog, ...chemistryFormulas];
+
       // 個人資料一律從空白開始，避免把示範內容誤當成李同學的紀錄。
       this.mistakes = this.store.get("mistakes-v2", []);
       this.favorites = this.store.get("favorites-v2", []);
@@ -172,6 +184,7 @@
       $("#mistakeTag").addEventListener("change", () => this.renderMistakes());
       $("#formulaSearch").addEventListener("input", () => this.renderFormulas());
       $("#formulaSubject").addEventListener("change", () => this.renderFormulas());
+      $("#formulaVolume").addEventListener("change", () => this.renderFormulas());
       $("#majorSearch").addEventListener("input", () => this.renderMajors());
       $("#readerText").addEventListener("input", (event) => {
         if (event.target.value.length > 3000) event.target.value = event.target.value.slice(0, 3000);
@@ -568,16 +581,20 @@
     renderFormulas() {
       const keyword = $("#formulaSearch")?.value.trim().toLowerCase() || "";
       const subject = $("#formulaSubject")?.value || "";
+      const volume = $("#formulaVolume")?.value || "";
       const items = this.seed.formulas.filter((item) => {
-        const text = [item.name,item.formula,item.description,item.point,item.example].join(" ").toLowerCase();
-        return (!keyword || text.includes(keyword)) && (!subject || item.subject === subject);
+        const text = [item.name,item.formula,item.symbols,item.description,item.point,item.example,item.volume].join(" ").toLowerCase();
+        return (!keyword || text.includes(keyword))
+          && (!subject || item.subject === subject)
+          && (!volume || item.volume === volume);
       });
       $("#formulaResultCount").textContent = `共 ${items.length} 個公式`;
       $("#formulaGrid").innerHTML = items.map((item) => `
         <article class="formula-card">
-          <div class="card-top"><span class="subject-chip">${item.subject}</span><button class="favorite-btn ${this.isFavorite("formula",item.id) ? "active" : ""}" data-action="favorite-formula" data-id="${item.id}" aria-label="收藏${item.name}">♥</button></div>
+          <div class="card-top"><span class="subject-chip">${item.subject} · ${item.volume}</span><button class="favorite-btn ${this.isFavorite("formula",item.id) ? "active" : ""}" data-action="favorite-formula" data-id="${item.id}" aria-label="收藏${item.name}">♥</button></div>
           <h3>${item.name}</h3><p>${item.description}</p>
           <div class="formula">${item.formula}</div>
+          <p class="symbol-legend"><strong>代號</strong>${escapeHTML(item.symbols)}</p>
           <p class="exam-point"><strong>常考重點</strong><br>${item.point}</p>
           <details class="card-details"><summary>查看範例</summary><p>${item.example}</p></details>
         </article>`).join("");
