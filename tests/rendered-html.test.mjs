@@ -68,7 +68,9 @@ test("bundles the complete StudyHub local-first application", async () => {
   assert.match(script, /學而時習之/);
   assert.match(script, /這段文字本身已接近現代白話/);
   assert.doesNotMatch(script, /目前本機字詞庫尚未收錄/);
-  assert.match(script, /本機分析已完成/);
+  assert.match(script, /studyhub-ai-api\.jimmy980821\.workers\.dev\/analyze/);
+  assert.match(script, /AI 暫時無法使用，已改用本機分析/);
+  assert.match(html, /免費 AI · 本機備援/);
   assert.doesNotMatch(`${html}${formulas}`, /\u20d7/);
   assert.ok((formulas.match(/"數學"/g) ?? []).length >= 40);
   assert.ok((formulas.match(/"物理"/g) ?? []).length >= 25);

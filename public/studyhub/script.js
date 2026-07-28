@@ -6,6 +6,7 @@ import { classicFifteen } from "./classics-data.js";
 
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+  const READER_AI_API = "https://studyhub-ai-api.jimmy980821.workers.dev/analyze";
   const escapeHTML = (value = "") => String(value).replace(/[&<>"']/g, (char) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
   })[char]);
@@ -629,15 +630,87 @@ import { classicFifteen } from "./classics-data.js";
       this.toast(`已載入〈${item.title}〉代表句`);
     }
 
-    analyzeReader() {
+    formatAIReaderAnalysis(analysis, mode, original) {
+      const safeList = (items, emptyText) => {
+        const values = Array.isArray(items) ? items.filter(Boolean) : [];
+        return values.length
+          ? `<ul>${values.map((item) => `<li>${escapeHTML(String(item))}</li>`).join("")}</ul>`
+          : `<p>${escapeHTML(emptyText)}</p>`;
+      };
+      const vocabulary = Array.isArray(analysis.vocabulary) ? analysis.vocabulary : [];
+      const vocabularyHTML = vocabulary.length
+        ? `<ul>${vocabulary.map((item) => {
+            const term = typeof item === "string" ? item : item?.term;
+            const meaning = typeof item === "string" ? "" : item?.meaning;
+            return `<li><mark>${escapeHTML(String(term || ""))}</mark>${meaning ? `：${escapeHTML(String(meaning))}` : ""}</li>`;
+          }).join("")}</ul>`
+        : "<p>這段內容沒有需要另外整理的生字詞。</p>";
+      const translation = escapeHTML(String(analysis.translation || "AI 未提供完整翻譯，請參考其他分析分頁。"));
+      const summaryHTML = safeList(analysis.summary, "AI 未提供摘要。");
+      const examHTML = safeList(analysis.examPoints, "AI 未標示額外考點。");
+
+      if (mode === "chinese") {
+        return {
+          mode,
+          tabs: ["白話翻譯","字詞整理","修辭整理","重點整理","常考觀念"],
+          content: [
+            ["白話翻譯", `<p>${translation}</p><p class="reader-source">AI 分析原文：${escapeHTML(original)}</p>`],
+            ["字詞整理", vocabularyHTML],
+            ["修辭整理", safeList(analysis.rhetoric, "AI 未偵測到明顯修辭。")],
+            ["重點整理", summaryHTML],
+            ["常考觀念", examHTML]
+          ]
+        };
+      }
+
+      const savedWords = vocabulary.map((item) => typeof item === "string" ? item : item?.term).filter(Boolean);
+      return {
+        mode,
+        tabs: ["單字整理","文法分析","長難句拆解","重點摘要","生字收藏"],
+        content: [
+          ["單字整理", vocabularyHTML],
+          ["文法分析", safeList(analysis.grammar, "AI 未標示需要特別拆解的文法。")],
+          ["長難句拆解", safeList(analysis.sentenceBreakdown, "AI 未偵測到長難句。")],
+          ["重點摘要", summaryHTML],
+          ["生字收藏", savedWords.length ? `<p>建議收藏：${savedWords.map(escapeHTML).join("、")}。</p>` : "<p>目前沒有建議收藏的生字。</p>"]
+        ]
+      };
+    }
+
+    async analyzeReader() {
       const text = $("#readerText").value.trim();
       if (!text) { this.toast("請先貼上想分析的文章"); $("#readerText").focus(); return; }
-      this.readerAnalysis = this.readerMode === "chinese"
-        ? this.analyzeChinese(text)
-        : this.analyzeEnglish(text);
+      const button = $('[data-action="analyze-reader"]');
+      const originalLabel = button.textContent;
+      button.disabled = true;
+      button.setAttribute("aria-busy", "true");
+      button.textContent = "分析中…";
+      $("#readerOutput").innerHTML = '<div class="reader-loading" role="status">AI 正在整理翻譯與考點</div>';
+
+      try {
+        const response = await fetch(READER_AI_API, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text, language: this.readerMode })
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok || !result.analysis) throw new Error(result.error || `HTTP ${response.status}`);
+        this.readerAnalysis = this.formatAIReaderAnalysis(result.analysis, this.readerMode, text);
+        this.toast("免費 AI 分析已完成");
+      } catch (error) {
+        console.warn("StudyHub AI fallback:", error);
+        this.readerAnalysis = this.readerMode === "chinese"
+          ? this.analyzeChinese(text)
+          : this.analyzeEnglish(text);
+        this.toast("AI 暫時無法使用，已改用本機分析");
+      } finally {
+        button.disabled = false;
+        button.removeAttribute("aria-busy");
+        button.textContent = originalLabel;
+      }
+
       this.readerTab = 0; this.renderReader();
       $("#readerOutput").classList.remove("page");
-      this.toast("本機分析已完成");
     }
 
     renderScores() {

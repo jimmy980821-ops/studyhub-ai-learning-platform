@@ -133,6 +133,7 @@ main { width: min(1400px, 100%); margin: 0 auto; padding: 36px clamp(24px, 4vw, 
 }
 .primary-btn { color: white; background: var(--brand); box-shadow: 0 7px 16px color-mix(in srgb, var(--brand) 20%, transparent); }
 .primary-btn:hover { background: var(--brand-deep); transform: translateY(-1px); }
+.primary-btn:disabled { cursor: wait; opacity: .68; transform: none; box-shadow: none; }
 .secondary-btn { color: var(--text); background: var(--surface); border-color: var(--line); }
 .secondary-btn:hover { background: var(--surface-2); }
 .text-btn { min-height: auto; padding: 5px; border: 0; color: var(--brand); background: transparent; font-size: 12px; }
@@ -288,6 +289,9 @@ textarea { width: 100%; padding: 13px; resize: vertical; line-height: 1.75; }
 .reader-result p, .reader-result li { color: var(--muted); font-size: 13px; line-height: 1.9; }
 .reader-result mark { padding: 1px 4px; color: var(--brand-deep); background: var(--brand-soft); border-radius: 4px; }
 .reader-result .reader-source { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 11px; }
+.reader-loading { display: grid; min-height: 220px; place-content: center; gap: 10px; color: var(--muted); text-align: center; }
+.reader-loading::before { content: ""; width: 26px; height: 26px; margin: auto; border: 3px solid var(--line); border-top-color: var(--brand); border-radius: 50%; animation: reader-spin .8s linear infinite; }
+@keyframes reader-spin { to { transform: rotate(360deg); } }
 
 .insight-grid { margin-bottom: 16px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
 .insight-card { min-height: 145px; padding: 22px; overflow: hidden; position: relative; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); }

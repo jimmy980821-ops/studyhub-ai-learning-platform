@@ -1,0 +1,12 @@
+{
+  "name": "studyhub-ai-api",
+  "main": "worker.js",
+  "compatibility_date": "2026-07-28",
+  "workers_dev": true,
+  "ai": {
+    "binding": "AI"
+  },
+  "observability": {
+    "enabled": true
+  }
+}
