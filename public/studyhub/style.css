@@ -271,6 +271,13 @@ select { height: 40px; padding: 0 34px 0 12px; }
 .reader-input, .reader-output { min-height: 480px; }
 textarea { width: 100%; padding: 13px; resize: vertical; line-height: 1.75; }
 .reader-input textarea { min-height: 310px; background: var(--bg); }
+.classic-picker { margin-bottom: 12px; padding: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-2); }
+.classic-picker label strong, .classic-picker label span { display: block; }
+.classic-picker label strong { font-size: 11px; }
+.classic-picker label span { color: var(--muted); font-size: 9px; }
+.classic-picker > div { display: flex; gap: 7px; }
+.classic-picker select { max-width: 175px; background: var(--surface); }
+.classic-picker .secondary-btn { min-height: 40px; white-space: nowrap; }
 .reader-actions { margin-top: 12px; display: flex; align-items: center; justify-content: space-between; }
 .reader-actions > span { color: var(--muted); font-size: 10px; }
 .analysis-tabs { padding-bottom: 12px; display: flex; gap: 5px; overflow-x: auto; border-bottom: 1px solid var(--line); scrollbar-width: none; }
@@ -428,6 +435,9 @@ input[type="range"]::-webkit-slider-thumb { width: 17px; height: 17px; appearanc
   .ai-ready { display: none; }
   .analysis-tabs { margin-right: -10px; }
   .reader-input textarea { min-height: 250px; }
+  .classic-picker { align-items: stretch; flex-direction: column; }
+  .classic-picker > div { display: grid; grid-template-columns: minmax(0,1fr) auto; }
+  .classic-picker select { width: 100%; max-width: none; }
   .score-row { grid-template-columns: 45px 1fr 40px; gap: 9px; }
   .flashcard { height: 390px; }
   .flash-face { padding: 32px 22px; }

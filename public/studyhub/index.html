@@ -159,6 +159,19 @@
           <div class="reader-layout">
             <section class="panel reader-input">
               <div class="panel-head"><div><h3 id="readerInputTitle">貼上古文或文章</h3><p>目前由本機字詞規則拆解；未來可串接 AI</p></div><button class="text-btn" data-action="reader-example">使用範例</button></div>
+              <div class="classic-picker" id="classicPicker">
+                <label for="classicSelect"><strong>古文十五篇</strong><span>選擇篇目並載入代表句</span></label>
+                <div>
+                  <select id="classicSelect" aria-label="選擇古文十五篇">
+                    <option value="c01">燭之武退秦師</option><option value="c02">大同與小康</option><option value="c03">諫逐客書</option>
+                    <option value="c04">鴻門宴</option><option value="c05">出師表</option><option value="c06">桃花源記</option>
+                    <option value="c07">師說</option><option value="c08">虯髯客傳</option><option value="c09">赤壁賦</option>
+                    <option value="c10">項脊軒志</option><option value="c11">晚遊六橋待月記</option><option value="c12">勞山道士</option>
+                    <option value="c13">勸和論</option><option value="c14">鹿港乘桴記</option><option value="c15">畫菊自序</option>
+                  </select>
+                  <button class="secondary-btn" type="button" data-action="load-classic">載入重點句</button>
+                </div>
+              </div>
               <textarea id="readerText" rows="13" aria-label="閱讀文章內容" placeholder="在這裡貼上想分析的文章…"></textarea>
               <div class="reader-actions"><span id="readerCount">0 / 3000 字</span><button class="primary-btn ripple" data-action="analyze-reader">✦ 開始分析</button></div>
             </section>

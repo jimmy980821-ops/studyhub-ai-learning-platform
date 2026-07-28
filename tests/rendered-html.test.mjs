@@ -25,11 +25,12 @@ test("server-renders the StudyHub shell and metadata", async () => {
 });
 
 test("bundles the complete StudyHub local-first application", async () => {
-  const [html, css, script, formulas, manifest] = await Promise.all([
+  const [html, css, script, formulas, classics, manifest] = await Promise.all([
     readFile(new URL("../public/studyhub/index.html", import.meta.url), "utf8"),
     readFile(new URL("../public/studyhub/style.css", import.meta.url), "utf8"),
     readFile(new URL("../public/studyhub/script.js", import.meta.url), "utf8"),
     readFile(new URL("../public/studyhub/formula-data.js", import.meta.url), "utf8"),
+    readFile(new URL("../public/studyhub/classics-data.js", import.meta.url), "utf8"),
     readFile(new URL("../public/site.webmanifest", import.meta.url), "utf8"),
   ]);
 
@@ -54,6 +55,14 @@ test("bundles the complete StudyHub local-first application", async () => {
   assert.doesNotMatch(html, /公式符號|symbol-guide/);
   assert.match(script, /formulaCatalog/);
   assert.match(script, /analyzeChinese/);
+  assert.match(script, /classicFifteen/);
+  assert.match(script, /detectClassic/);
+  assert.match(html, /古文十五篇/);
+  assert.match(html, /classicSelect/);
+  assert.equal((classics.match(/classic\("c\d{2}"/g) ?? []).length, 15);
+  for (const title of ["燭之武退秦師","大同與小康","諫逐客書","鴻門宴","出師表","桃花源記","師說","虯髯客傳","赤壁賦","項脊軒志","晚遊六橋待月記","勞山道士","勸和論","鹿港乘桴記","畫菊自序"]) {
+    assert.match(classics, new RegExp(title));
+  }
   assert.match(script, /開張聖聽/);
   assert.match(script, /廣泛地聽取臣下的意見/);
   assert.match(script, /學而時習之/);

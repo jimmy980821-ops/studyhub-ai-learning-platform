@@ -1,4 +1,5 @@
 import { formulaCatalog } from "./formula-data.js";
+import { classicFifteen } from "./classics-data.js";
 
 (() => {
   "use strict";
@@ -256,6 +257,7 @@ import { formulaCatalog } from "./formula-data.js";
         "favorite-card": () => this.toggleFavorite("card", this.seed.flashcards[this.flashIndex].id),
         "remove-favorite": () => this.toggleFavorite(element.dataset.type, element.dataset.id),
         "reader-example": () => this.fillReaderExample(),
+        "load-classic": () => this.loadClassic(),
         "analyze-reader": () => this.analyzeReader(),
         "prev-card": () => this.changeCard(-1),
         "next-card": () => this.changeCard(1)
@@ -441,8 +443,19 @@ import { formulaCatalog } from "./formula-data.js";
       };
     }
 
+    detectClassic(text) {
+      const ranked = classicFifteen.map((item) => {
+        const markerScore = item.markers.reduce((score, marker) => score + (text.includes(marker) ? Math.max(2, marker.length) : 0), 0);
+        const titleScore = text.includes(item.title) ? 20 : 0;
+        const authorScore = text.includes(item.author.replace(/[《》]/g, "")) ? 4 : 0;
+        return { item, score: markerScore + titleScore + authorScore };
+      }).sort((a, b) => b.score - a.score);
+      return ranked[0]?.score > 0 ? ranked[0].item : null;
+    }
+
     analyzeChinese(text) {
       const original = text.replace(/\s+/g, " ").trim();
+      const detectedClassic = this.detectClassic(original);
       const entries = [
         ["學而時習之","學習後按時溫習所學","「時」是按時；「習」是溫習、實踐。"],
         ["不亦說乎","不也是很喜悅的事嗎","「說」通「悅」；「不亦……乎」表反問。"],
@@ -481,6 +494,7 @@ import { formulaCatalog } from "./formula-data.js";
         ["善","好、擅長","可作名詞、形容詞或動詞。"],["走","跑","古義常指奔跑。"],["去","離開","古義常指離開。"],
         ["亡","逃亡、失去","依上下文判斷。"],["食","吃、食物","讀音與詞性依語境判斷。"],["聞","聽見、聽說","也可指名聲。"]
       ];
+      if (detectedClassic) entries.unshift(...detectedClassic.phrases);
       const matched = entries.filter(([term]) => original.includes(term)).slice(0, 14);
       const isOpenListening = original.includes("開張聖聽");
       const modernMarkers = (original.match(/的|了|我們|你們|因為|所以|但是|覺得|已經|正在/g) || []).length;
@@ -496,16 +510,22 @@ import { formulaCatalog } from "./formula-data.js";
           .sort((a, b) => b[0].length - a[0].length)
           .forEach(([term, meaning]) => { translation = translation.split(term).join(meaning); });
         if (translation === original) {
-          translation = looksClassical
+          translation = detectedClassic
+            ? `這段文字出自〈${detectedClassic.title}〉。結合篇章脈絡，語意重點是：${detectedClassic.summary}`
+            : looksClassical
             ? `依字面可理解為：${original}。閱讀時需補出古文省略的主語，並依前後文確認人名與代詞所指。`
             : `這段文字本身已接近現代白話。換句話說，它主要表達的是：「${original}」`;
         }
       }
 
-      const wordList = matched.length
-        ? matched.map(([term, meaning, note]) => `<li><mark>${escapeHTML(term)}</mark>：${escapeHTML(meaning)}。${escapeHTML(note)}</li>`).join("")
+      const visibleWords = matched.length ? matched : (detectedClassic?.phrases || []);
+      const wordList = visibleWords.length
+        ? visibleWords.map(([term, meaning, note]) => `<li><mark>${escapeHTML(term)}</mark>：${escapeHTML(meaning)}。${escapeHTML(note)}</li>`).join("")
         : `<li><mark>句意判讀</mark>：本文共 ${[...original].length} 字，先從重複詞、轉折詞與因果詞確認句間關係。</li>`;
       const rhetoricItems = [];
+      if (detectedClassic) {
+        rhetoricItems.push(...detectedClassic.techniques.map((technique) => `<li><mark>${escapeHTML(technique)}</mark>：〈${escapeHTML(detectedClassic.title)}〉的重要表現手法。</li>`));
+      }
       if (isOpenListening) rhetoricItems.push("<li><mark>借代／敬稱</mark>：「聖聽」以皇帝的聽聞代指皇帝接納臣下意見。</li>");
       if (/不亦.+乎|豈|何.+[乎哉]|安得/.test(original)) rhetoricItems.push("<li><mark>反問</mark>：以問句加強肯定或否定語氣。</li>");
       if (/如|若|猶|譬/.test(original)) rhetoricItems.push("<li><mark>譬喻線索</mark>：出現「如、若、猶、譬」等比況詞，需比較本體與喻體。</li>");
@@ -523,9 +543,13 @@ import { formulaCatalog } from "./formula-data.js";
       const detectedTheme = themes.find(([pattern]) => pattern.test(original))?.[1] || "人物的行動、觀點與前後句關係";
       const focus = isOpenListening
         ? "語意核心是「廣開言路」。諸葛亮勸後主劉禪廣泛接納臣下意見，不要堵塞忠臣進諫的管道。"
+        : detectedClassic
+        ? `篇目辨識：〈${detectedClassic.title}〉，${detectedClassic.era}，${detectedClassic.author}，文體為${detectedClassic.genre}。${detectedClassic.summary}`
         : `本段共 ${[...original].length} 字、${original.split(/[。！？；]+/).filter(Boolean).length} 個主要語意單位，內容可先從「${detectedTheme}」方向整理。`;
       const exam = isOpenListening
         ? "<ul><li><mark>出處</mark>：諸葛亮〈出師表〉。</li><li><mark>古今異義</mark>：「開張」古義是擴大、廣開；今義常指商店開業。</li><li><mark>語境</mark>：「聖聽」不是聽力特別好，而是敬稱皇帝聽取意見。</li><li><mark>主旨</mark>：廣開言路、親賢納諫。</li></ul>"
+        : detectedClassic
+          ? `<ul><li><mark>篇目</mark>：${escapeHTML(detectedClassic.author)}〈${escapeHTML(detectedClassic.title)}〉，${escapeHTML(detectedClassic.genre)}。</li>${detectedClassic.points.map((point) => `<li>${escapeHTML(point)}</li>`).join("")}</ul>`
         : looksClassical
           ? "<ul><li>辨認古今異義、通假字與詞類活用。</li><li>確認「之、其、而、以、於」等虛詞在句中的作用。</li><li>翻譯時補出省略成分，但不可增加原文沒有的意思。</li></ul>"
           : "<ul><li>找出中心句、關鍵詞與段落主旨。</li><li>辨認因果、轉折、舉例與比較關係。</li><li>區分作者主張、事實說明與情感態度。</li></ul>";
@@ -573,6 +597,7 @@ import { formulaCatalog } from "./formula-data.js";
       });
       $("#readerInputTitle").textContent = this.readerMode === "chinese" ? "貼上古文或文章" : "Paste an English passage";
       $("#readerText").placeholder = this.readerMode === "chinese" ? "在這裡貼上想分析的文章…" : "Paste the passage you want to analyze…";
+      $("#classicPicker").hidden = this.readerMode !== "chinese";
       const data = this.getReaderData();
       $("#analysisTabs").innerHTML = data.tabs.map((tab,index) => `<button class="${index === this.readerTab ? "active" : ""}" data-analysis-tab="${index}">${tab}</button>`).join("");
       this.renderReaderOutput();
@@ -591,6 +616,17 @@ import { formulaCatalog } from "./formula-data.js";
         : "Although failure can feel discouraging, it often provides the feedback that helps us adapt and grow.";
       $("#readerText").dispatchEvent(new Event("input"));
       this.toast("已載入示範文章");
+    }
+
+    loadClassic() {
+      const item = classicFifteen.find((entry) => entry.id === $("#classicSelect").value);
+      if (!item) return;
+      $("#readerText").value = item.excerpt;
+      $("#readerText").dispatchEvent(new Event("input"));
+      this.readerAnalysis = this.analyzeChinese(item.excerpt);
+      this.readerTab = 0;
+      this.renderReader();
+      this.toast(`已載入〈${item.title}〉代表句`);
     }
 
     analyzeReader() {
