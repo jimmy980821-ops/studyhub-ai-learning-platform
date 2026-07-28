@@ -37,6 +37,7 @@ import { formulaCatalog } from "./formula-data.js";
       this.store = new Store("studyhub");
       this.readerMode = "chinese";
       this.readerTab = 0;
+      this.readerAnalysis = null;
       this.flashIndex = 0;
       this.heatView = "month";
       this.favoriteFilter = "all";
@@ -208,7 +209,7 @@ import { formulaCatalog } from "./formula-data.js";
         return;
       }
       const readerTab = event.target.closest("[data-reader-tab]");
-      if (readerTab) { this.readerMode = readerTab.dataset.readerTab; this.readerTab = 0; this.renderReader(); return; }
+      if (readerTab) { this.readerMode = readerTab.dataset.readerTab; this.readerTab = 0; this.readerAnalysis = null; this.renderReader(); return; }
       const analysisTab = event.target.closest("[data-analysis-tab]");
       if (analysisTab) { this.readerTab = Number(analysisTab.dataset.analysisTab); this.renderReaderOutput(); return; }
       const knowledgeTab = event.target.closest("[data-knowledge-tab]");
@@ -411,6 +412,7 @@ import { formulaCatalog } from "./formula-data.js";
     }
 
     getReaderData() {
+      if (this.readerAnalysis?.mode === this.readerMode) return this.readerAnalysis;
       return this.readerMode === "chinese" ? {
         tabs: ["白話翻譯","字詞整理","修辭整理","重點整理","常考觀念"],
         content: [
@@ -428,6 +430,81 @@ import { formulaCatalog } from "./formula-data.js";
           ["Sentence Breakdown","<p><mark>Although failure can feel discouraging</mark>（讓步子句），<mark>it often provides the feedback</mark>（主要子句），<mark>that helps us adapt and grow</mark>（關係子句修飾 feedback）。</p>"],
           ["Key Summary","The passage argues that failure is valuable when we treat it as feedback. Resilience grows through reflection, adjustment, and repeated action."],
           ["Saved Words","點選單字旁的收藏按鈕後，未來可將生字同步到知識卡。目前示範詞彙：<mark>resilience</mark>、<mark>setback</mark>、<mark>adapt</mark>。"]
+        ]
+      };
+    }
+
+    analyzeChinese(text) {
+      const original = text.replace(/\s+/g, " ").trim();
+      const entries = [
+        ["誠宜","實在應當","副詞「誠」表確實；「宜」是應當。"],
+        ["開張聖聽","廣泛聽取意見","「開張」是擴大、廣開；「聖聽」敬稱皇帝的聽聞。"],
+        ["開張","擴大、廣開","古今異義；此處不是開店營業。"],
+        ["聖聽","皇帝的聽聞，指皇帝聽取意見","「聖」是對皇帝的尊稱。"],
+        ["以光先帝遺德","來發揚先帝遺留下來的美德","「以」表目的；「光」作動詞，意為發揚光大。"],
+        ["恢弘志士之氣","振奮並擴大忠志之士的士氣","「恢弘」在此作動詞。"],
+        ["妄自菲薄","過分看輕自己","「菲薄」在此是輕視、鄙薄。"],
+        ["引喻失義","說話譬喻不合道理","「義」指合宜的道理。"],
+        ["塞忠諫之路","堵塞忠臣進諫的道路","「塞」讀作阻塞之意。"]
+      ];
+      const matched = entries.filter(([term]) => original.includes(term));
+      const isOpenListening = original.includes("開張聖聽");
+      let translation = "";
+      if (original.replace(/[，。！？；、\s]/g, "") === "開張聖聽") {
+        translation = "廣泛地聽取臣下的意見，也就是勸皇帝廣開言路、接納忠言。";
+      } else if (original.includes("誠宜開張聖聽，以光先帝遺德，恢弘志士之氣")) {
+        translation = "實在應當廣泛聽取臣下的意見，來發揚先帝遺留下來的美德，振奮忠志之士的士氣。";
+      } else if (matched.length) {
+        translation = matched.map(([term, meaning]) => `「${term}」可譯為「${meaning}」`).join("；") + "。";
+      } else {
+        translation = `目前本機字詞庫尚未收錄這段文字的完整譯文。原文為：「${original}」。可先從關鍵實詞、虛詞與上下文逐句判讀。`;
+      }
+
+      const wordList = matched.length
+        ? matched.map(([term, meaning, note]) => `<li><mark>${escapeHTML(term)}</mark>：${escapeHTML(meaning)}。${escapeHTML(note)}</li>`).join("")
+        : "<li>目前未比對到內建古文字詞；已保留原文，不會套用無關文章的答案。</li>";
+      const rhetoric = isOpenListening
+        ? "<ul><li><mark>借代／敬稱</mark>：「聖聽」以皇帝的聽聞代指皇帝接納臣下意見。</li><li><mark>勸說語氣</mark>：省略主語，以精簡動賓結構直接提出建議。</li></ul>"
+        : "<p>此段目前沒有比對到明確修辭。判讀時應先確認上下文，避免只憑單一句子硬套修辭名稱。</p>";
+      const focus = isOpenListening
+        ? "語意核心是「廣開言路」。諸葛亮勸後主劉禪廣泛接納臣下意見，不要堵塞忠臣進諫的管道。"
+        : `本段共 ${[...original].length} 字。先圈出人物、行動與目的，再依前後句確認主旨。`;
+      const exam = isOpenListening
+        ? "<ul><li><mark>出處</mark>：諸葛亮〈出師表〉。</li><li><mark>古今異義</mark>：「開張」古義是擴大、廣開；今義常指商店開業。</li><li><mark>語境</mark>：「聖聽」不是聽力特別好，而是敬稱皇帝聽取意見。</li><li><mark>主旨</mark>：廣開言路、親賢納諫。</li></ul>"
+        : "<ul><li>辨認重要實詞與虛詞。</li><li>結合作者、篇名與上下文判斷語意。</li><li>翻譯時補出省略的主語與受詞，但不可加入原文沒有的意思。</li></ul>";
+
+      return {
+        mode: "chinese",
+        tabs: ["白話翻譯","字詞整理","修辭整理","重點整理","常考觀念"],
+        content: [
+          ["白話翻譯", `<p>${escapeHTML(translation)}</p><p class="reader-source">分析原文：${escapeHTML(original)}</p>`],
+          ["字詞整理", `<ul>${wordList}</ul>`],
+          ["修辭整理", rhetoric],
+          ["重點整理", `<p>${escapeHTML(focus)}</p>`],
+          ["常考觀念", exam]
+        ]
+      };
+    }
+
+    analyzeEnglish(text) {
+      const original = text.replace(/\s+/g, " ").trim();
+      const words = original.match(/[A-Za-z]+(?:'[A-Za-z]+)?/g) || [];
+      const unique = [...new Set(words.filter((word) => word.length >= 7).map((word) => word.toLowerCase()))].slice(0, 8);
+      const grammar = [];
+      if (/\balthough\b/i.test(original)) grammar.push("Although 引導讓步副詞子句。");
+      if (/\bbecause\b/i.test(original)) grammar.push("Because 引導原因副詞子句。");
+      if (/\b(that|which|who)\b/i.test(original)) grammar.push("that／which／who 可能引導關係子句，需確認其先行詞。");
+      if (/\bif\b/i.test(original)) grammar.push("If 引導條件子句。");
+      const firstSentence = original.split(/(?<=[.!?])\s+/)[0];
+      return {
+        mode: "english",
+        tabs: ["單字整理","文法分析","長難句拆解","重點摘要","生字收藏"],
+        content: [
+          ["Vocabulary", unique.length ? `<ul>${unique.map((word) => `<li><mark>${escapeHTML(word)}</mark>：建議依句中語境查核詞性與意思。</li>`).join("")}</ul>` : "<p>沒有找到適合抽出的長單字。</p>"],
+          ["Grammar", `<ul>${(grammar.length ? grammar : ["目前未偵測到內建規則中的明顯連接詞句型。"]).map((item) => `<li>${escapeHTML(item)}</li>`).join("")}</ul>`],
+          ["Sentence Breakdown", `<p>${escapeHTML(firstSentence)}</p><p class="reader-source">先找主要動詞，再把連接詞引導的子句分開。</p>`],
+          ["Key Summary", `<p>本機模式先取首句作為閱讀起點：${escapeHTML(firstSentence)}</p>`],
+          ["Saved Words", unique.length ? `<p>建議收藏：${unique.map(escapeHTML).join("、")}。</p>` : "<p>目前沒有建議收藏的生字。</p>"]
         ]
       };
     }
@@ -460,10 +537,14 @@ import { formulaCatalog } from "./formula-data.js";
     }
 
     analyzeReader() {
-      if (!$("#readerText").value.trim()) { this.toast("請先貼上想分析的文章"); $("#readerText").focus(); return; }
+      const text = $("#readerText").value.trim();
+      if (!text) { this.toast("請先貼上想分析的文章"); $("#readerText").focus(); return; }
+      this.readerAnalysis = this.readerMode === "chinese"
+        ? this.analyzeChinese(text)
+        : this.analyzeEnglish(text);
       this.readerTab = 0; this.renderReader();
       $("#readerOutput").classList.remove("page");
-      this.toast("示範分析已完成");
+      this.toast("本機分析已完成");
     }
 
     renderScores() {

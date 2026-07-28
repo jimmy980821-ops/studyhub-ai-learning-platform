@@ -49,6 +49,11 @@ test("bundles the complete StudyHub local-first application", async () => {
   assert.match(html, /formulaVolume/);
   assert.match(html, /公式符號/);
   assert.match(script, /formulaCatalog/);
+  assert.match(script, /analyzeChinese/);
+  assert.match(script, /開張聖聽/);
+  assert.match(script, /廣泛地聽取臣下的意見/);
+  assert.match(script, /本機分析已完成/);
+  assert.doesNotMatch(`${html}${formulas}`, /\u20d7/);
   assert.ok((formulas.match(/"數學"/g) ?? []).length >= 40);
   assert.ok((formulas.match(/"物理"/g) ?? []).length >= 25);
   assert.ok((script.match(/subject:"化學"/g) ?? []).length >= 14);
