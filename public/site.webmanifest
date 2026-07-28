@@ -1,17 +1,10 @@
 {
-  "name": "學測物理學習筆記",
-  "short_name": "物理筆記",
-  "description": "108 課綱學測物理複習系統",
+  "name": "StudyHub｜AI 高中生學習平台",
+  "short_name": "StudyHub",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#fbfaf5",
-  "theme_color": "#18201b",
-  "icons": [
-    {
-      "src": "/physics-icon.png?v=20260725",
-      "sizes": "1024x1024",
-      "type": "image/png",
-      "purpose": "any"
-    }
-  ]
+  "background_color": "#f7f8fa",
+  "theme_color": "#5b5bd6",
+  "lang": "zh-Hant",
+  "icons": []
 }

@@ -6,45 +6,32 @@ export async function generateMetadata(): Promise<Metadata> {
   const requestHeaders = await headers();
   const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host") ?? "localhost:3000";
   const protocol = requestHeaders.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
-  const metadataBase = new URL(`${protocol}://${host}`);
-  const title = "學測物理學習筆記";
-  const description = "108 課綱學測物理：27 個知識節點、題庫、歷屆題、互動實驗與錯題本。";
 
   return {
-    metadataBase,
-    title,
-    description,
+    metadataBase: new URL(`${protocol}://${host}`),
+    title: "StudyHub｜AI 高中生學習平台",
+    description: "為高中生與學測生打造的學習效率、弱點分析與知識整理平台。",
     manifest: "/site.webmanifest",
     icons: {
-      icon: [{ url: "/physics-icon.png?v=20260725", type: "image/png" }],
-      shortcut: "/physics-icon.png?v=20260725",
-      apple: [{ url: "/physics-icon.png?v=20260725", sizes: "1024x1024", type: "image/png" }],
-    },
-    appleWebApp: {
-      capable: true,
-      title: "物理筆記",
-      statusBarStyle: "black-translucent",
+      icon: "/favicon.svg",
+      shortcut: "/favicon.svg",
     },
     openGraph: {
-      title,
-      description,
+      title: "StudyHub｜讓每次學習都有方向",
+      description: "整合錯題、閱讀、分析、知識卡與升學探索的 AI 學習工作台。",
       type: "website",
-      images: [{ url: "/og.png", width: 1536, height: 1024, alt: title }],
+      images: [{ url: "/studyhub-og.png", width: 1536, height: 1024, alt: "StudyHub 學習工作台" }],
     },
     twitter: {
       card: "summary_large_image",
-      title,
-      description,
-      images: ["/og.png"],
+      title: "StudyHub｜讓每次學習都有方向",
+      description: "整合錯題、閱讀、分析、知識卡與升學探索的 AI 學習工作台。",
+      images: ["/studyhub-og.png"],
     },
   };
 }
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="zh-Hant">
       <body>{children}</body>

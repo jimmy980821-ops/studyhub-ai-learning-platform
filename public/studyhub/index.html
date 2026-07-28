@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f8fa">
+  <meta name="description" content="StudyHub AI 高中生學習平台">
+  <title>StudyHub｜AI 高中生學習平台</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip-link" href="#mainContent">跳到主要內容</a>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="主要導覽">
+      <a class="brand" href="#home" data-page-link="home" aria-label="StudyHub 首頁">
+        <span class="brand-mark">S</span>
+        <span><strong>StudyHub</strong><small>AI 學習工作台</small></span>
+      </a>
+
+      <nav class="nav-list">
+        <p class="nav-label">學習空間</p>
+        <a class="nav-item active" href="#home" data-page-link="home"><span class="nav-icon">⌂</span>首頁</a>
+        <a class="nav-item" href="#mistakes" data-page-link="mistakes"><span class="nav-icon">✎</span>AI 錯題本<span class="nav-count" id="mistakeNavCount">3</span></a>
+        <a class="nav-item" href="#reader" data-page-link="reader"><span class="nav-icon">文</span>閱讀助手</a>
+        <a class="nav-item" href="#analytics" data-page-link="analytics"><span class="nav-icon">⌁</span>學習分析</a>
+        <a class="nav-item" href="#knowledge" data-page-link="knowledge"><span class="nav-icon">◇</span>知識中心</a>
+        <a class="nav-item" href="#explore" data-page-link="explore"><span class="nav-icon">◎</span>升學探索</a>
+        <p class="nav-label">個人</p>
+        <a class="nav-item" href="#favorites" data-page-link="favorites"><span class="nav-icon">♡</span>我的收藏<span class="nav-count" id="favoriteNavCount">0</span></a>
+      </nav>
+
+      <div class="sidebar-tip">
+        <span class="tip-orb">✦</span>
+        <strong>今日學習提示</strong>
+        <p>先複習 1 道錯題，再開始新章節，記憶會更穩固。</p>
+      </div>
+      <div class="profile-mini">
+        <span class="avatar">林</span>
+        <span><strong>林同學</strong><small>學測衝刺中</small></span>
+        <button class="icon-btn" data-action="theme" aria-label="切換深色模式" title="切換深色模式">◐</button>
+      </div>
+    </aside>
+
+    <div class="mobile-backdrop" id="mobileBackdrop"></div>
+    <div class="workspace">
+      <header class="topbar">
+        <button class="icon-btn hamburger" id="menuButton" aria-label="開啟導覽選單" aria-expanded="false">☰</button>
+        <div class="global-search">
+          <span aria-hidden="true">⌕</span>
+          <input id="globalSearch" type="search" placeholder="搜尋錯題、知識卡、公式、科系…" aria-label="全站搜尋">
+          <kbd>⌘ K</kbd>
+          <div class="search-results" id="searchResults" role="listbox" aria-label="搜尋結果"></div>
+        </div>
+        <div class="top-actions">
+          <button class="icon-btn desktop-theme" data-action="theme" aria-label="切換深色模式" title="切換深色模式">◐</button>
+          <button class="streak-pill" data-page-link="analytics" aria-label="查看連續學習紀錄"><span>🔥</span><strong id="streakTop">12</strong> 天</button>
+        </div>
+      </header>
+
+      <main id="mainContent" tabindex="-1">
+        <section class="page active" data-page="home" aria-labelledby="homeTitle">
+          <div class="page-head home-head">
+            <div>
+              <p class="eyebrow" id="todayDate">7 月 28 日・星期二</p>
+              <h1 id="homeTitle">嗨，林同學 <span>👋</span></h1>
+              <p>今天也一起向目標前進一點點。</p>
+            </div>
+            <button class="primary-btn ripple" data-action="quick-add"><span>＋</span> 新增學習內容</button>
+          </div>
+
+          <section class="hero-card">
+            <div class="hero-copy">
+              <span class="status-badge">今日進度</span>
+              <h2>保持節奏，你已完成<br><em>本週目標的 68%</em></h2>
+              <p>再專注 45 分鐘，就能達成今天的學習目標。</p>
+              <div class="hero-progress"><span style="width:68%"></span></div>
+              <div class="hero-meta"><span>4 / 6 項任務</span><span>68%</span></div>
+            </div>
+            <div class="focus-ring" aria-label="今日專注 2 小時 35 分">
+              <div><strong>2<small>h</small> 35<small>m</small></strong><span>今日專注</span></div>
+            </div>
+          </section>
+
+          <div class="section-title">
+            <div><h2>今日學習摘要</h2><p>你的學習足跡正在慢慢累積</p></div>
+            <button class="text-btn" data-page-link="analytics">查看完整分析 →</button>
+          </div>
+          <div class="stats-grid">
+            <article class="stat-card"><span class="stat-icon violet">✓</span><div><p>今日完成任務</p><strong>4 <small>/ 6</small></strong><span class="trend up">↑ 2 項</span></div></article>
+            <article class="stat-card"><span class="stat-icon amber">🔥</span><div><p>累積學習天數</p><strong id="streakCard">12 <small>天</small></strong><span class="trend">保持中</span></div></article>
+            <article class="stat-card"><span class="stat-icon blue">◷</span><div><p>今日學習時間</p><strong>2h 35m</strong><span class="trend up">↑ 18%</span></div></article>
+            <article class="stat-card"><span class="stat-icon pink">♡</span><div><p>收藏知識卡</p><strong id="favoriteStat">0 <small>張</small></strong><span class="trend">隨時複習</span></div></article>
+            <article class="stat-card"><span class="stat-icon red">!</span><div><p>錯題總數</p><strong id="mistakeStat">3 <small>題</small></strong><span class="trend down">待複習 2</span></div></article>
+          </div>
+
+          <div class="dashboard-grid">
+            <section class="panel recent-panel">
+              <div class="panel-head"><div><h3>最近新增內容</h3><p>接續你上次的學習</p></div><button class="icon-btn" aria-label="更多">•••</button></div>
+              <div class="recent-list" id="recentList"></div>
+            </section>
+            <section class="panel">
+              <div class="panel-head"><div><h3>本週科目分配</h3><p>共學習 14 小時 20 分</p></div><span class="soft-badge">本週</span></div>
+              <div class="subject-bars">
+                <div><span><i class="dot math"></i>數學 <b>4h 10m</b></span><progress value="82" max="100"></progress></div>
+                <div><span><i class="dot english"></i>英文 <b>3h 05m</b></span><progress value="63" max="100"></progress></div>
+                <div><span><i class="dot science"></i>自然 <b>2h 45m</b></span><progress value="56" max="100"></progress></div>
+                <div><span><i class="dot chinese"></i>國文 <b>2h 20m</b></span><progress value="47" max="100"></progress></div>
+                <div><span><i class="dot social"></i>社會 <b>2h 00m</b></span><progress value="40" max="100"></progress></div>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section class="page" data-page="mistakes" aria-labelledby="mistakesTitle">
+          <div class="page-head">
+            <div><p class="eyebrow">Mistake Notebook</p><h1 id="mistakesTitle">AI 錯題本</h1><p>每一個錯誤，都是下一次答對的線索。</p></div>
+            <button class="primary-btn ripple" data-action="add-mistake">＋ 新增錯題</button>
+          </div>
+          <div class="filter-bar">
+            <label class="search-field"><span>⌕</span><input id="mistakeSearch" type="search" placeholder="搜尋題目、標籤或筆記…" aria-label="搜尋錯題"></label>
+            <label><span class="sr-only">科目</span><select id="mistakeSubject"><option value="">所有科目</option><option>國文</option><option>英文</option><option>數學</option><option>自然</option><option>社會</option></select></label>
+            <label><span class="sr-only">標籤</span><select id="mistakeTag"><option value="">所有標籤</option></select></label>
+            <span class="result-count" id="mistakeResultCount">共 3 題</span>
+          </div>
+          <div class="mistake-grid" id="mistakeGrid"></div>
+          <div class="empty-state hidden" id="mistakeEmpty"><span>⌕</span><h3>找不到符合的錯題</h3><p>換個關鍵字或新增第一道錯題吧。</p></div>
+        </section>
+
+        <section class="page" data-page="reader" aria-labelledby="readerTitle">
+          <div class="page-head">
+            <div><p class="eyebrow">AI Reading Assistant</p><h1 id="readerTitle">AI 閱讀助手</h1><p>讀懂文章，也看見考點與脈絡。</p></div>
+            <span class="ai-ready"><i></i> AI API 串接預留</span>
+          </div>
+          <div class="segmented" role="tablist" aria-label="閱讀助手語言">
+            <button class="active" role="tab" aria-selected="true" data-reader-tab="chinese">國文助手</button>
+            <button role="tab" aria-selected="false" data-reader-tab="english">English Assistant</button>
+          </div>
+          <div class="reader-layout">
+            <section class="panel reader-input">
+              <div class="panel-head"><div><h3 id="readerInputTitle">貼上古文或文章</h3><p>AI 將協助拆解內容與考點</p></div><button class="text-btn" data-action="reader-example">使用範例</button></div>
+              <textarea id="readerText" rows="13" aria-label="閱讀文章內容" placeholder="在這裡貼上想分析的文章…"></textarea>
+              <div class="reader-actions"><span id="readerCount">0 / 3000 字</span><button class="primary-btn ripple" data-action="analyze-reader">✦ 開始分析</button></div>
+            </section>
+            <section class="panel reader-output">
+              <div class="analysis-tabs" id="analysisTabs"></div>
+              <article id="readerOutput" class="reader-result"></article>
+            </section>
+          </div>
+        </section>
+
+        <section class="page" data-page="analytics" aria-labelledby="analyticsTitle">
+          <div class="page-head">
+            <div><p class="eyebrow">Learning Analytics</p><h1 id="analyticsTitle">學習分析</h1><p>用數據看見進步，也找出下一步。</p></div>
+            <span class="save-state" id="analysisSaveState">✓ 已自動儲存</span>
+          </div>
+          <div class="insight-grid">
+            <article class="insight-card weak"><span>優先加強</span><h3 id="weakSubject">數學</h3><p id="weakNote">建議本週增加 2 次重點複習</p></article>
+            <article class="insight-card strong"><span>目前最強</span><h3 id="strongSubject">國文</h3><p id="strongNote">繼續維持穩定輸出</p></article>
+            <article class="insight-card plan"><span>建議順序</span><h3 id="priorityOrder">數學 → 自然 → 英文</h3><p>依自評分數由低至高排序</p></article>
+          </div>
+          <section class="panel subject-analysis">
+            <div class="panel-head"><div><h3>科目熟悉程度</h3><p>拖曳滑桿，系統會即時更新學習建議</p></div><span class="soft-badge">0–100 分</span></div>
+            <div class="subject-score-list" id="subjectScoreList"></div>
+          </section>
+          <section class="panel heatmap-panel">
+            <div class="panel-head"><div><h3>學習熱力圖</h3><p>點擊日期記錄學習，顏色越深代表投入越多</p></div><div class="segmented mini"><button class="active" data-heat-view="month">本月</button><button data-heat-view="year">本年</button></div></div>
+            <div class="heatmap-wrap"><div class="heatmap" id="heatmap" aria-label="學習熱力圖"></div></div>
+            <div class="heat-legend"><span>較少</span><i></i><i></i><i></i><i></i><i></i><span>較多</span></div>
+          </section>
+        </section>
+
+        <section class="page" data-page="knowledge" aria-labelledby="knowledgeTitle">
+          <div class="page-head">
+            <div><p class="eyebrow">Knowledge Center</p><h1 id="knowledgeTitle">知識中心</h1><p>把零散知識，整理成能真正使用的系統。</p></div>
+          </div>
+          <div class="segmented knowledge-tabs" role="tablist">
+            <button class="active" data-knowledge-tab="formulas">公式搜尋</button>
+            <button data-knowledge-tab="map">知識地圖</button>
+            <button data-knowledge-tab="cards">知識卡</button>
+          </div>
+          <div class="knowledge-view active" data-knowledge-view="formulas">
+            <div class="filter-bar">
+              <label class="search-field"><span>⌕</span><input id="formulaSearch" type="search" placeholder="搜尋公式名稱、說明或考點…" aria-label="搜尋公式"></label>
+              <label><span class="sr-only">公式科目</span><select id="formulaSubject"><option value="">全部領域</option><option>數學</option><option>物理</option><option>化學</option></select></label>
+            </div>
+            <div class="formula-grid" id="formulaGrid"></div>
+          </div>
+          <div class="knowledge-view" data-knowledge-view="map">
+            <section class="panel knowledge-map">
+              <div class="panel-head"><div><h3>物理知識地圖</h3><p>點擊節點，沿著概念脈絡展開</p></div><span class="soft-badge">6 個節點</span></div>
+              <div class="map-tree" id="knowledgeMap"></div>
+            </section>
+          </div>
+          <div class="knowledge-view" data-knowledge-view="cards">
+            <section class="flash-stage">
+              <div class="flash-progress"><span id="flashProgress">1 / 5</span><div><i id="flashProgressBar"></i></div></div>
+              <button class="flashcard" id="flashcard" aria-label="翻轉知識卡" aria-pressed="false">
+                <span class="flash-face front"><small id="flashSubject">物理 · 力學</small><strong id="flashQuestion">牛頓第二運動定律的內容是什麼？</strong><em>點擊卡片查看答案</em></span>
+                <span class="flash-face back"><small>答案</small><strong id="flashAnswer">物體的加速度與所受合力成正比，與質量成反比。公式：F = ma</strong><em>點擊卡片回到題目</em></span>
+              </button>
+              <div class="flash-actions"><button class="secondary-btn" data-action="prev-card">← 上一張</button><button class="secondary-btn" data-action="favorite-card">♡ 收藏</button><button class="primary-btn" data-action="next-card">下一張 →</button></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="page" data-page="explore" aria-labelledby="exploreTitle">
+          <div class="page-head">
+            <div><p class="eyebrow">University Explorer</p><h1 id="exploreTitle">升學探索</h1><p>從興趣與能力出發，找到值得靠近的方向。</p></div>
+          </div>
+          <div class="filter-bar">
+            <label class="search-field wide"><span>⌕</span><input id="majorSearch" type="search" placeholder="搜尋科系、能力或未來工作…" aria-label="搜尋科系"></label>
+          </div>
+          <div class="major-grid" id="majorGrid"></div>
+        </section>
+
+        <section class="page" data-page="favorites" aria-labelledby="favoritesTitle">
+          <div class="page-head">
+            <div><p class="eyebrow">Saved Library</p><h1 id="favoritesTitle">我的收藏</h1><p>把重要內容放在一起，複習時更快找到。</p></div>
+          </div>
+          <div class="segmented" id="favoriteFilters">
+            <button class="active" data-favorite-filter="all">全部</button>
+            <button data-favorite-filter="mistake">錯題</button>
+            <button data-favorite-filter="formula">公式</button>
+            <button data-favorite-filter="card">知識卡</button>
+            <button data-favorite-filter="major">科系</button>
+          </div>
+          <div class="favorite-grid" id="favoriteGrid"></div>
+          <div class="empty-state hidden" id="favoriteEmpty"><span>♡</span><h3>還沒有收藏內容</h3><p>看到重要的錯題、公式或科系時，按下愛心收藏吧。</p></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="modal" id="mistakeModal" role="dialog" aria-modal="true" aria-labelledby="mistakeModalTitle" hidden>
+    <div class="modal-backdrop" data-action="close-modal"></div>
+    <form class="modal-card" id="mistakeForm">
+      <div class="modal-head"><div><p class="eyebrow">Mistake Record</p><h2 id="mistakeModalTitle">新增錯題</h2></div><button type="button" class="icon-btn" data-action="close-modal" aria-label="關閉">×</button></div>
+      <input type="hidden" name="id">
+      <div class="form-grid">
+        <label class="full">題目內容<textarea name="question" rows="3" required placeholder="輸入題目內容…"></textarea></label>
+        <label>科目<select name="subject" required><option>數學</option><option>英文</option><option>國文</option><option>自然</option><option>社會</option></select></label>
+        <label>單元<input name="unit" required placeholder="例如：排列組合"></label>
+        <label>難度<select name="difficulty"><option>簡單</option><option selected>中等</option><option>困難</option></select></label>
+        <label>日期<input name="date" type="date" required></label>
+        <label class="full">標籤<input name="tags" placeholder="以逗號分隔，例如：觀念, 常考"></label>
+        <label class="full">錯誤原因<textarea name="reason" rows="2" placeholder="我為什麼答錯？"></textarea></label>
+        <label class="full">我的解法<textarea name="mySolution" rows="2" placeholder="記錄原本的思路…"></textarea></label>
+        <label class="full">正確解法<textarea name="correctSolution" rows="3" required placeholder="整理正確解法與關鍵步驟…"></textarea></label>
+        <label class="full">備註<textarea name="note" rows="2" placeholder="補充提醒…"></textarea></label>
+        <label class="upload-field full">題目圖片<input name="image" type="file" accept="image/*"><span>點擊選擇圖片（儲存於此裝置）</span></label>
+      </div>
+      <div class="modal-actions"><button type="button" class="secondary-btn" data-action="close-modal">取消</button><button type="submit" class="primary-btn">儲存錯題</button></div>
+    </form>
+  </div>
+
+  <div class="modal" id="quickModal" role="dialog" aria-modal="true" aria-labelledby="quickTitle" hidden>
+    <div class="modal-backdrop" data-action="close-quick"></div>
+    <div class="modal-card compact">
+      <div class="modal-head"><div><p class="eyebrow">Quick Add</p><h2 id="quickTitle">新增學習內容</h2></div><button class="icon-btn" data-action="close-quick" aria-label="關閉">×</button></div>
+      <div class="quick-grid">
+        <button data-action="quick-mistake"><span class="stat-icon violet">✎</span><strong>新增錯題</strong><small>記錄原因與解法</small></button>
+        <button data-page-link="reader" data-action="close-quick"><span class="stat-icon blue">文</span><strong>分析文章</strong><small>整理翻譯與考點</small></button>
+        <button data-page-link="analytics" data-action="close-quick"><span class="stat-icon amber">◷</span><strong>記錄學習</strong><small>更新今日熱力圖</small></button>
+      </div>
+    </div>
+  </div>
+  <div class="toast-region" id="toastRegion" aria-live="polite"></div>
+  <script src="script.js" defer></script>
+</body>
+</html>
