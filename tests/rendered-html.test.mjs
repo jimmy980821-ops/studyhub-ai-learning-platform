@@ -69,6 +69,12 @@ test("bundles the complete StudyHub local-first application", async () => {
   assert.match(script, /這段文字本身已接近現代白話/);
   assert.doesNotMatch(script, /目前本機字詞庫尚未收錄/);
   assert.match(script, /studyhub-ai-api\.jimmy980821\.workers\.dev\/analyze/);
+  assert.match(script, /studyhub-ai-api\.jimmy980821\.workers\.dev\/sync/);
+  assert.match(script, /crypto\.subtle/);
+  assert.match(script, /AES-GCM/);
+  assert.match(html, /id="syncModal"/);
+  assert.match(html, /電腦與手機同步/);
+  assert.match(css, /\.add-content-btn \{ display: inline-flex; align-items: center; justify-content: center/);
   assert.match(script, /AI 暫時無法使用，已改用本機分析/);
   assert.match(html, /免費 AI · 本機備援/);
   assert.doesNotMatch(`${html}${formulas}`, /\u20d7/);

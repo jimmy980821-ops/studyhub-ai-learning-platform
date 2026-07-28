@@ -6,6 +6,14 @@
   "ai": {
     "binding": "AI"
   },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "studyhub-sync",
+      "database_id": "ade20822-2a73-4814-b732-7d6dc9d429b1",
+      "migrations_dir": "migrations"
+    }
+  ],
   "observability": {
     "enabled": true
   }

@@ -31,6 +31,7 @@
         <a class="nav-item" href="#explore" data-page-link="explore"><span class="nav-icon">◎</span>升學探索</a>
         <p class="nav-label">個人</p>
         <a class="nav-item" href="#favorites" data-page-link="favorites"><span class="nav-icon">♡</span>我的收藏<span class="nav-count" id="favoriteNavCount">0</span></a>
+        <button class="nav-item sync-nav" type="button" data-action="open-sync"><span class="nav-icon">↻</span>裝置同步<span class="sync-indicator" id="syncIndicator" aria-label="尚未連線"></span></button>
       </nav>
 
       <div class="sidebar-tip">
@@ -69,7 +70,7 @@
               <h1 id="homeTitle">嗨，李同學 <span>👋</span></h1>
               <p>今天也一起向目標前進一點點。</p>
             </div>
-            <button class="primary-btn ripple" data-action="quick-add"><span>＋</span> 新增學習內容</button>
+            <button class="primary-btn ripple add-content-btn" data-action="quick-add"><span class="add-icon" aria-hidden="true">＋</span><span class="add-label">新增學習內容</span></button>
           </div>
 
           <section class="hero-card">
@@ -297,6 +298,34 @@
         <button data-action="quick-mistake"><span class="stat-icon violet">✎</span><strong>新增錯題</strong><small>記錄原因與解法</small></button>
         <button data-page-link="reader" data-action="close-quick"><span class="stat-icon blue">文</span><strong>分析文章</strong><small>整理翻譯與考點</small></button>
         <button data-action="record-today"><span class="stat-icon amber">◷</span><strong>記錄 30 分鐘</strong><small>更新今天的真實紀錄</small></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="syncModal" role="dialog" aria-modal="true" aria-labelledby="syncTitle" hidden>
+    <div class="modal-backdrop" data-action="close-modal"></div>
+    <div class="modal-card compact sync-card">
+      <div class="modal-head">
+        <div><p class="eyebrow">Private Sync</p><h2 id="syncTitle">電腦與手機同步</h2></div>
+        <button class="icon-btn" type="button" data-action="close-modal" aria-label="關閉">×</button>
+      </div>
+      <div class="sync-intro">
+        <span class="sync-lock" aria-hidden="true">⌁</span>
+        <div><strong>資料會先在裝置內加密</strong><p>電腦和手機輸入同一組私人同步碼，就能同步學習資料。請勿把同步碼交給其他人。</p></div>
+      </div>
+      <label class="sync-code-field" for="syncCode">私人同步碼
+        <div>
+          <input id="syncCode" type="text" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="34" placeholder="輸入同步碼，或建立一組新的">
+          <button class="secondary-btn" type="button" data-action="copy-sync-code">複製</button>
+        </div>
+      </label>
+      <p class="sync-note">在第二台裝置輸入同步碼時，會下載雲端版本並取代該裝置目前的學習資料。</p>
+      <div class="sync-status-row"><span class="sync-indicator" id="syncModalIndicator"></span><span id="syncStatusText">尚未連線</span></div>
+      <div class="sync-actions">
+        <button class="secondary-btn" type="button" data-action="generate-sync">建立新同步碼</button>
+        <button class="primary-btn" type="button" data-action="connect-sync">連線並同步</button>
+        <button class="secondary-btn" type="button" data-action="sync-now">立即同步</button>
+        <button class="text-btn sync-disconnect" type="button" data-action="disconnect-sync">中斷此裝置</button>
       </div>
     </div>
   </div>

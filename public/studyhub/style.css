@@ -80,6 +80,10 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .nav-icon { width: 22px; text-align: center; font-size: 17px; font-weight: 700; }
 .nav-count { margin-left: auto; min-width: 22px; padding: 1px 7px; color: var(--muted); background: var(--surface-2); border-radius: 99px; font-size: 11px; text-align: center; }
 .nav-item.active .nav-count { color: var(--brand-deep); background: color-mix(in srgb, var(--brand) 13%, transparent); }
+.sync-nav { width: 100%; border: 0; background: transparent; text-align: left; }
+.sync-indicator { width: 8px; height: 8px; margin-left: auto; flex: 0 0 auto; border-radius: 50%; background: var(--muted); box-shadow: 0 0 0 3px color-mix(in srgb, var(--muted) 12%, transparent); }
+.sync-indicator.connected { background: var(--green); box-shadow: 0 0 0 3px color-mix(in srgb, var(--green) 16%, transparent); }
+.sync-indicator.syncing { background: var(--amber); animation: syncPulse 1s ease infinite; }
 .sidebar-tip { margin-top: auto; padding: 15px; border: 1px solid var(--line); border-radius: 15px; background: var(--surface); box-shadow: var(--shadow); }
 .tip-orb { width: 28px; height: 28px; margin-bottom: 9px; display: grid; place-items: center; color: var(--brand); background: var(--brand-soft); border-radius: 50%; }
 .sidebar-tip strong { font-size: 12px; }
@@ -132,6 +136,9 @@ main { width: min(1400px, 100%); margin: 0 auto; padding: 36px clamp(24px, 4vw, 
   min-height: 40px; padding: 0 17px; border-radius: 11px; border: 1px solid transparent; font-weight: 700; transition: .2s ease;
 }
 .primary-btn { color: white; background: var(--brand); box-shadow: 0 7px 16px color-mix(in srgb, var(--brand) 20%, transparent); }
+.add-content-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; line-height: 1; }
+.add-content-btn .add-icon { display: block; font-size: 20px; line-height: 1; }
+.add-content-btn .add-label { display: block; line-height: 1; }
 .primary-btn:hover { background: var(--brand-deep); transform: translateY(-1px); }
 .primary-btn:disabled { cursor: wait; opacity: .68; transform: none; box-shadow: none; }
 .secondary-btn { color: var(--text); background: var(--surface); border-color: var(--line); }
@@ -373,6 +380,19 @@ input[type="range"]::-webkit-slider-thumb { width: 17px; height: 17px; appearanc
 .upload-field { padding: 16px; border: 1px dashed var(--line); border-radius: 11px; text-align: center; }
 .upload-field input { width: 100%; }
 .modal-actions { margin-top: 22px; display: flex; justify-content: end; gap: 9px; }
+.sync-intro { padding: 15px; display: flex; gap: 12px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface-2); }
+.sync-intro strong { font-size: 13px; }
+.sync-intro p, .sync-note { color: var(--muted); font-size: 11px; }
+.sync-lock { width: 34px; height: 34px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 10px; color: var(--brand); background: var(--brand-soft); font-weight: 700; }
+.sync-code-field { margin-top: 18px; display: grid; gap: 7px; font-size: 12px; font-weight: 700; }
+.sync-code-field > div { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+.sync-code-field input { min-width: 0; height: 42px; padding: 0 12px; border: 1px solid var(--line); border-radius: 11px; background: var(--surface); text-transform: uppercase; letter-spacing: .08em; }
+.sync-code-field input:focus { border-color: var(--brand); outline: 3px solid var(--brand-soft); }
+.sync-note { margin-top: 8px; }
+.sync-status-row { margin-top: 17px; display: flex; align-items: center; gap: 9px; color: var(--muted); font-size: 12px; }
+.sync-status-row .sync-indicator { margin-left: 0; }
+.sync-actions { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px; }
+.sync-disconnect { margin-left: auto; color: var(--red); }
 .quick-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 .quick-grid button { padding: 20px 12px; display: flex; flex-direction: column; align-items: center; border: 1px solid var(--line); border-radius: 14px; color: var(--text); background: var(--surface); }
 .quick-grid button:hover { background: var(--surface-2); }
@@ -386,6 +406,7 @@ input[type="range"]::-webkit-slider-thumb { width: 17px; height: 17px; appearanc
 .mobile-backdrop { display: none; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
 @keyframes modalIn { from { opacity: 0; transform: scale(.97) translateY(8px); } }
+@keyframes syncPulse { 50% { opacity: .35; transform: scale(.8); } }
 @keyframes toastIn { from { opacity: 0; transform: translateY(8px); } }
 @keyframes ripple { to { transform: translate(-50%,-50%) scale(18); opacity:0; } }
 
@@ -411,9 +432,11 @@ input[type="range"]::-webkit-slider-thumb { width: 17px; height: 17px; appearanc
   .global-search kbd, .desktop-theme, .streak-pill { display: none; }
   main { padding: 24px 15px 54px; }
   .page-head { margin-bottom: 21px; align-items: start; }
-  .page-head .primary-btn { padding: 0 12px; font-size: 0; }
-  .page-head .primary-btn span { font-size: 20px; }
-  .home-head .primary-btn::after { content:"新增"; font-size: 12px; }
+  .page-head .primary-btn { padding: 0 12px; }
+  .add-content-btn { gap: 4px; }
+  .add-content-btn .add-label { font-size: 0; }
+  .add-content-btn .add-label::after { content:"新增"; font-size: 12px; line-height: 1; }
+  .add-content-btn .add-icon { font-size: 20px; transform: translateY(-.5px); }
   .page-head h1 { font-size: 27px; }
   .hero-card { min-height: 360px; padding: 28px 23px; flex-direction: column; align-items: stretch; }
   .focus-ring { width: 120px; height: 120px; align-self: center; }
@@ -428,6 +451,8 @@ input[type="range"]::-webkit-slider-thumb { width: 17px; height: 17px; appearanc
   .task-form .primary-btn { grid-column: 1 / -1; }
   .task-item { grid-template-columns: auto minmax(0,1fr); }
   .task-actions { grid-column: 2; justify-content: end; }
+  .sync-actions > button:not(.sync-disconnect) { flex: 1 1 45%; }
+  .sync-disconnect { width: 100%; margin-left: 0; }
   .panel { padding: 17px; }
   .filter-bar { align-items: stretch; flex-wrap: wrap; }
   .search-field { flex-basis: 100%; min-width: 0; }

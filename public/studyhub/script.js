@@ -7,13 +7,15 @@ import { classicFifteen } from "./classics-data.js";
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   const READER_AI_API = "https://studyhub-ai-api.jimmy980821.workers.dev/analyze";
+  const SYNC_API = "https://studyhub-ai-api.jimmy980821.workers.dev/sync";
+  const SYNC_DATA_KEYS = ["mistakes-v2", "favorites-v2", "scores-v2", "heat-v2", "tasks-v1"];
   const escapeHTML = (value = "") => String(value).replace(/[&<>"']/g, (char) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
   })[char]);
 
   // 封裝 localStorage，若瀏覽器禁用儲存仍可安全運作。
   class Store {
-    constructor(prefix) { this.prefix = prefix; }
+    constructor(prefix, onChange = null) { this.prefix = prefix; this.onChange = onChange; }
     get(key, fallback) {
       try {
         const value = localStorage.getItem(`${this.prefix}:${key}`);
@@ -23,9 +25,10 @@ import { classicFifteen } from "./classics-data.js";
         return fallback;
       }
     }
-    set(key, value) {
+    set(key, value, silent = false) {
       try {
         localStorage.setItem(`${this.prefix}:${key}`, JSON.stringify(value));
+        if (!silent) this.onChange?.(key);
         return true;
       } catch (error) {
         console.warn("無法儲存本機資料：", error);
@@ -36,7 +39,9 @@ import { classicFifteen } from "./classics-data.js";
 
   class StudyHubApp {
     constructor() {
-      this.store = new Store("studyhub");
+      this.syncTimer = null;
+      this.syncBusy = false;
+      this.store = new Store("studyhub", (key) => this.handleLocalDataChange(key));
       this.readerMode = "chinese";
       this.readerTab = 0;
       this.readerAnalysis = null;
@@ -156,6 +161,7 @@ import { classicFifteen } from "./classics-data.js";
       this.bindEvents();
       this.renderAll();
       this.navigate(location.hash.slice(1) || "home", false);
+      this.initializeSync();
     }
 
     applyTheme() {
@@ -197,6 +203,9 @@ import { classicFifteen } from "./classics-data.js";
       $("#mistakeForm").addEventListener("submit", (event) => this.saveMistake(event));
       $("#mistakeForm [name='image']").addEventListener("change", (event) => this.readImage(event));
       $("#taskForm").addEventListener("submit", (event) => this.addTask(event));
+      $("#syncCode").addEventListener("input", (event) => {
+        event.target.value = this.formatSyncCode(this.normalizeSyncCode(event.target.value));
+      });
     }
 
     handleClick(event) {
@@ -250,6 +259,12 @@ import { classicFifteen } from "./classics-data.js";
         "delete-task": () => this.deleteTask(element.dataset.id),
         "close-modal": () => this.closeModals(),
         "close-quick": () => this.closeModals(),
+        "open-sync": () => this.openSyncModal(),
+        "generate-sync": () => this.createSyncCode(),
+        "connect-sync": () => this.connectSync(),
+        "copy-sync-code": () => this.copySyncCode(),
+        "sync-now": () => this.syncNow(true),
+        "disconnect-sync": () => this.disconnectSync(),
         "edit-mistake": () => this.openMistake(element.dataset.id),
         "delete-mistake": () => this.deleteMistake(element.dataset.id),
         "favorite-mistake": () => this.toggleFavorite("mistake", element.dataset.id),
@@ -909,6 +924,239 @@ import { classicFifteen } from "./classics-data.js";
       this.store.set("favorites-v2", this.favorites);
       this.renderMistakes(); this.renderFormulas(); this.renderMajors(); this.renderFlashcard(); this.renderFavorites(); this.updateCounts();
       this.toast(index >= 0 ? "已取消收藏" : "已加入收藏");
+    }
+
+    getSyncSetting(key, fallback = "") {
+      try { return localStorage.getItem(`studyhub:sync-${key}`) || fallback; }
+      catch { return fallback; }
+    }
+
+    setSyncSetting(key, value) {
+      try {
+        if (value === "") localStorage.removeItem(`studyhub:sync-${key}`);
+        else localStorage.setItem(`studyhub:sync-${key}`, String(value));
+      } catch (error) {
+        console.warn("無法儲存同步設定：", error);
+      }
+    }
+
+    normalizeSyncCode(value = "") {
+      return String(value).toUpperCase().replace(/[^A-Z2-9]/g, "").slice(0, 24);
+    }
+
+    formatSyncCode(value = "") {
+      return this.normalizeSyncCode(value).match(/.{1,4}/g)?.join("-") || "";
+    }
+
+    handleLocalDataChange(key) {
+      if (!SYNC_DATA_KEYS.includes(key)) return;
+      this.setSyncSetting("local-updated-at", Date.now());
+      if (!this.getSyncSetting("code")) return;
+      clearTimeout(this.syncTimer);
+      this.syncTimer = setTimeout(() => this.syncNow(false), 3500);
+      this.setSyncStatus("本機有新變更，等待同步", "syncing");
+    }
+
+    initializeSync() {
+      const code = this.getSyncSetting("code");
+      if (!code) { this.setSyncStatus("尚未連線"); return; }
+      $("#syncCode").value = this.formatSyncCode(code);
+      this.setSyncStatus("正在檢查雲端資料…", "syncing");
+      this.syncNow(false);
+    }
+
+    openSyncModal() {
+      const code = this.getSyncSetting("code");
+      $("#syncCode").value = this.formatSyncCode(code);
+      this.setSyncStatus(code ? "已連線，可立即同步" : "尚未連線", code ? "connected" : "");
+      this.openModal("syncModal");
+      setTimeout(() => $("#syncCode").focus(), 80);
+    }
+
+    createSyncCode() {
+      const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+      const bytes = crypto.getRandomValues(new Uint8Array(24));
+      const code = [...bytes].map((value) => alphabet[value % alphabet.length]).join("");
+      $("#syncCode").value = this.formatSyncCode(code);
+      this.toast("已建立同步碼，按「連線並同步」開始使用");
+    }
+
+    async copySyncCode() {
+      const code = this.formatSyncCode($("#syncCode").value);
+      if (!this.normalizeSyncCode(code)) { this.toast("請先建立或輸入同步碼"); return; }
+      try {
+        await navigator.clipboard.writeText(code);
+        this.toast("同步碼已複製");
+      } catch {
+        $("#syncCode").select();
+        document.execCommand("copy");
+        this.toast("同步碼已複製");
+      }
+    }
+
+    async connectSync() {
+      const code = this.normalizeSyncCode($("#syncCode").value);
+      if (code.length !== 24) { this.toast("同步碼必須是 24 個字元"); return; }
+      this.setSyncSetting("code", code);
+      this.setSyncStatus("正在連線…", "syncing");
+      try {
+        const remote = await this.fetchRemoteSync(code);
+        if (remote) {
+          const data = await this.decryptSyncPayload(remote.payload, code);
+          this.applySyncData(data, remote.updatedAt);
+          this.toast("已下載雲端資料，裝置同步完成");
+        } else {
+          this.setSyncSetting("local-updated-at", Date.now());
+          await this.uploadSync(code);
+          this.toast("同步碼已啟用，請妥善保存");
+        }
+        this.setSyncStatus("已同步", "connected");
+      } catch (error) {
+        console.error("StudyHub sync connect error", error);
+        this.setSyncStatus("連線失敗，請稍後再試");
+        this.toast(error.message || "同步連線失敗");
+      }
+    }
+
+    disconnectSync() {
+      if (!this.getSyncSetting("code")) { this.closeModals(); return; }
+      if (!confirm("要中斷這台裝置的同步嗎？本機資料不會被刪除。")) return;
+      clearTimeout(this.syncTimer);
+      this.setSyncSetting("code", "");
+      this.setSyncSetting("last-updated-at", "");
+      $("#syncCode").value = "";
+      this.setSyncStatus("尚未連線");
+      this.toast("此裝置已中斷同步");
+    }
+
+    collectSyncData() {
+      return Object.fromEntries(SYNC_DATA_KEYS.map((key) => [key, this.store.get(key, null)]));
+    }
+
+    applySyncData(data, updatedAt) {
+      if (!data || typeof data !== "object") throw new Error("同步資料格式不正確");
+      for (const key of SYNC_DATA_KEYS) {
+        if (Object.hasOwn(data, key) && data[key] !== null) this.store.set(key, data[key], true);
+      }
+      this.mistakes = this.store.get("mistakes-v2", []);
+      this.favorites = this.store.get("favorites-v2", []);
+      this.scores = this.store.get("scores-v2", this.seed.scores);
+      this.heat = this.store.get("heat-v2", {});
+      this.tasks = this.store.get("tasks-v1", []);
+      this.setSyncSetting("local-updated-at", updatedAt);
+      this.setSyncSetting("last-updated-at", updatedAt);
+      this.renderAll();
+    }
+
+    async syncNow(showToast = false) {
+      const code = this.getSyncSetting("code");
+      if (!code || this.syncBusy) {
+        if (showToast && !code) this.toast("請先建立或輸入同步碼");
+        return;
+      }
+      this.syncBusy = true;
+      this.setSyncStatus("同步中…", "syncing");
+      try {
+        const remote = await this.fetchRemoteSync(code);
+        const localUpdatedAt = Number(this.getSyncSetting("local-updated-at", "0"));
+        const lastUpdatedAt = Number(this.getSyncSetting("last-updated-at", "0"));
+        if (remote && remote.updatedAt > Math.max(localUpdatedAt, lastUpdatedAt)) {
+          const data = await this.decryptSyncPayload(remote.payload, code);
+          this.applySyncData(data, remote.updatedAt);
+        } else if (!remote || localUpdatedAt > lastUpdatedAt) {
+          await this.uploadSync(code);
+        }
+        this.setSyncStatus("已同步", "connected");
+        if (showToast) this.toast("同步完成");
+      } catch (error) {
+        console.error("StudyHub sync error", error);
+        this.setSyncStatus("同步失敗，稍後會再嘗試");
+        if (showToast) this.toast(error.message || "同步失敗");
+      } finally {
+        this.syncBusy = false;
+      }
+    }
+
+    async fetchRemoteSync(code) {
+      const id = await this.syncRecordId(code);
+      const response = await fetch(`${SYNC_API}/${id}`, { headers: { Accept: "application/json" } });
+      if (response.status === 404) return null;
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.error || "無法讀取雲端資料");
+      return result;
+    }
+
+    async uploadSync(code) {
+      const updatedAt = Math.max(Date.now(), Number(this.getSyncSetting("local-updated-at", "0")));
+      const payload = await this.encryptSyncPayload(this.collectSyncData(), code);
+      const id = await this.syncRecordId(code);
+      const response = await fetch(`${SYNC_API}/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ payload, updatedAt, version: 1 })
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.error || "無法上傳同步資料");
+      this.setSyncSetting("local-updated-at", updatedAt);
+      this.setSyncSetting("last-updated-at", updatedAt);
+    }
+
+    async syncRecordId(code) {
+      const bytes = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`studyhub-record:${code}`));
+      return [...new Uint8Array(bytes)].map((value) => value.toString(16).padStart(2, "0")).join("");
+    }
+
+    async syncEncryptionKey(code) {
+      const bytes = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`studyhub-encryption:${code}`));
+      return crypto.subtle.importKey("raw", bytes, "AES-GCM", false, ["encrypt", "decrypt"]);
+    }
+
+    bytesToBase64(bytes) {
+      let binary = "";
+      for (let index = 0; index < bytes.length; index += 0x8000) {
+        binary += String.fromCharCode(...bytes.subarray(index, index + 0x8000));
+      }
+      return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+    }
+
+    base64ToBytes(value) {
+      const base64 = value.replace(/-/g, "+").replace(/_/g, "/");
+      const binary = atob(base64.padEnd(Math.ceil(base64.length / 4) * 4, "="));
+      return Uint8Array.from(binary, (char) => char.charCodeAt(0));
+    }
+
+    async encryptSyncPayload(data, code) {
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const key = await this.syncEncryptionKey(code);
+      const plain = new TextEncoder().encode(JSON.stringify(data));
+      const encrypted = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, plain);
+      return `${this.bytesToBase64(iv)}.${this.bytesToBase64(new Uint8Array(encrypted))}`;
+    }
+
+    async decryptSyncPayload(payload, code) {
+      const [ivText, encryptedText] = String(payload).split(".");
+      if (!ivText || !encryptedText) throw new Error("同步資料已損毀或同步碼不正確");
+      try {
+        const key = await this.syncEncryptionKey(code);
+        const decrypted = await crypto.subtle.decrypt(
+          { name: "AES-GCM", iv: this.base64ToBytes(ivText) },
+          key,
+          this.base64ToBytes(encryptedText)
+        );
+        return JSON.parse(new TextDecoder().decode(decrypted));
+      } catch {
+        throw new Error("無法解密資料，請確認同步碼完全相同");
+      }
+    }
+
+    setSyncStatus(message, state = "") {
+      const indicators = [$("#syncIndicator"), $("#syncModalIndicator")].filter(Boolean);
+      indicators.forEach((node) => {
+        node.classList.toggle("connected", state === "connected");
+        node.classList.toggle("syncing", state === "syncing");
+        node.setAttribute("aria-label", message);
+      });
+      if ($("#syncStatusText")) $("#syncStatusText").textContent = message;
     }
 
     getFavoriteItem(entry) {

@@ -15,7 +15,7 @@ function headersFor(origin = "") {
   if (isAllowedOrigin(origin)) {
     Object.assign(headers, {
       "Access-Control-Allow-Origin": origin,
-      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type",
       "Vary": "Origin"
     });
@@ -103,18 +103,59 @@ export default {
     const origin = request.headers.get("Origin") || "";
     const url = new URL(request.url);
 
-    if (request.method === "GET") {
-      return json({
-        ok: true,
-        service: "StudyHub Workers AI",
-        model: MODEL,
-        billing: "Cloudflare free allocation"
-      });
-    }
-
     if (request.method === "OPTIONS") {
       if (!isAllowedOrigin(origin)) return json({ error: "不允許的網站來源" }, 403);
       return new Response(null, { status: 204, headers: headersFor(origin) });
+    }
+
+    const syncMatch = url.pathname.match(/^\/sync\/([a-f0-9]{64})$/);
+    if (syncMatch) {
+      if (!isAllowedOrigin(origin)) return json({ error: "不允許的來源" }, 403, origin);
+      const syncId = syncMatch[1];
+      if (request.method === "GET") {
+        const record = await env.DB.prepare(
+          "SELECT payload, updated_at, version FROM sync_records WHERE sync_id = ?"
+        ).bind(syncId).first();
+        if (!record) return json({ error: "尚無同步資料" }, 404, origin);
+        return json({
+          payload: record.payload,
+          updatedAt: Number(record.updated_at),
+          version: Number(record.version)
+        }, 200, origin);
+      }
+      if (request.method === "PUT") {
+        try {
+          const body = await request.json();
+          const payload = String(body?.payload || "");
+          const updatedAt = Number(body?.updatedAt);
+          const version = Number(body?.version || 1);
+          if (!payload || payload.length > 1500000) return json({ error: "同步資料過大，請縮小錯題圖片後再試" }, 413, origin);
+          if (!Number.isSafeInteger(updatedAt) || updatedAt <= 0) return json({ error: "更新時間格式不正確" }, 400, origin);
+          await env.DB.prepare(`
+            INSERT INTO sync_records (sync_id, payload, updated_at, version)
+            VALUES (?, ?, ?, ?)
+            ON CONFLICT(sync_id) DO UPDATE SET
+              payload = excluded.payload,
+              updated_at = excluded.updated_at,
+              version = excluded.version
+            WHERE excluded.updated_at >= sync_records.updated_at
+          `).bind(syncId, payload, updatedAt, version).run();
+          return json({ ok: true, updatedAt }, 200, origin);
+        } catch (error) {
+          console.error("StudyHub sync write error", error);
+          return json({ error: "無法寫入同步資料" }, 500, origin);
+        }
+      }
+      return json({ error: "不支援的同步方法" }, 405, origin);
+    }
+
+    if (request.method === "GET" && url.pathname === "/") {
+      return json({
+        ok: true,
+        service: "StudyHub Workers AI + encrypted sync",
+        model: MODEL,
+        billing: "Cloudflare free allocation"
+      });
     }
 
     if (request.method !== "POST" || url.pathname !== "/analyze") {
