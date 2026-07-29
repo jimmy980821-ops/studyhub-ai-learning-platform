@@ -72,8 +72,13 @@ test("bundles the complete StudyHub local-first application", async () => {
   assert.match(script, /studyhub-ai-api\.jimmy980821\.workers\.dev\/sync/);
   assert.match(script, /crypto\.subtle/);
   assert.match(script, /AES-GCM/);
+  assert.match(script, /GoogleAuthProvider/);
+  assert.match(script, /firebase-firestore\.js/);
+  assert.match(script, /campus-flow-9965c/);
+  assert.match(script, /users", this\.currentUser\.uid, "studyhub", "state"/);
   assert.match(html, /id="syncModal"/);
   assert.match(html, /電腦與手機同步/);
+  assert.match(html, /使用 Google 登入/);
   assert.match(html, /class="icon-btn mobile-sync"/);
   assert.match(html, /aria-label="開啟裝置同步"/);
   assert.match(css, /\.mobile-sync \{ display: grid;/);

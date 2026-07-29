@@ -1,5 +1,20 @@
 import { formulaCatalog } from "./formula-data.js";
 import { classicFifteen } from "./classics-data.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signInWithPopup,
+  signOut
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+import {
+  doc,
+  getDoc,
+  getFirestore,
+  onSnapshot,
+  setDoc
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 (() => {
   "use strict";
@@ -9,6 +24,15 @@ import { classicFifteen } from "./classics-data.js";
   const READER_AI_API = "https://studyhub-ai-api.jimmy980821.workers.dev/analyze";
   const SYNC_API = "https://studyhub-ai-api.jimmy980821.workers.dev/sync";
   const SYNC_DATA_KEYS = ["mistakes-v2", "favorites-v2", "scores-v2", "heat-v2", "tasks-v1"];
+  // 沿用校園課表的 Firebase 專案；公開識別設定不是密碼，資料權限由 Firestore Rules 控制。
+  const FIREBASE_CONFIG = {
+    apiKey: "AIzaSyBU4gvnt7fVHwkRbqbJ-hBBlmZrP0MgKY4",
+    authDomain: "campus-flow-9965c.firebaseapp.com",
+    projectId: "campus-flow-9965c",
+    storageBucket: "campus-flow-9965c.firebasestorage.app",
+    messagingSenderId: "706339405367",
+    appId: "1:706339405367:web:6368418b712f0c613109b2"
+  };
   const escapeHTML = (value = "") => String(value).replace(/[&<>"']/g, (char) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
   })[char]);
@@ -41,6 +65,14 @@ import { classicFifteen } from "./classics-data.js";
     constructor() {
       this.syncTimer = null;
       this.syncBusy = false;
+      this.googleSyncBusy = false;
+      this.googleCloudUnsubscribe = null;
+      this.currentUser = null;
+      this.firebaseApp = initializeApp(FIREBASE_CONFIG);
+      this.auth = getAuth(this.firebaseApp);
+      this.database = getFirestore(this.firebaseApp);
+      this.googleProvider = new GoogleAuthProvider();
+      this.googleProvider.setCustomParameters({ prompt: "select_account" });
       this.store = new Store("studyhub", (key) => this.handleLocalDataChange(key));
       this.readerMode = "chinese";
       this.readerTab = 0;
@@ -161,7 +193,7 @@ import { classicFifteen } from "./classics-data.js";
       this.bindEvents();
       this.renderAll();
       this.navigate(location.hash.slice(1) || "home", false);
-      this.initializeSync();
+      this.initializeGoogleSync();
     }
 
     applyTheme() {
@@ -260,6 +292,9 @@ import { classicFifteen } from "./classics-data.js";
         "close-modal": () => this.closeModals(),
         "close-quick": () => this.closeModals(),
         "open-sync": () => this.openSyncModal(),
+        "google-sign-in": () => this.signInGoogle(),
+        "google-sign-out": () => this.signOutGoogle(),
+        "google-sync-now": () => this.syncGoogleNow(true),
         "generate-sync": () => this.createSyncCode(),
         "connect-sync": () => this.connectSync(),
         "copy-sync-code": () => this.copySyncCode(),
@@ -948,9 +983,163 @@ import { classicFifteen } from "./classics-data.js";
       return this.normalizeSyncCode(value).match(/.{1,4}/g)?.join("-") || "";
     }
 
+    initializeGoogleSync() {
+      onAuthStateChanged(this.auth, async (user) => {
+        this.currentUser = user;
+        this.renderGoogleSyncUI();
+        this.googleCloudUnsubscribe?.();
+        this.googleCloudUnsubscribe = null;
+        if (user) {
+          this.setSyncStatus("正在連接 Google 雲端…", "syncing");
+          await this.connectGoogleCloud();
+        } else {
+          this.initializeSync();
+        }
+      });
+    }
+
+    renderGoogleSyncUI() {
+      const signedIn = Boolean(this.currentUser);
+      $("#googleSignedOut").classList.toggle("hidden", signedIn);
+      $("#googleSignedIn").classList.toggle("hidden", !signedIn);
+      if (!signedIn) return;
+      $("#googleUserName").textContent = this.currentUser.displayName || "Google 使用者";
+      $("#googleUserEmail").textContent = this.currentUser.email || "";
+      const photo = $("#googleUserPhoto");
+      photo.src = this.currentUser.photoURL || "studyhub-icon-192.png";
+      photo.alt = `${this.currentUser.displayName || "Google 使用者"}的頭像`;
+    }
+
+    async signInGoogle() {
+      this.setSyncStatus("正在開啟 Google 登入…", "syncing");
+      try {
+        await signInWithPopup(this.auth, this.googleProvider);
+      } catch (error) {
+        console.error("Google sign-in error", error);
+        const message = error?.code === "auth/popup-closed-by-user"
+          ? "已取消 Google 登入"
+          : "Google 登入失敗，請確認瀏覽器未封鎖彈出視窗";
+        this.setSyncStatus(message);
+        this.toast(message);
+      }
+    }
+
+    async signOutGoogle() {
+      try {
+        await signOut(this.auth);
+        this.setSyncStatus("已登出 Google；資料仍保留在本機");
+        this.toast("已登出 Google 帳號");
+      } catch (error) {
+        console.error("Google sign-out error", error);
+        this.toast("Google 登出失敗，請稍後再試");
+      }
+    }
+
+    googleDocument() {
+      return doc(this.database, "users", this.currentUser.uid, "studyhub", "state");
+    }
+
+    async connectGoogleCloud() {
+      if (!this.currentUser) return;
+      try {
+        const reference = this.googleDocument();
+        const snapshot = await getDoc(reference);
+        const localUpdatedAt = Number(this.getSyncSetting("google-local-updated-at", "0"));
+        if (snapshot.exists()) {
+          const remote = snapshot.data();
+          const remoteUpdatedAt = Number(remote.updatedAt || 0);
+          if (remote.data && remoteUpdatedAt >= localUpdatedAt) {
+            this.applySyncData(remote.data, remoteUpdatedAt);
+            this.setSyncSetting("google-local-updated-at", remoteUpdatedAt);
+            this.setSyncSetting("google-last-updated-at", remoteUpdatedAt);
+          } else {
+            await this.saveGoogleCloud();
+          }
+        } else {
+          this.setSyncSetting("google-local-updated-at", Date.now());
+          await this.saveGoogleCloud();
+        }
+        this.watchGoogleCloud(reference);
+        this.setSyncStatus("Google 帳號已同步", "connected");
+        this.toast("Google 自動同步已啟用");
+      } catch (error) {
+        console.error("Google cloud sync connect error", error);
+        this.setSyncStatus("Google 同步失敗，請稍後再試");
+        this.toast(this.googleSyncErrorMessage(error));
+      }
+    }
+
+    watchGoogleCloud(reference) {
+      this.googleCloudUnsubscribe?.();
+      this.googleCloudUnsubscribe = onSnapshot(reference, (snapshot) => {
+        if (!snapshot.exists() || this.googleSyncBusy) return;
+        const remote = snapshot.data();
+        const remoteUpdatedAt = Number(remote.updatedAt || 0);
+        const lastUpdatedAt = Number(this.getSyncSetting("google-last-updated-at", "0"));
+        if (remote.data && remoteUpdatedAt > lastUpdatedAt) {
+          this.applySyncData(remote.data, remoteUpdatedAt);
+          this.setSyncSetting("google-local-updated-at", remoteUpdatedAt);
+          this.setSyncSetting("google-last-updated-at", remoteUpdatedAt);
+          this.setSyncStatus("已收到另一台裝置的更新", "connected");
+        }
+      }, (error) => {
+        console.error("Google cloud listener error", error);
+        this.setSyncStatus("Google 即時同步暫時中斷");
+      });
+    }
+
+    async saveGoogleCloud(showToast = false) {
+      if (!this.currentUser || this.googleSyncBusy) return;
+      this.googleSyncBusy = true;
+      this.setSyncStatus("正在同步到 Google…", "syncing");
+      try {
+        const data = this.collectSyncData();
+        if (new Blob([JSON.stringify(data)]).size > 850000) {
+          throw new Error("資料量過大，請縮小錯題圖片後再同步");
+        }
+        const updatedAt = Math.max(
+          Date.now(),
+          Number(this.getSyncSetting("google-local-updated-at", "0"))
+        );
+        await setDoc(this.googleDocument(), { data, updatedAt, schemaVersion: 1 });
+        this.setSyncSetting("google-local-updated-at", updatedAt);
+        this.setSyncSetting("google-last-updated-at", updatedAt);
+        this.setSyncStatus("Google 帳號已同步", "connected");
+        if (showToast) this.toast("Google 同步完成");
+      } catch (error) {
+        console.error("Google cloud sync write error", error);
+        this.setSyncStatus("Google 同步失敗，稍後會再嘗試");
+        if (showToast) this.toast(this.googleSyncErrorMessage(error));
+      } finally {
+        this.googleSyncBusy = false;
+      }
+    }
+
+    async syncGoogleNow(showToast = false) {
+      if (!this.currentUser) {
+        this.toast("請先使用 Google 帳號登入");
+        return;
+      }
+      await this.saveGoogleCloud(showToast);
+    }
+
+    googleSyncErrorMessage(error) {
+      if (String(error?.code || "").includes("permission-denied")) {
+        return "Google 資料權限尚未開啟，請稍後再試";
+      }
+      return error?.message || "Google 同步失敗，請稍後再試";
+    }
+
     handleLocalDataChange(key) {
       if (!SYNC_DATA_KEYS.includes(key)) return;
       this.setSyncSetting("local-updated-at", Date.now());
+      if (this.currentUser) {
+        this.setSyncSetting("google-local-updated-at", Date.now());
+        clearTimeout(this.syncTimer);
+        this.syncTimer = setTimeout(() => this.saveGoogleCloud(false), 2500);
+        this.setSyncStatus("本機有新變更，等待 Google 同步", "syncing");
+        return;
+      }
       if (!this.getSyncSetting("code")) return;
       clearTimeout(this.syncTimer);
       this.syncTimer = setTimeout(() => this.syncNow(false), 3500);
@@ -959,7 +1148,7 @@ import { classicFifteen } from "./classics-data.js";
 
     initializeSync() {
       const code = this.getSyncSetting("code");
-      if (!code) { this.setSyncStatus("尚未連線"); return; }
+      if (!code) { this.setSyncStatus("尚未登入 Google"); return; }
       $("#syncCode").value = this.formatSyncCode(code);
       this.setSyncStatus("正在檢查雲端資料…", "syncing");
       this.syncNow(false);
@@ -968,9 +1157,13 @@ import { classicFifteen } from "./classics-data.js";
     openSyncModal() {
       const code = this.getSyncSetting("code");
       $("#syncCode").value = this.formatSyncCode(code);
-      this.setSyncStatus(code ? "已連線，可立即同步" : "尚未連線", code ? "connected" : "");
+      this.renderGoogleSyncUI();
+      if (this.currentUser) {
+        this.setSyncStatus("Google 帳號已同步", "connected");
+      } else {
+        this.setSyncStatus(code ? "私人同步碼已連線" : "尚未登入 Google", code ? "connected" : "");
+      }
       this.openModal("syncModal");
-      setTimeout(() => $("#syncCode").focus(), 80);
     }
 
     createSyncCode() {

@@ -309,27 +309,43 @@
     <div class="modal-backdrop" data-action="close-modal"></div>
     <div class="modal-card compact sync-card">
       <div class="modal-head">
-        <div><p class="eyebrow">Private Sync</p><h2 id="syncTitle">電腦與手機同步</h2></div>
+        <div><p class="eyebrow">Google Sync</p><h2 id="syncTitle">電腦與手機同步</h2></div>
         <button class="icon-btn" type="button" data-action="close-modal" aria-label="關閉">×</button>
       </div>
-      <div class="sync-intro">
-        <span class="sync-lock" aria-hidden="true">⌁</span>
-        <div><strong>資料會先在裝置內加密</strong><p>電腦和手機輸入同一組私人同步碼，就能同步學習資料。請勿把同步碼交給其他人。</p></div>
-      </div>
-      <label class="sync-code-field" for="syncCode">私人同步碼
-        <div>
-          <input id="syncCode" type="text" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="34" placeholder="輸入同步碼，或建立一組新的">
-          <button class="secondary-btn" type="button" data-action="copy-sync-code">複製</button>
+      <div class="google-sync-panel">
+        <div id="googleSignedOut">
+          <span class="google-mark" aria-hidden="true">G</span>
+          <div><strong>使用 Google 帳號自動同步</strong><p>電腦和手機登入同一個 Google 帳號後，學習資料會自動保持一致。</p></div>
+          <button class="google-sign-in" type="button" data-action="google-sign-in">使用 Google 登入</button>
         </div>
-      </label>
-      <p class="sync-note">在第二台裝置輸入同步碼時，會下載雲端版本並取代該裝置目前的學習資料。</p>
-      <div class="sync-status-row"><span class="sync-indicator" id="syncModalIndicator"></span><span id="syncStatusText">尚未連線</span></div>
-      <div class="sync-actions">
-        <button class="secondary-btn" type="button" data-action="generate-sync">建立新同步碼</button>
-        <button class="primary-btn" type="button" data-action="connect-sync">連線並同步</button>
-        <button class="secondary-btn" type="button" data-action="sync-now">立即同步</button>
-        <button class="text-btn sync-disconnect" type="button" data-action="disconnect-sync">中斷此裝置</button>
+        <div class="google-user hidden" id="googleSignedIn">
+          <img id="googleUserPhoto" alt="" referrerpolicy="no-referrer">
+          <div><strong id="googleUserName">Google 使用者</strong><small id="googleUserEmail"></small></div>
+          <button class="secondary-btn" type="button" data-action="google-sync-now">立即同步</button>
+          <button class="text-btn" type="button" data-action="google-sign-out">登出</button>
+        </div>
       </div>
+      <div class="sync-status-row"><span class="sync-indicator" id="syncModalIndicator"></span><span id="syncStatusText">尚未登入 Google</span></div>
+      <details class="sync-fallback">
+        <summary>其他方式：使用私人同步碼</summary>
+        <div class="sync-intro">
+          <span class="sync-lock" aria-hidden="true">⌁</span>
+          <div><strong>不登入 Google 也能同步</strong><p>兩台裝置輸入同一組私人同步碼即可，請勿把同步碼交給其他人。</p></div>
+        </div>
+        <label class="sync-code-field" for="syncCode">私人同步碼
+          <div>
+            <input id="syncCode" type="text" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="34" placeholder="輸入同步碼，或建立一組新的">
+            <button class="secondary-btn" type="button" data-action="copy-sync-code">複製</button>
+          </div>
+        </label>
+        <p class="sync-note">第二台裝置第一次連線時，會下載雲端版本並取代該裝置目前的學習資料。</p>
+        <div class="sync-actions">
+          <button class="secondary-btn" type="button" data-action="generate-sync">建立新同步碼</button>
+          <button class="primary-btn" type="button" data-action="connect-sync">連線並同步</button>
+          <button class="secondary-btn" type="button" data-action="sync-now">立即同步</button>
+          <button class="text-btn sync-disconnect" type="button" data-action="disconnect-sync">中斷此裝置</button>
+        </div>
+      </details>
     </div>
   </div>
   <div class="toast-region" id="toastRegion" aria-live="polite"></div>
