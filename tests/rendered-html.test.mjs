@@ -74,6 +74,9 @@ test("bundles the complete StudyHub local-first application", async () => {
   assert.match(script, /AES-GCM/);
   assert.match(html, /id="syncModal"/);
   assert.match(html, /電腦與手機同步/);
+  assert.match(html, /class="icon-btn mobile-sync"/);
+  assert.match(html, /aria-label="開啟裝置同步"/);
+  assert.match(css, /\.mobile-sync \{ display: grid;/);
   assert.match(css, /\.add-content-btn \{ display: inline-flex; align-items: center; justify-content: center/);
   assert.match(script, /AI 暫時無法使用，已改用本機分析/);
   assert.match(html, /免費 AI · 本機備援/);
