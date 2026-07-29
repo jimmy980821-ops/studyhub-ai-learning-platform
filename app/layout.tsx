@@ -13,8 +13,13 @@ export async function generateMetadata(): Promise<Metadata> {
     description: "為高中生與學測生打造的學習效率、弱點分析與知識整理平台。",
     manifest: "/site.webmanifest",
     icons: {
-      icon: "/favicon.svg",
+      icon: [
+        { url: "/favicon.svg", type: "image/svg+xml" },
+        { url: "/studyhub-icon-192.png", sizes: "192x192", type: "image/png" },
+        { url: "/studyhub-icon-512.png", sizes: "512x512", type: "image/png" },
+      ],
       shortcut: "/favicon.svg",
+      apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
     },
     openGraph: {
       title: "StudyHub｜讓每次學習都有方向",

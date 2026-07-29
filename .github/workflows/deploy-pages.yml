@@ -30,6 +30,10 @@ jobs:
           mkdir -p _site
           cp -R public/studyhub/. _site/
           cp public/favicon.svg _site/favicon.svg
+          cp public/apple-touch-icon.png _site/apple-touch-icon.png
+          cp public/studyhub-icon-192.png _site/studyhub-icon-192.png
+          cp public/studyhub-icon-512.png _site/studyhub-icon-512.png
+          cp public/site.webmanifest _site/site.webmanifest
           cp public/studyhub-og-v2.png _site/studyhub-og-v2.png
           touch _site/.nojekyll
 
