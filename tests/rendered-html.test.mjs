@@ -50,6 +50,15 @@ test("bundles the complete StudyHub local-first application", async () => {
   assert.match(script, /renderTasks/);
   assert.match(html, /id="taskForm"/);
   assert.match(html, /id="todayTaskStat"/);
+  assert.match(html, /data-page="pomodoro"/);
+  assert.match(html, /id="pomodoroTime"/);
+  assert.match(html, /番茄鐘/);
+  assert.match(script, /POMODORO_DURATIONS/);
+  assert.match(script, /pomodoro-v1/);
+  assert.match(script, /focus-minutes-v1/);
+  assert.match(script, /completePomodoro/);
+  assert.match(script, /getStudyMinutes/);
+  assert.match(css, /\.pomodoro-layout/);
   assert.match(script, /尚未評分/);
   assert.match(html, /formulaVolume/);
   assert.doesNotMatch(html, /公式符號|symbol-guide/);

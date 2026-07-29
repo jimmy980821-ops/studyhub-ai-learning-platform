@@ -26,6 +26,7 @@
       <nav class="nav-list">
         <p class="nav-label">學習空間</p>
         <a class="nav-item active" href="#home" data-page-link="home"><span class="nav-icon">⌂</span>首頁</a>
+        <a class="nav-item" href="#pomodoro" data-page-link="pomodoro"><span class="nav-icon">◷</span>番茄鐘</a>
         <a class="nav-item" href="#mistakes" data-page-link="mistakes"><span class="nav-icon">✎</span>AI 錯題本<span class="nav-count" id="mistakeNavCount">0</span></a>
         <a class="nav-item" href="#reader" data-page-link="reader"><span class="nav-icon">文</span>閱讀助手</a>
         <a class="nav-item" href="#analytics" data-page-link="analytics"><span class="nav-icon">⌁</span>學習分析</a>
@@ -133,6 +134,69 @@
                 <button class="secondary-btn" data-action="record-today">＋ 記錄今天 30 分鐘</button>
               </div>
             </section>
+          </div>
+        </section>
+
+        <section class="page" data-page="pomodoro" aria-labelledby="pomodoroTitle">
+          <div class="page-head">
+            <div>
+              <p class="eyebrow">Focus Timer</p>
+              <h1 id="pomodoroTitle">番茄鐘</h1>
+              <p>把讀書拆成一輪一輪，專注時間會自動加入真實學習紀錄。</p>
+            </div>
+            <span class="soft-badge pomodoro-today-badge" id="pomodoroTodayBadge">今日完成 0 輪</span>
+          </div>
+
+          <div class="pomodoro-layout">
+            <section class="panel pomodoro-timer-panel" aria-label="番茄鐘計時器">
+              <div class="pomodoro-modes" role="group" aria-label="計時模式">
+                <button class="active" data-action="pomodoro-mode" data-mode="focus" aria-pressed="true">專注 25 分</button>
+                <button data-action="pomodoro-mode" data-mode="short" aria-pressed="false">短休息 5 分</button>
+                <button data-action="pomodoro-mode" data-mode="long" aria-pressed="false">長休息 15 分</button>
+              </div>
+
+              <div class="pomodoro-ring" id="pomodoroRing" role="timer" aria-label="剩餘 25 分鐘">
+                <div>
+                  <strong id="pomodoroTime">25:00</strong>
+                  <span id="pomodoroModeLabel">專注時間</span>
+                </div>
+              </div>
+
+              <label class="pomodoro-target" for="pomodoroTarget">
+                <span>這一輪要完成</span>
+                <select id="pomodoroTarget" aria-label="選擇這一輪的學習目標">
+                  <option value="">自由專注</option>
+                </select>
+              </label>
+
+              <p class="pomodoro-status" id="pomodoroStatus" role="status" aria-live="polite">準備好後，開始第一輪專注。</p>
+              <div class="pomodoro-actions">
+                <button class="primary-btn ripple" data-action="pomodoro-toggle" id="pomodoroToggle">開始專注</button>
+                <button class="secondary-btn" data-action="pomodoro-reset">重設</button>
+              </div>
+            </section>
+
+            <aside class="pomodoro-side">
+              <section class="panel pomodoro-summary">
+                <div class="panel-head"><div><h3>今日專注</h3><p>只依你實際完成的專注輪數計算</p></div></div>
+                <div class="pomodoro-summary-grid">
+                  <div><span>完成輪數</span><strong id="pomodoroRounds">0</strong><small>輪</small></div>
+                  <div><span>累積時間</span><strong id="pomodoroMinutes">0</strong><small>分鐘</small></div>
+                </div>
+                <button class="text-btn" data-page-link="analytics">查看學習熱力圖 →</button>
+              </section>
+
+              <section class="panel pomodoro-tip-card">
+                <span class="tip-orb">✦</span>
+                <h3>這一輪只做一件事</h3>
+                <p>開始前先選好任務；計時時把通知靜音，時間到再檢查訊息。</p>
+                <ul>
+                  <li>25 分鐘內先不切換科目</li>
+                  <li>休息時起身、喝水、看遠處</li>
+                  <li>完成 4 輪後安排一次長休息</li>
+                </ul>
+              </section>
+            </aside>
           </div>
         </section>
 

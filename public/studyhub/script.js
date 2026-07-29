@@ -23,7 +23,16 @@ import {
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   const READER_AI_API = "https://studyhub-ai-api.jimmy980821.workers.dev/analyze";
   const SYNC_API = "https://studyhub-ai-api.jimmy980821.workers.dev/sync";
-  const SYNC_DATA_KEYS = ["mistakes-v2", "favorites-v2", "scores-v2", "heat-v2", "tasks-v1"];
+  const SYNC_DATA_KEYS = [
+    "mistakes-v2",
+    "favorites-v2",
+    "scores-v2",
+    "heat-v2",
+    "tasks-v1",
+    "pomodoro-v1",
+    "focus-minutes-v1"
+  ];
+  const POMODORO_DURATIONS = { focus: 25 * 60, short: 5 * 60, long: 15 * 60 };
   // 沿用校園課表的 Firebase 專案；公開識別設定不是密碼，資料權限由 Firestore Rules 控制。
   const FIREBASE_CONFIG = {
     apiKey: "AIzaSyBU4gvnt7fVHwkRbqbJ-hBBlmZrP0MgKY4",
@@ -81,6 +90,7 @@ import {
       this.heatView = "month";
       this.favoriteFilter = "all";
       this.imageDraft = "";
+      this.pomodoroTimer = null;
 
       this.seed = {
         mistakes: [
@@ -185,6 +195,8 @@ import {
       this.scores = this.store.get("scores-v2", this.seed.scores);
       this.heat = this.store.get("heat-v2", {});
       this.tasks = this.store.get("tasks-v1", []);
+      this.focusMinutes = this.store.get("focus-minutes-v1", {});
+      this.pomodoro = this.normalizePomodoro(this.store.get("pomodoro-v1", this.createPomodoroState()));
     }
 
     init() {
@@ -192,6 +204,7 @@ import {
       this.setToday();
       this.bindEvents();
       this.renderAll();
+      this.initializePomodoro();
       this.navigate(location.hash.slice(1) || "home", false);
       this.initializeGoogleSync();
     }
@@ -235,8 +248,15 @@ import {
       $("#mistakeForm").addEventListener("submit", (event) => this.saveMistake(event));
       $("#mistakeForm [name='image']").addEventListener("change", (event) => this.readImage(event));
       $("#taskForm").addEventListener("submit", (event) => this.addTask(event));
+      $("#pomodoroTarget").addEventListener("change", (event) => {
+        this.pomodoro.target = event.target.value;
+        this.savePomodoro();
+      });
       $("#syncCode").addEventListener("input", (event) => {
         event.target.value = this.formatSyncCode(this.normalizeSyncCode(event.target.value));
+      });
+      window.addEventListener("beforeunload", () => {
+        if (this.pomodoroTimer) clearInterval(this.pomodoroTimer);
       });
     }
 
@@ -285,6 +305,9 @@ import {
         "add-mistake": () => this.openMistake(),
         "quick-mistake": () => { this.closeModals(); this.openMistake(); },
         "record-today": () => this.recordToday(),
+        "pomodoro-toggle": () => this.togglePomodoro(),
+        "pomodoro-reset": () => this.resetPomodoro(),
+        "pomodoro-mode": () => this.setPomodoroMode(element.dataset.mode),
         "focus-task": () => this.focusTaskForm(),
         "toggle-task": () => this.toggleTask(element.dataset.id, element.checked),
         "edit-task": () => this.editTask(element.dataset.id),
@@ -317,7 +340,7 @@ import {
     }
 
     navigate(page, updateHash = true) {
-      const allowed = ["home", "mistakes", "reader", "analytics", "knowledge", "explore", "favorites"];
+      const allowed = ["home", "pomodoro", "mistakes", "reader", "analytics", "knowledge", "explore", "favorites"];
       const target = allowed.includes(page) ? page : "home";
       $$(".page").forEach((section) => section.classList.toggle("active", section.dataset.page === target));
       $$(".nav-item").forEach((link) => link.classList.toggle("active", link.dataset.pageLink === target));
@@ -343,6 +366,199 @@ import {
       this.toast(next === "dark" ? "已切換為深色模式" : "已切換為淺色模式");
     }
 
+    createPomodoroState() {
+      return {
+        mode: "focus",
+        remainingSeconds: POMODORO_DURATIONS.focus,
+        running: false,
+        endAt: 0,
+        completedRounds: 0,
+        completedDate: this.getLocalDateKey(),
+        target: ""
+      };
+    }
+
+    normalizePomodoro(value) {
+      const fallback = this.createPomodoroState();
+      if (!value || typeof value !== "object" || Array.isArray(value)) return fallback;
+      const mode = Object.hasOwn(POMODORO_DURATIONS, value.mode) ? value.mode : "focus";
+      const maximum = POMODORO_DURATIONS[mode];
+      const parsedRemaining = Number(value.remainingSeconds);
+      return {
+        mode,
+        remainingSeconds: Math.min(
+          maximum,
+          Math.max(0, Number.isFinite(parsedRemaining) ? Math.ceil(parsedRemaining) : maximum)
+        ),
+        running: Boolean(value.running && Number(value.endAt) > 0),
+        endAt: Number(value.endAt) || 0,
+        completedRounds: Math.max(0, Math.floor(Number(value.completedRounds) || 0)),
+        completedDate: String(value.completedDate || fallback.completedDate),
+        target: String(value.target || "")
+      };
+    }
+
+    initializePomodoro() {
+      this.refreshPomodoroDate();
+      if (this.pomodoro.running && this.getPomodoroRemaining() <= 0) {
+        this.completePomodoro();
+      } else {
+        this.renderPomodoro();
+      }
+      this.pomodoroTimer = window.setInterval(() => this.tickPomodoro(), 1000);
+    }
+
+    refreshPomodoroDate() {
+      const today = this.getLocalDateKey();
+      if (this.pomodoro.completedDate === today) return;
+      this.pomodoro.completedDate = today;
+      this.pomodoro.completedRounds = 0;
+      this.savePomodoro();
+    }
+
+    getPomodoroRemaining() {
+      if (!this.pomodoro.running || !this.pomodoro.endAt) return this.pomodoro.remainingSeconds;
+      return Math.max(0, Math.ceil((this.pomodoro.endAt - Date.now()) / 1000));
+    }
+
+    tickPomodoro() {
+      this.refreshPomodoroDate();
+      if (!this.pomodoro.running) return;
+      this.pomodoro.remainingSeconds = this.getPomodoroRemaining();
+      if (this.pomodoro.remainingSeconds <= 0) {
+        this.completePomodoro();
+        return;
+      }
+      this.renderPomodoro();
+    }
+
+    togglePomodoro() {
+      if (this.pomodoro.running) {
+        this.pomodoro.remainingSeconds = this.getPomodoroRemaining();
+        this.pomodoro.running = false;
+        this.pomodoro.endAt = 0;
+        this.savePomodoro();
+        this.renderPomodoro();
+        this.toast("番茄鐘已暫停");
+        return;
+      }
+
+      if (this.pomodoro.remainingSeconds <= 0) {
+        this.pomodoro.remainingSeconds = POMODORO_DURATIONS[this.pomodoro.mode];
+      }
+      this.pomodoro.running = true;
+      this.pomodoro.endAt = Date.now() + this.pomodoro.remainingSeconds * 1000;
+      this.savePomodoro();
+      this.renderPomodoro();
+      this.toast(this.pomodoro.mode === "focus" ? "開始專注" : "開始休息");
+    }
+
+    resetPomodoro() {
+      this.pomodoro.running = false;
+      this.pomodoro.endAt = 0;
+      this.pomodoro.remainingSeconds = POMODORO_DURATIONS[this.pomodoro.mode];
+      this.savePomodoro();
+      this.renderPomodoro();
+      this.toast("番茄鐘已重設");
+    }
+
+    setPomodoroMode(mode) {
+      if (!Object.hasOwn(POMODORO_DURATIONS, mode) || mode === this.pomodoro.mode) return;
+      this.pomodoro.mode = mode;
+      this.pomodoro.running = false;
+      this.pomodoro.endAt = 0;
+      this.pomodoro.remainingSeconds = POMODORO_DURATIONS[mode];
+      this.savePomodoro();
+      this.renderPomodoro();
+    }
+
+    completePomodoro() {
+      const completedMode = this.pomodoro.mode;
+      if (completedMode === "focus") {
+        const today = this.getLocalDateKey();
+        this.pomodoro.completedRounds += 1;
+        this.focusMinutes[today] = Math.max(0, Number(this.focusMinutes[today]) || 0) + 25;
+        this.store.set("focus-minutes-v1", this.focusMinutes);
+        this.pomodoro.mode = this.pomodoro.completedRounds % 4 === 0 ? "long" : "short";
+      } else {
+        this.pomodoro.mode = "focus";
+      }
+      this.pomodoro.running = false;
+      this.pomodoro.endAt = 0;
+      this.pomodoro.remainingSeconds = POMODORO_DURATIONS[this.pomodoro.mode];
+      this.savePomodoro();
+      this.renderPomodoro();
+      this.renderHeatmap();
+      this.updateDashboard();
+
+      const message = completedMode === "focus"
+        ? "完成 25 分鐘專注，已加入今日學習紀錄。"
+        : "休息結束，準備開始下一輪吧。";
+      this.toast(message);
+      if ("Notification" in window && Notification.permission === "granted") {
+        new Notification("StudyHub 番茄鐘", {
+          body: message,
+          icon: "../studyhub-icon-192.png",
+          tag: "studyhub-pomodoro"
+        });
+      }
+    }
+
+    savePomodoro() {
+      this.store.set("pomodoro-v1", this.pomodoro);
+    }
+
+    renderPomodoroTargets() {
+      const today = this.getLocalDateKey();
+      const tasks = this.tasks.filter((item) => item.date === today && !item.done).slice(0, 10);
+      const options = [
+        ["", "自由專注"],
+        ...tasks.map((item) => [`task:${item.id}`, `今日任務｜${item.title}`]),
+        ...["國文", "英文", "數學", "自然", "社會"].map((subject) => [`subject:${subject}`, `科目複習｜${subject}`])
+      ];
+      $("#pomodoroTarget").innerHTML = options
+        .map(([value, label]) => `<option value="${escapeHTML(value)}">${escapeHTML(label)}</option>`)
+        .join("");
+      $("#pomodoroTarget").value = this.pomodoro.target;
+      if ($("#pomodoroTarget").value !== this.pomodoro.target) {
+        this.pomodoro.target = "";
+        $("#pomodoroTarget").value = "";
+      }
+    }
+
+    renderPomodoro() {
+      if (!$("#pomodoroTime")) return;
+      const duration = POMODORO_DURATIONS[this.pomodoro.mode];
+      const remaining = Math.min(duration, Math.max(0, this.getPomodoroRemaining()));
+      this.pomodoro.remainingSeconds = remaining;
+      const minutes = Math.floor(remaining / 60);
+      const seconds = remaining % 60;
+      const progress = Math.min(1, Math.max(0, 1 - remaining / duration));
+      const labels = { focus: "專注時間", short: "短休息", long: "長休息" };
+
+      $("#pomodoroTime").textContent = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+      $("#pomodoroModeLabel").textContent = labels[this.pomodoro.mode];
+      $("#pomodoroRing").style.setProperty("--pomodoro-progress", `${progress * 360}deg`);
+      $("#pomodoroRing").classList.toggle("resting", this.pomodoro.mode !== "focus");
+      $("#pomodoroRing").setAttribute("aria-label", `剩餘 ${minutes} 分 ${seconds} 秒`);
+      $("#pomodoroToggle").textContent = this.pomodoro.running
+        ? "暫停"
+        : this.pomodoro.mode === "focus" ? "開始專注" : "開始休息";
+      $("#pomodoroStatus").textContent = this.pomodoro.running
+        ? `${labels[this.pomodoro.mode]}進行中，時間到會提醒你。`
+        : this.pomodoro.mode === "focus" ? "準備好後，開始這一輪專注。" : "離開螢幕、喝口水，讓大腦休息一下。";
+      $("#pomodoroRounds").textContent = this.pomodoro.completedRounds;
+      $("#pomodoroMinutes").textContent = this.focusMinutes[this.getLocalDateKey()] || 0;
+      $("#pomodoroTodayBadge").textContent = `今日完成 ${this.pomodoro.completedRounds} 輪`;
+
+      $$("[data-action='pomodoro-mode']").forEach((button) => {
+        const active = button.dataset.mode === this.pomodoro.mode;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+      this.renderPomodoroTargets();
+    }
+
     renderAll() {
       this.renderMistakes();
       this.renderRecent();
@@ -355,6 +571,7 @@ import {
       this.renderMajors();
       this.renderFavorites();
       this.renderTasks();
+      this.renderPomodoro();
       this.updateCounts();
       this.updateDashboard();
     }
@@ -805,11 +1022,21 @@ import {
         const date = new Date();
         date.setDate(date.getDate() - i);
         const key = date.toISOString().slice(0,10);
-        const level = this.heat[key] || 0;
-        cells.push(`<button class="heat-cell" data-date="${key}" data-level="${level}" title="${key}・${level ? `${level * .5} 小時` : "尚未記錄"}" aria-label="${key}，${level ? `學習 ${level * .5} 小時` : "尚未學習"}"></button>`);
+        const minutes = this.getStudyMinutes(key);
+        const level = Math.min(4, Math.ceil(minutes / 30));
+        const timeLabel = minutes
+          ? `${Math.floor(minutes / 60)} 小時 ${minutes % 60} 分鐘`
+          : "尚未記錄";
+        cells.push(`<button class="heat-cell" data-date="${key}" data-level="${level}" title="${key}・${timeLabel}" aria-label="${key}，${timeLabel}"></button>`);
       }
       $("#heatmap").innerHTML = cells.join("");
       $("#heatmap").style.minWidth = this.heatView === "year" ? "830px" : "110px";
+    }
+
+    getStudyMinutes(dateKey) {
+      const manualMinutes = Math.max(0, Number(this.heat[dateKey]) || 0) * 30;
+      const pomodoroMinutes = Math.max(0, Number(this.focusMinutes[dateKey]) || 0);
+      return manualMinutes + pomodoroMinutes;
     }
 
     updateHeat(date) {
@@ -833,8 +1060,7 @@ import {
     updateDashboard() {
       const today = new Date();
       const todayKey = today.toISOString().slice(0, 10);
-      const todayLevel = this.heat[todayKey] || 0;
-      const todayMinutes = todayLevel * 30;
+      const todayMinutes = this.getStudyMinutes(todayKey);
       const mondayOffset = (today.getDay() + 6) % 7;
       const weekStart = new Date(today);
       weekStart.setDate(today.getDate() - mondayOffset);
@@ -845,14 +1071,14 @@ import {
       for (let i = 0; i < 7; i += 1) {
         const date = new Date(weekStart);
         date.setDate(weekStart.getDate() + i);
-        const level = this.heat[date.toISOString().slice(0, 10)] || 0;
-        if (level > 0) weekDays += 1;
-        weekMinutes += level * 30;
+        const minutes = this.getStudyMinutes(date.toISOString().slice(0, 10));
+        if (minutes > 0) weekDays += 1;
+        weekMinutes += minutes;
       }
 
       let streak = 0;
       const cursor = new Date(today);
-      while (this.heat[cursor.toISOString().slice(0, 10)] > 0) {
+      while (this.getStudyMinutes(cursor.toISOString().slice(0, 10)) > 0) {
         streak += 1;
         cursor.setDate(cursor.getDate() - 1);
       }
@@ -1236,6 +1462,8 @@ import {
       this.scores = this.store.get("scores-v2", this.seed.scores);
       this.heat = this.store.get("heat-v2", {});
       this.tasks = this.store.get("tasks-v1", []);
+      this.focusMinutes = this.store.get("focus-minutes-v1", {});
+      this.pomodoro = this.normalizePomodoro(this.store.get("pomodoro-v1", this.createPomodoroState()));
       this.setSyncSetting("local-updated-at", updatedAt);
       this.setSyncSetting("last-updated-at", updatedAt);
       this.renderAll();
@@ -1473,6 +1701,7 @@ import {
             <button class="delete-task" data-action="delete-task" data-id="${item.id}" aria-label="刪除${escapeHTML(item.title)}">刪除</button>
           </div>
         </div>`).join("");
+      this.renderPomodoroTargets();
     }
 
     updateCounts() {
