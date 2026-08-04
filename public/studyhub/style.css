@@ -193,6 +193,14 @@ main { width: min(1400px, 100%); margin: 0 auto; padding: 36px clamp(24px, 4vw, 
 .panel-head h3 { font-size: 15px; }
 .panel-head p { color: var(--muted); font-size: 11px; }
 .soft-badge { color: var(--muted); background: var(--surface-2); }
+.subject-notes-card { margin-top: 18px; padding: 22px 24px; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 18px; color: #fff; border-radius: var(--radius); background: linear-gradient(125deg, #24365f 0%, #35578d 58%, #33858a 100%); box-shadow: 0 14px 34px rgba(36,54,95,.22); transition: transform .2s ease, box-shadow .2s ease; }
+.subject-notes-card:hover { transform: translateY(-3px); box-shadow: 0 18px 38px rgba(36,54,95,.28); }
+.subject-notes-icon { width: 54px; height: 54px; display: grid; place-items: center; border: 1px solid rgba(255,255,255,.28); border-radius: 16px; background: rgba(255,255,255,.14); font-size: 24px; font-weight: 800; }
+.subject-notes-copy { min-width: 0; display: grid; gap: 3px; }
+.subject-notes-copy small { color: rgba(255,255,255,.72); font-size: 10px; font-weight: 700; letter-spacing: .12em; }
+.subject-notes-copy strong { font-size: 18px; }
+.subject-notes-copy > span { color: rgba(255,255,255,.8); font-size: 12px; line-height: 1.6; }
+.subject-notes-action { padding: 10px 14px; border: 1px solid rgba(255,255,255,.3); border-radius: 11px; background: rgba(255,255,255,.12); font-size: 12px; font-weight: 700; white-space: nowrap; }
 .recent-list { min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 5px; }
 .recent-item { min-width: 0; padding: 11px 7px; display: flex; align-items: center; gap: 12px; border-radius: 11px; transition: .2s; }
 .recent-item:hover { background: var(--surface-2); }
@@ -484,6 +492,10 @@ input[type="range"]::-webkit-slider-thumb { width: 17px; height: 17px; appearanc
   .global-search input { padding-right: 12px; }
   .global-search kbd, .desktop-theme, .streak-pill { display: none; }
   main { padding: 24px 15px 54px; }
+  .subject-notes-card { padding: 18px; grid-template-columns: auto minmax(0, 1fr); gap: 13px; }
+  .subject-notes-icon { width: 46px; height: 46px; border-radius: 13px; font-size: 21px; }
+  .subject-notes-copy strong { font-size: 16px; }
+  .subject-notes-action { grid-column: 1 / -1; text-align: center; }
   .page-head { margin-bottom: 21px; align-items: start; }
   .page-head .primary-btn { padding: 0 12px; }
   .add-content-btn { gap: 4px; }
