@@ -35,6 +35,10 @@ jobs:
           cp public/studyhub-icon-512.png _site/studyhub-icon-512.png
           cp public/site.webmanifest _site/site.webmanifest
           cp public/studyhub-og-v2.png _site/studyhub-og-v2.png
+          cp -R public/vocabulary _site/vocabulary
+          mkdir -p _site/data
+          cp public/data/ceec-vocabulary.json _site/data/ceec-vocabulary.json
+          cp public/vocabulary-og.png _site/vocabulary-og.png
           touch _site/.nojekyll
 
       - name: Configure GitHub Pages

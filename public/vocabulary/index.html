@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>高中核心字彙 A–Z｜StudyHub</title>
+  <meta name="description" content="大考中心高中英文參考詞彙 Level 1–6，共 6,012 個詞條，可依字母、級別與詞性搜尋篩選。">
+  <meta property="og:title" content="高中核心字彙 A–Z｜StudyHub">
+  <meta property="og:description" content="6,012 個官方詞條，Level 1–6 一次查清楚。">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://jimmy980821-ops.github.io/studyhub-ai-learning-platform/vocabulary-og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main class="vocab-page">
+    <header class="vocab-hero">
+      <nav class="vocab-nav" aria-label="主要導覽">
+        <a class="vocab-brand" href="../">
+          <span class="brand-mark" aria-hidden="true">S</span>
+          <span>StudyHub</span>
+        </a>
+        <a class="back-link" href="../">回到學習中心 <span aria-hidden="true">↗</span></a>
+      </nav>
+
+      <div class="hero-grid">
+        <section>
+          <div class="eyebrow"><span>CEEC 111</span> 高中英文參考詞彙表</div>
+          <h1>六千個核心字彙，<br><em>一次查清楚。</em></h1>
+          <p class="hero-copy">Level 1–6 全收錄，依 A–Z 整理。輸入單字、選級別或字首，快速找到今天要記住的那一個詞。</p>
+        </section>
+        <aside class="hero-stats" aria-label="字彙統計">
+          <div><strong>6,012</strong><span>官方詞條</span></div>
+          <div><strong>6</strong><span>學習級別</span></div>
+          <div><strong>A–Z</strong><span>完整排序</span></div>
+        </aside>
+      </div>
+
+      <label class="search-box">
+        <span class="search-icon" aria-hidden="true">⌕</span>
+        <span class="sr-only">搜尋單字或詞性</span>
+        <input id="vocabSearch" type="search" placeholder="搜尋英文單字或詞性，例如：achieve、adj." autocomplete="off">
+        <button id="searchClear" type="button" hidden>清除</button>
+      </label>
+    </header>
+
+    <section class="filter-panel" aria-label="字彙篩選器">
+      <div class="filter-row">
+        <span class="filter-label">級別</span>
+        <div class="chip-list" id="levelFilters">
+          <button class="active" type="button" data-level="all">全部</button>
+          <button type="button" data-level="1">Level 1</button>
+          <button type="button" data-level="2">Level 2</button>
+          <button type="button" data-level="3">Level 3</button>
+          <button type="button" data-level="4">Level 4</button>
+          <button type="button" data-level="5">Level 5</button>
+          <button type="button" data-level="6">Level 6</button>
+        </div>
+        <label class="pos-select">
+          <span>詞性</span>
+          <select id="posFilter">
+            <option value="all">全部詞性</option>
+            <option value="n.">名詞 n.</option>
+            <option value="v.">動詞 v.</option>
+            <option value="adj.">形容詞 adj.</option>
+            <option value="adv.">副詞 adv.</option>
+            <option value="prep.">介系詞 prep.</option>
+            <option value="conj.">連接詞 conj.</option>
+            <option value="pron.">代名詞 pron.</option>
+          </select>
+        </label>
+      </div>
+      <div class="alphabet" id="alphabetFilters" aria-label="依字首篩選"></div>
+    </section>
+
+    <section class="results-section" id="resultsSection">
+      <div class="results-heading">
+        <div>
+          <p class="section-kicker">VOCABULARY INDEX</p>
+          <h2 id="resultsTitle">全部核心字彙</h2>
+        </div>
+        <div class="result-count" aria-live="polite"><strong id="resultCount">0</strong><span>個結果</span></div>
+      </div>
+
+      <div class="state-card loading" id="loadingState"><span></span>正在載入 6,012 個詞條…</div>
+      <div class="state-card" id="errorState" hidden><strong>字彙資料暫時無法載入</strong><p>請重新整理頁面再試一次。</p></div>
+      <div class="state-card empty-state" id="emptyState" hidden>
+        <span aria-hidden="true">Aa</span><strong>找不到符合條件的字彙</strong><p>試試其他拼法，或清除目前的篩選條件。</p>
+        <button id="resetFilters" type="button">清除全部篩選</button>
+      </div>
+
+      <div class="word-grid" id="wordGrid" hidden></div>
+      <div class="pagination" id="pagination" hidden>
+        <p id="pageSummary"></p>
+        <div>
+          <button id="previousPage" type="button">← 上一頁</button>
+          <span id="pageIndicator"></span>
+          <button id="nextPage" type="button">下一頁 →</button>
+        </div>
+      </div>
+    </section>
+
+    <footer class="vocab-footer">
+      <div><strong>StudyHub</strong><span>讓複習更有方向。</span></div>
+      <p>資料來源：<a href="https://www.ceec.edu.tw/files/file_pool/1/0K213612821879129835/%E9%AB%98%E4%B8%AD%E8%8B%B1%E6%96%87%E5%8F%83%E8%80%83%E8%A9%9E%E5%BD%99%E8%A1%A8%28111%E5%AD%B8%E5%B9%B4%E5%BA%A6%E8%B5%B7%E9%81%A9%E7%94%A8%29.pdf" target="_blank" rel="noreferrer">大學入學考試中心</a>《高中英文參考詞彙表－111 學年度起適用－》</p>
+    </footer>
+  </main>
+</body>
+</html>
