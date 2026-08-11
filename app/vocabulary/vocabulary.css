@@ -152,12 +152,14 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .result-count span { color: var(--muted); font-size: 14px; }
 
 .word-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--ink); border-left: 1px solid var(--line); }
-.word-card { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 14px; min-height: 104px; padding: 17px 18px; background: rgba(251, 249, 244, .8); border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); transition: background .18s ease, transform .18s ease; }
+.word-card { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 14px; min-height: 148px; padding: 17px 18px; background: rgba(251, 249, 244, .8); border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); transition: background .18s ease, transform .18s ease; }
 .word-card:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 12px 22px rgba(16,44,44,.08); z-index: 1; }
 .word-index { color: #9aa5a1; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 10px; align-self: start; }
 .word-main { min-width: 0; }
 .word-main h3 { margin: 0; overflow-wrap: anywhere; font-family: Georgia, "Times New Roman", serif; font-size: clamp(20px, 2vw, 27px); line-height: 1.08; font-weight: 500; letter-spacing: -.02em; }
-.word-main p { margin: 8px 0 0; color: var(--muted); font-size: 13px; }
+.word-main p { margin: 0; }
+.word-main .word-translation { display: -webkit-box; margin-top: 9px; overflow: hidden; color: #40524d; font-size: 14px; line-height: 1.5; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+.word-main .word-pos { margin-top: 7px; color: var(--teal); font-size: 12px; font-weight: 700; letter-spacing: .02em; }
 .level-badge { display: grid; place-items: center; width: 35px; height: 35px; border-radius: 50%; font-size: 12px; font-weight: 900; }
 .level-1 { background: #dceef9; color: #185d82; }
 .level-2 { background: #dcefe6; color: #21694b; }
@@ -225,7 +227,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .results-heading { align-items: flex-start; }
   .result-count strong { font-size: 27px; }
   .word-grid { grid-template-columns: 1fr; }
-  .word-card { min-height: 92px; }
+  .word-card { min-height: 132px; }
   .pagination { align-items: stretch; flex-direction: column; }
   .pagination p { text-align: center; }
   .pagination div { justify-content: space-between; }

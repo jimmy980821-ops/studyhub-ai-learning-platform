@@ -28,7 +28,7 @@ function escapeHtml(value) {
 function filteredRows() {
   const query = state.query.trim().toLowerCase();
   return state.rows.filter((row) => {
-    const matchesQuery = !query || row.word.toLowerCase().includes(query) || row.part_of_speech.toLowerCase().includes(query);
+    const matchesQuery = !query || row.word.toLowerCase().includes(query) || row.part_of_speech.toLowerCase().includes(query) || row.translation.toLowerCase().includes(query);
     const matchesLevel = state.level === null || row.level === state.level;
     const matchesLetter = state.letter === null || row.letter === state.letter;
     const matchesPart = state.partOfSpeech === "all" || row.part_of_speech.split("/").some((item) => item.includes(state.partOfSpeech));
@@ -62,7 +62,7 @@ function render() {
   elements.grid.innerHTML = visible.map((row, index) => `
     <article class="word-card">
       <span class="word-index">${String(startIndex + index + 1).padStart(4, "0")}</span>
-      <div class="word-main"><h3>${escapeHtml(row.word)}</h3><p>${escapeHtml(row.part_of_speech)}</p></div>
+      <div class="word-main"><h3>${escapeHtml(row.word)}</h3><p class="word-translation">${escapeHtml(row.translation)}</p><p class="word-pos">${escapeHtml(row.part_of_speech)}</p></div>
       <div class="level-badge level-${row.level}">L${row.level}</div>
       <button class="speak-button" type="button" data-speak="${escapeHtml(row.word)}" aria-label="朗讀 ${escapeHtml(row.word)}" title="朗讀單字"><span aria-hidden="true">◖</span></button>
     </article>`).join("");

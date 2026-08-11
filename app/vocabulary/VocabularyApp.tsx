@@ -7,6 +7,7 @@ type VocabularyRow = {
   part_of_speech: string;
   level: number;
   letter: string;
+  translation: string;
 };
 
 const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
@@ -49,7 +50,8 @@ export default function VocabularyApp() {
       const matchesQuery =
         !normalizedQuery ||
         row.word.toLowerCase().includes(normalizedQuery) ||
-        row.part_of_speech.toLowerCase().includes(normalizedQuery);
+        row.part_of_speech.toLowerCase().includes(normalizedQuery) ||
+        row.translation.toLowerCase().includes(normalizedQuery);
       const matchesLevel = level === null || row.level === level;
       const matchesLetter = letter === null || row.letter === letter;
       const matchesPartOfSpeech =
@@ -98,7 +100,7 @@ export default function VocabularyApp() {
             <div className="eyebrow"><span>CEEC 111</span> 高中英文參考詞彙表</div>
             <h1>六千個核心字彙，<br /><em>一次查清楚。</em></h1>
             <p className="hero-copy">
-              Level 1–6 全收錄，依 A–Z 整理。輸入單字、選級別或字首，快速找到今天要記住的那一個詞。
+              Level 1–6 全收錄，附繁體中文義並依 A–Z 整理。輸入英文或中文，快速找到今天要記住的那一個詞。
             </p>
           </section>
 
@@ -116,7 +118,7 @@ export default function VocabularyApp() {
             type="search"
             value={query}
             onChange={(event) => updateFilter(() => setQuery(event.target.value))}
-            placeholder="搜尋英文單字或詞性，例如：achieve、adj."
+            placeholder="搜尋英文、中文或詞性，例如：achieve、完成、adj."
             autoComplete="off"
           />
           {query && <button type="button" onClick={() => updateFilter(() => setQuery(""))}>清除</button>}
@@ -183,7 +185,8 @@ export default function VocabularyApp() {
                   <span className="word-index">{String((page - 1) * pageSize + index + 1).padStart(4, "0")}</span>
                   <div className="word-main">
                     <h3>{row.word}</h3>
-                    <p>{row.part_of_speech}</p>
+                    <p className="word-translation">{row.translation}</p>
+                    <p className="word-pos">{row.part_of_speech}</p>
                   </div>
                   <div className={`level-badge level-${row.level}`}>L{row.level}</div>
                   <button className="speak-button" type="button" onClick={() => speak(row.word)} aria-label={`朗讀 ${row.word}`} title="朗讀單字">
@@ -214,7 +217,7 @@ export default function VocabularyApp() {
 
       <footer className="vocab-footer">
         <div><strong>StudyHub</strong><span>讓複習更有方向。</span></div>
-        <p>資料來源：<a href={sourceUrl} target="_blank" rel="noreferrer">大學入學考試中心</a>《高中英文參考詞彙表－111 學年度起適用－》</p>
+        <p>詞條來源：<a href={sourceUrl} target="_blank" rel="noreferrer">大學入學考試中心</a>；中文義採用 <a href="https://github.com/skywind3000/ECDICT" target="_blank" rel="noreferrer">ECDICT</a> 開源英漢字典（MIT）。</p>
       </footer>
     </main>
   );

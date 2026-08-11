@@ -134,3 +134,22 @@ test("includes the complete social studies notes section", async () => {
     { history: 18, geography: 17, civics: 18 },
   );
 });
+
+test("publishes all CEEC vocabulary entries with Traditional Chinese meanings", async () => {
+  const [html, script, rowsText] = await Promise.all([
+    readFile(new URL("../public/vocabulary/index.html", import.meta.url), "utf8"),
+    readFile(new URL("../public/vocabulary/app.js", import.meta.url), "utf8"),
+    readFile(new URL("../public/data/ceec-vocabulary.json", import.meta.url), "utf8"),
+  ]);
+  const rows = JSON.parse(rowsText);
+
+  assert.equal(rows.length, 6012);
+  assert.equal(rows.filter((row) => row.translation).length, 6012);
+  assert.equal(rows[0].word, "a/an");
+  assert.equal(rows.at(-1).word, "zoom");
+  assert.match(rows.find((row) => row.word === "achieve(ment)").translation, /完成/);
+  assert.match(html, /附繁體中文義/);
+  assert.match(html, /ECDICT/);
+  assert.match(script, /row\.translation\.toLowerCase\(\)\.includes/);
+  assert.match(script, /word-translation/);
+});
