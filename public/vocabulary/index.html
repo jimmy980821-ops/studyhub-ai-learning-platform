@@ -71,6 +71,9 @@
             <option value="pron.">代名詞 pron.</option>
           </select>
         </label>
+        <button class="favorites-filter" id="favoritesFilter" type="button" aria-pressed="false">
+          <span aria-hidden="true">★</span> 重要單字 <strong id="favoritesCount">0</strong>
+        </button>
       </div>
       <div class="alphabet" id="alphabetFilters" aria-label="依字首篩選"></div>
     </section>
@@ -87,7 +90,7 @@
       <div class="state-card loading" id="loadingState"><span></span>正在載入 6,012 個詞條…</div>
       <div class="state-card" id="errorState" hidden><strong>字彙資料暫時無法載入</strong><p>請重新整理頁面再試一次。</p></div>
       <div class="state-card empty-state" id="emptyState" hidden>
-        <span aria-hidden="true">Aa</span><strong>找不到符合條件的字彙</strong><p>試試其他拼法，或清除目前的篩選條件。</p>
+        <span aria-hidden="true">Aa</span><strong id="emptyTitle">找不到符合條件的字彙</strong><p id="emptyDescription">試試其他拼法，或清除目前的篩選條件。</p>
         <button id="resetFilters" type="button">清除全部篩選</button>
       </div>
 

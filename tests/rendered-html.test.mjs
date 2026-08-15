@@ -155,4 +155,9 @@ test("publishes all CEEC vocabulary entries with Traditional Chinese meanings", 
   assert.match(html, /ECDICT/);
   assert.match(script, /row\.translation\.toLowerCase\(\)\.includes/);
   assert.match(script, /word-translation/);
+  assert.match(html, /id="favoritesFilter"/);
+  assert.match(html, /重要單字/);
+  assert.match(script, /studyhub-vocabulary-favorites-v1/);
+  assert.match(script, /localStorage\.setItem\(favoritesStorageKey/);
+  assert.match(script, /data-favorite/);
 });

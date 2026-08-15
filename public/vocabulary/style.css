@@ -139,6 +139,11 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .pos-select { display: flex; align-items: center; gap: 10px; }
 .pos-select select { min-width: 132px; border: 1px solid var(--line); background: #fff; color: var(--ink); padding: 9px 30px 9px 11px; outline: none; }
 .pos-select select:focus { border-color: var(--teal); }
+.favorites-filter { min-height: 39px; padding: 8px 12px; display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line); background: #fff; color: var(--ink); cursor: pointer; font-weight: 800; white-space: nowrap; }
+.favorites-filter span { color: var(--orange); font-size: 17px; }
+.favorites-filter strong { min-width: 23px; padding: 2px 7px; border-radius: 99px; background: var(--paper); color: var(--muted); font-size: 11px; text-align: center; }
+.favorites-filter:hover, .favorites-filter.active { border-color: var(--orange); background: #fff4ec; color: #8b451f; }
+.favorites-filter.active strong { background: var(--orange); color: #fff; }
 
 .alphabet { display: grid; grid-template-columns: repeat(27, minmax(34px, 1fr)); margin-top: 24px; overflow-x: auto; padding-bottom: 5px; }
 .alphabet button { min-width: 36px; height: 38px; border-right: 0; font-family: Georgia, serif; font-weight: 700; }
@@ -153,7 +158,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .result-count span { color: var(--muted); font-size: 13px; font-weight: 700; letter-spacing: .04em; line-height: 1; }
 
 .word-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--ink); border-left: 1px solid var(--line); }
-.word-card { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 14px; min-height: 148px; padding: 17px 18px; background: rgba(251, 249, 244, .8); border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); transition: background .18s ease, transform .18s ease; }
+.word-card { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto auto; align-items: center; gap: 11px; min-height: 148px; padding: 17px 18px; background: rgba(251, 249, 244, .8); border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); transition: background .18s ease, transform .18s ease; }
 .word-card:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 12px 22px rgba(16,44,44,.08); z-index: 1; }
 .word-index { color: #9aa5a1; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 10px; align-self: start; }
 .word-main { min-width: 0; }
@@ -168,6 +173,9 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .level-4 { background: #f9ddc9; color: #8b451f; }
 .level-5 { background: #e9ddf5; color: #66408c; }
 .level-6 { background: #f6dce4; color: #87334e; }
+.favorite-button, .speak-button { display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid var(--line); border-radius: 50%; background: transparent; cursor: pointer; }
+.favorite-button { color: #a87655; font-size: 19px; }
+.favorite-button:hover, .favorite-button.active { border-color: var(--orange); background: #fff0e6; color: var(--orange); }
 .speak-button { display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid var(--line); border-radius: 50%; background: transparent; color: var(--teal); cursor: pointer; }
 .speak-button span { transform: rotate(45deg); font-size: 19px; }
 .speak-button:hover { background: var(--teal); color: #fff; border-color: var(--teal); }
@@ -205,6 +213,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .filter-row { align-items: flex-start; flex-wrap: wrap; }
   .filter-label { width: 100%; }
   .pos-select { margin-left: auto; }
+  .favorites-filter { margin-left: auto; }
 }
 
 @media (max-width: 640px) {
@@ -223,6 +232,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .chip-list button { flex: 1 0 calc(25% - 8px); padding-inline: 8px; }
   .pos-select { width: 100%; margin: 4px 0 0; justify-content: space-between; }
   .pos-select select { flex: 1; }
+  .favorites-filter { width: 100%; justify-content: center; margin-left: 0; }
   .alphabet { margin-top: 20px; }
   .results-section { padding: 54px 18px 70px; }
   .results-heading { align-items: flex-start; }

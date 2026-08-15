@@ -12,6 +12,7 @@ type VocabularyRow = {
 
 const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 const pageSize = 60;
+const favoritesStorageKey = "studyhub-vocabulary-favorites-v1";
 const sourceUrl =
   "https://www.ceec.edu.tw/files/file_pool/1/0K213612821879129835/%E9%AB%98%E4%B8%AD%E8%8B%B1%E6%96%87%E5%8F%83%E8%80%83%E8%A9%9E%E5%BD%99%E8%A1%A8%28111%E5%AD%B8%E5%B9%B4%E5%BA%A6%E8%B5%B7%E9%81%A9%E7%94%A8%29.pdf";
 
@@ -24,12 +25,18 @@ function speak(word: string) {
   window.speechSynthesis.speak(utterance);
 }
 
+function favoriteKey(row: VocabularyRow) {
+  return `${row.word}::${row.level}`;
+}
+
 export default function VocabularyApp() {
   const [rows, setRows] = useState<VocabularyRow[]>([]);
   const [query, setQuery] = useState("");
   const [level, setLevel] = useState<number | null>(null);
   const [letter, setLetter] = useState<string | null>(null);
   const [partOfSpeech, setPartOfSpeech] = useState("all");
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [page, setPage] = useState(1);
   const [error, setError] = useState(false);
   const resultsRef = useRef<HTMLElement>(null);
@@ -44,6 +51,15 @@ export default function VocabularyApp() {
       .catch(() => setError(true));
   }, []);
 
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(favoritesStorageKey) ?? "[]");
+      if (Array.isArray(saved)) setFavorites(new Set(saved.filter((item): item is string => typeof item === "string")));
+    } catch {
+      localStorage.removeItem(favoritesStorageKey);
+    }
+  }, []);
+
   const filteredRows = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
     return rows.filter((row) => {
@@ -56,9 +72,10 @@ export default function VocabularyApp() {
       const matchesLetter = letter === null || row.letter === letter;
       const matchesPartOfSpeech =
         partOfSpeech === "all" || row.part_of_speech.split("/").some((item) => item.includes(partOfSpeech));
-      return matchesQuery && matchesLevel && matchesLetter && matchesPartOfSpeech;
+      const matchesFavorites = !favoritesOnly || favorites.has(favoriteKey(row));
+      return matchesQuery && matchesLevel && matchesLetter && matchesPartOfSpeech && matchesFavorites;
     });
-  }, [letter, level, partOfSpeech, query, rows]);
+  }, [favorites, favoritesOnly, letter, level, partOfSpeech, query, rows]);
 
   const pageCount = Math.max(1, Math.ceil(filteredRows.length / pageSize));
   const visibleRows = filteredRows.slice((page - 1) * pageSize, page * pageSize);
@@ -78,7 +95,19 @@ export default function VocabularyApp() {
     setLevel(null);
     setLetter(null);
     setPartOfSpeech("all");
+    setFavoritesOnly(false);
     setPage(1);
+  }
+
+  function toggleFavorite(row: VocabularyRow) {
+    const key = favoriteKey(row);
+    setFavorites((current) => {
+      const next = new Set(current);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      localStorage.setItem(favoritesStorageKey, JSON.stringify([...next]));
+      return next;
+    });
   }
 
   const start = filteredRows.length ? (page - 1) * pageSize + 1 : 0;
@@ -149,6 +178,14 @@ export default function VocabularyApp() {
               <option value="pron.">代名詞 pron.</option>
             </select>
           </label>
+          <button
+            className={`favorites-filter ${favoritesOnly ? "active" : ""}`}
+            type="button"
+            aria-pressed={favoritesOnly}
+            onClick={() => updateFilter(() => setFavoritesOnly((current) => !current))}
+          >
+            <span aria-hidden="true">★</span> 重要單字 <strong>{favorites.size}</strong>
+          </button>
         </div>
 
         <div className="alphabet" aria-label="依字首篩選">
@@ -165,7 +202,7 @@ export default function VocabularyApp() {
         <div className="results-heading">
           <div>
             <p className="section-kicker">VOCABULARY INDEX</p>
-            <h2>{letter ? `${letter} 開頭的字彙` : level ? `Level ${level} 字彙` : "全部核心字彙"}</h2>
+            <h2>{favoritesOnly ? "我的重要單字" : letter ? `${letter} 開頭的字彙` : level ? `Level ${level} 字彙` : "全部核心字彙"}</h2>
           </div>
           <div className="result-count" aria-live="polite">
             <strong>{filteredRows.length.toLocaleString("zh-TW")}</strong>
@@ -189,6 +226,16 @@ export default function VocabularyApp() {
                     <p className="word-pos">{row.part_of_speech}</p>
                   </div>
                   <div className={`level-badge level-${row.level}`}>L{row.level}</div>
+                  <button
+                    className={`favorite-button ${favorites.has(favoriteKey(row)) ? "active" : ""}`}
+                    type="button"
+                    onClick={() => toggleFavorite(row)}
+                    aria-label={`${favorites.has(favoriteKey(row)) ? "取消" : "加入"}重要單字：${row.word}`}
+                    aria-pressed={favorites.has(favoriteKey(row))}
+                    title={favorites.has(favoriteKey(row)) ? "取消重要單字" : "儲存為重要單字"}
+                  >
+                    <span aria-hidden="true">{favorites.has(favoriteKey(row)) ? "★" : "☆"}</span>
+                  </button>
                   <button className="speak-button" type="button" onClick={() => speak(row.word)} aria-label={`朗讀 ${row.word}`} title="朗讀單字">
                     <span aria-hidden="true">◖</span>
                   </button>
@@ -208,9 +255,9 @@ export default function VocabularyApp() {
         ) : (
           <div className="state-card empty-state">
             <span aria-hidden="true">Aa</span>
-            <strong>找不到符合條件的字彙</strong>
-            <p>試試其他拼法，或清除目前的篩選條件。</p>
-            <button type="button" onClick={resetFilters}>清除全部篩選</button>
+            <strong>{favoritesOnly ? favorites.size ? "目前篩選找不到重要單字" : "還沒有重要單字" : "找不到符合條件的字彙"}</strong>
+            <p>{favoritesOnly ? favorites.size ? "調整級別、字母或詞性，查看其他已儲存單字。" : "點一下單字卡上的星號，就能把它收藏到這裡。" : "試試其他拼法，或清除目前的篩選條件。"}</p>
+            <button type="button" onClick={resetFilters}>{favoritesOnly ? "查看全部單字" : "清除全部篩選"}</button>
           </div>
         )}
       </section>
