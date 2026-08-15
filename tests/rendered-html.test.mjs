@@ -106,6 +106,9 @@ test("bundles the complete StudyHub local-first application", async () => {
   assert.match(formulas, /hf = W/);
   assert.match(css, /@media \(max-width: 640px\)/);
   assert.match(css, /prefers-reduced-motion/);
+  assert.match(html, /data-studyhub-route="vocabulary"/);
+  assert.match(html, /高中英文核心字彙/);
+  assert.match(script, /initializeStudyHubRoutes/);
   assert.equal(JSON.parse(manifest).short_name, "StudyHub");
   assert.equal(JSON.parse(manifest).start_url, "./");
   assert.equal(JSON.parse(manifest).icons.length, 2);

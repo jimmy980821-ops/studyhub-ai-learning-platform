@@ -195,6 +195,9 @@ main { width: min(1400px, 100%); margin: 0 auto; padding: 36px clamp(24px, 4vw, 
 .soft-badge { color: var(--muted); background: var(--surface-2); }
 .subject-notes-card { margin-top: 18px; padding: 22px 24px; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 18px; color: #fff; border-radius: var(--radius); background: linear-gradient(125deg, #24365f 0%, #35578d 58%, #33858a 100%); box-shadow: 0 14px 34px rgba(36,54,95,.22); transition: transform .2s ease, box-shadow .2s ease; }
 .subject-notes-card:hover { transform: translateY(-3px); box-shadow: 0 18px 38px rgba(36,54,95,.28); }
+.vocabulary-zone-card { background: linear-gradient(125deg, #31436f 0%, #465bb0 56%, #6e5aa7 100%); box-shadow: 0 14px 34px rgba(55,68,132,.22); }
+.vocabulary-zone-card:hover { box-shadow: 0 18px 38px rgba(55,68,132,.3); }
+.subject-notes-icon.vocabulary-zone-icon { font-size: 18px; letter-spacing: -.04em; }
 .subject-notes-icon { width: 54px; height: 54px; display: grid; place-items: center; border: 1px solid rgba(255,255,255,.28); border-radius: 16px; background: rgba(255,255,255,.14); font-size: 24px; font-weight: 800; }
 .subject-notes-copy { min-width: 0; display: grid; gap: 3px; }
 .subject-notes-copy small { color: rgba(255,255,255,.72); font-size: 10px; font-weight: 700; letter-spacing: .12em; }

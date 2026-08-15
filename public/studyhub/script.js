@@ -202,11 +202,20 @@ import {
     init() {
       this.applyTheme();
       this.setToday();
+      this.initializeStudyHubRoutes();
       this.bindEvents();
       this.renderAll();
       this.initializePomodoro();
       this.navigate(location.hash.slice(1) || "home", false);
       this.initializeGoogleSync();
+    }
+
+    initializeStudyHubRoutes() {
+      const runsInsideStudyHubFolder = /\/studyhub(?:\/|\/index\.html$)/.test(location.pathname);
+      const vocabularyHref = runsInsideStudyHubFolder ? "../vocabulary/" : "vocabulary/";
+      $$('[data-studyhub-route="vocabulary"]').forEach((link) => {
+        link.setAttribute("href", vocabularyHref);
+      });
     }
 
     applyTheme() {
