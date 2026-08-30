@@ -117,25 +117,30 @@ test("bundles the complete StudyHub local-first application", async () => {
 });
 
 test("includes the complete social studies notes section", async () => {
-  const [home, notesPage, notesData] = await Promise.all([
+  const [home, notesPage, notesData, scopeData] = await Promise.all([
     readFile(new URL("../public/studyhub/index.html", import.meta.url), "utf8"),
     readFile(new URL("../public/studyhub/social-notes/index.html", import.meta.url), "utf8"),
     import(new URL("../public/studyhub/social-notes/data.js", import.meta.url)),
+    import(new URL("../public/studyhub/social-notes/scope-data.js", import.meta.url)),
   ]);
 
   assert.match(home, /href="social-notes\/"/);
   assert.match(home, /社會科學習筆記/);
   assert.match(notesPage, /返回 StudyHub/);
-  assert.equal(notesData.socialNotes.length, 53);
-  assert.equal(notesData.socialQuiz.length, 37);
-  assert.equal(Object.keys(notesData.socialDeepDives).length, 53);
+  const allNotes = [...notesData.socialNotes, ...scopeData.scopeNotes];
+  assert.equal(allNotes.length, 79);
+  assert.equal(notesData.socialQuiz.length + scopeData.scopeQuiz.length, 63);
+  assert.equal(Object.keys(notesData.socialDeepDives).length + Object.keys(scopeData.scopeDeepDives).length, 79);
   assert.deepEqual(
-    notesData.socialNotes.reduce((counts, note) => {
+    allNotes.reduce((counts, note) => {
       counts[note.subject] = (counts[note.subject] ?? 0) + 1;
       return counts;
     }, {}),
-    { history: 18, geography: 17, civics: 18 },
+    { history: 26, geography: 24, civics: 29 },
   );
+  for (const title of ["如何認識過去（導論）", "中國與東亞", "人口與環境負載力", "世界體系", "犯罪與刑罰", "勞動參與"]) {
+    assert.ok(allNotes.some((note) => note.title === title), `missing scope note: ${title}`);
+  }
 });
 
 test("publishes all CEEC vocabulary entries with Traditional Chinese meanings", async () => {

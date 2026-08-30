@@ -1,13 +1,18 @@
 import { socialNotes, socialQuiz, socialDeepDives } from "./data.js";
+import { scopeNotes, scopeQuiz, scopeDeepDives } from "./scope-data.js";
+
+const allNotes = [...socialNotes, ...scopeNotes];
+const allQuiz = [...socialQuiz, ...scopeQuiz];
+const allDeepDives = { ...socialDeepDives, ...scopeDeepDives };
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const subjectNames = { history:"歷史", geography:"地理", civics:"公民" };
 const viewCopy = {
-  all:["第一冊全範圍","歷史、地理、公民一次掌握"],
-  history:["歷史第一冊","從多元族群到現代國家的形塑"],
-  geography:["地理第一冊","用空間觀點理解氣候、地形與人地關係"],
-  civics:["公民第一冊","從人權、民主到全球化與媒體識讀"]
+  all:["第一～二冊全範圍","臺灣史、東亞史、地理與公民法律一次掌握"],
+  history:["歷史第一～二冊","從臺灣多元社會到東亞現代化與戰爭和平"],
+  geography:["地理第一～二冊","從地圖、氣候與地形到人口、產業與世界體系"],
+  civics:["公民社政＋法律","從人權、民主與公共參與到民刑法及勞動保障"]
 };
 
 const safeParse = (key, fallback) => {
@@ -19,11 +24,11 @@ const save = (key, value) => localStorage.setItem(key, JSON.stringify(value));
 const state = {
   view:"all",
   search:"",
-  expanded:new Set([socialNotes[0].id]),
+  expanded:new Set([allNotes[0].id]),
   bookmarks:new Set(safeParse("social-notes-bookmarks-v1", [])),
   ratings:safeParse("social-notes-ratings-v1", {}),
   quizIndex:0,
-  quizAnswers:Array(socialQuiz.length).fill(null)
+  quizAnswers:Array(allQuiz.length).fill(null)
 };
 
 function escapeHTML(value="") {
@@ -32,9 +37,9 @@ function escapeHTML(value="") {
 
 function matchingNotes() {
   const keyword = state.search.trim().toLowerCase();
-  return socialNotes.filter(note => {
+  return allNotes.filter(note => {
     const inSubject = state.view === "all" || note.subject === state.view;
-    const deepDive = socialDeepDives[note.id];
+    const deepDive = allDeepDives[note.id];
     const deepText = deepDive
       ? [...deepDive.sections.flatMap(section => [section.title, section.text]), deepDive.examTip, deepDive.scenario]
       : [];
@@ -46,8 +51,8 @@ function matchingNotes() {
 function renderSummary() {
   const subjects = ["history","geography","civics"];
   $("#subjectSummary").innerHTML = subjects.map(subject => {
-    const total = socialNotes.filter(note => note.subject === subject).length;
-    const done = socialNotes.filter(note => note.subject === subject && Number(state.ratings[note.id]) >= 4).length;
+    const total = allNotes.filter(note => note.subject === subject).length;
+    const done = allNotes.filter(note => note.subject === subject && Number(state.ratings[note.id]) >= 4).length;
     return `<button class="summary-card ${subject}" data-view="${subject}"><i>${subjectNames[subject].slice(0,1)}</i><span><strong>${subjectNames[subject]} · ${total} 主題</strong><small>${done} 個已熟悉，點擊查看本科</small></span></button>`;
   }).join("");
 }
@@ -56,7 +61,7 @@ function noteCard(note) {
   const rating = Number(state.ratings[note.id]) || 0;
   const open = state.expanded.has(note.id);
   const bookmarked = state.bookmarks.has(note.id);
-  const deepDive = socialDeepDives[note.id];
+  const deepDive = allDeepDives[note.id];
   const deepDiveHTML = deepDive ? `<section class="deep-dive">
         <h4><span>深入整理</span><small>把核心概念連成完整脈絡</small></h4>
         <div class="deep-grid">${deepDive.sections.map(section => `<article class="deep-topic"><strong>${escapeHTML(section.title)}</strong><p>${escapeHTML(section.text)}</p></article>`).join("")}</div>
@@ -96,7 +101,7 @@ function renderNotes() {
 }
 
 function reviewNotes() {
-  return socialNotes.filter(note => state.bookmarks.has(note.id) || (state.ratings[note.id] && Number(state.ratings[note.id]) < 4));
+  return allNotes.filter(note => state.bookmarks.has(note.id) || (state.ratings[note.id] && Number(state.ratings[note.id]) < 4));
 }
 
 function renderReview() {
@@ -104,17 +109,17 @@ function renderReview() {
   $("#reviewList").innerHTML = notes.map(noteCard).join("");
   $("#reviewEmpty").hidden = notes.length > 0;
   $("#bookmarkStat").textContent = state.bookmarks.size;
-  $("#weakStat").textContent = socialNotes.filter(note => state.ratings[note.id] && Number(state.ratings[note.id]) < 4).length;
-  $("#doneStat").textContent = socialNotes.filter(note => Number(state.ratings[note.id]) >= 4).length;
+  $("#weakStat").textContent = allNotes.filter(note => state.ratings[note.id] && Number(state.ratings[note.id]) < 4).length;
+  $("#doneStat").textContent = allNotes.filter(note => Number(state.ratings[note.id]) >= 4).length;
   updateProgress();
 }
 
 function updateProgress() {
-  const mastered = socialNotes.filter(note => Number(state.ratings[note.id]) >= 4).length;
+  const mastered = allNotes.filter(note => Number(state.ratings[note.id]) >= 4).length;
   const reviewCount = reviewNotes().length;
   $("#masteredStat").textContent = mastered;
-  $("#progressText").textContent = `${mastered} / ${socialNotes.length}`;
-  $("#progressBar").style.width = `${mastered / socialNotes.length * 100}%`;
+  $("#progressText").textContent = `${mastered} / ${allNotes.length}`;
+  $("#progressBar").style.width = `${mastered / allNotes.length * 100}%`;
   $("#reviewCount").textContent = reviewCount;
 }
 
@@ -150,15 +155,15 @@ function rate(id, value) {
 }
 
 function renderQuiz() {
-  const total = socialQuiz.length;
+  const total = allQuiz.length;
   const finished = state.quizIndex >= total;
-  const score = state.quizAnswers.reduce((sum, answer, index) => sum + (answer === socialQuiz[index].answer ? 1 : 0), 0);
+  const score = state.quizAnswers.reduce((sum, answer, index) => sum + (answer === allQuiz[index].answer ? 1 : 0), 0);
   $("#scoreValue").textContent = score;
   $("#scoreRing").style.setProperty("--score", `${score / total * 100}%`);
   $("#quizPosition").textContent = finished ? "測驗完成" : `第 ${state.quizIndex + 1} / ${total} 題`;
-  $("#quizDots").innerHTML = socialQuiz.map((_, index) => {
+  $("#quizDots").innerHTML = allQuiz.map((_, index) => {
     const answer = state.quizAnswers[index];
-    const status = answer === null ? "" : answer === socialQuiz[index].answer ? "correct" : "wrong";
+    const status = answer === null ? "" : answer === allQuiz[index].answer ? "correct" : "wrong";
     return `<i class="${index === state.quizIndex ? "current" : ""} ${status}"></i>`;
   }).join("");
   $("#previousQuestion").disabled = state.quizIndex === 0;
@@ -173,7 +178,7 @@ function renderQuiz() {
     return;
   }
 
-  const item = socialQuiz[state.quizIndex];
+  const item = allQuiz[state.quizIndex];
   const answered = state.quizAnswers[state.quizIndex];
   $("#quizSubject").textContent = item.subject;
   $("#quizQuestion").textContent = item.question;
@@ -201,7 +206,7 @@ function answerQuiz(index) {
 
 function resetQuiz() {
   state.quizIndex = 0;
-  state.quizAnswers = Array(socialQuiz.length).fill(null);
+  state.quizAnswers = Array(allQuiz.length).fill(null);
   renderQuiz();
 }
 
@@ -254,9 +259,9 @@ $("#nextQuestion").addEventListener("click", () => { if (state.quizAnswers[state
 $("#previousQuestion").addEventListener("click", () => { if (state.quizIndex > 0) { state.quizIndex -= 1; renderQuiz(); } });
 $("#resetQuiz").addEventListener("click", resetQuiz);
 
-$("#topicStat").textContent = socialNotes.length;
-$("#quizStat").textContent = socialQuiz.length;
-$("#quizHeading").textContent = `${socialQuiz.length} 題觀念測驗`;
+$("#topicStat").textContent = allNotes.length;
+$("#quizStat").textContent = allQuiz.length;
+$("#quizHeading").textContent = `${allQuiz.length} 題觀念測驗`;
 applyTheme();
 renderNotes();
 renderQuiz();
