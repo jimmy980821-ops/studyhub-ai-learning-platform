@@ -127,6 +127,10 @@ test("includes the complete social studies notes section", async () => {
   assert.match(home, /href="social-notes\/"/);
   assert.match(home, /社會科學習筆記/);
   assert.match(notesPage, /返回 StudyHub/);
+  const appScript = await readFile(new URL("../public/studyhub/social-notes/app.js", import.meta.url), "utf8");
+  const notesStyle = await readFile(new URL("../public/studyhub/social-notes/style.css", import.meta.url), "utf8");
+  for (const label of ["第一冊", "第二冊", "社會政治", "法律"]) assert.match(appScript, new RegExp(label));
+  assert.match(notesStyle, /\.scope-badge/);
   const allNotes = [...notesData.socialNotes, ...scopeData.scopeNotes];
   assert.equal(allNotes.length, 79);
   assert.equal(notesData.socialQuiz.length + scopeData.scopeQuiz.length, 63);

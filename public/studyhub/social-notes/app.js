@@ -8,6 +8,12 @@ const allDeepDives = { ...socialDeepDives, ...scopeDeepDives };
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const subjectNames = { history:"歷史", geography:"地理", civics:"公民" };
+const scopeLabel = (note) => {
+  const number = Number(note.id.slice(1));
+  if (note.subject === "history") return number <= 19 ? "第一冊" : "第二冊";
+  if (note.subject === "geography") return number <= 17 ? "第一冊" : "第二冊";
+  return number <= 18 ? "社會政治" : "法律";
+};
 const viewCopy = {
   all:["第一～二冊全範圍","臺灣史、東亞史、地理與公民法律一次掌握"],
   history:["歷史第一～二冊","從臺灣多元社會到東亞現代化與戰爭和平"],
@@ -62,6 +68,7 @@ function noteCard(note) {
   const open = state.expanded.has(note.id);
   const bookmarked = state.bookmarks.has(note.id);
   const deepDive = allDeepDives[note.id];
+  const scope = scopeLabel(note);
   const deepDiveHTML = deepDive ? `<section class="deep-dive">
         <h4><span>深入整理</span><small>把核心概念連成完整脈絡</small></h4>
         <div class="deep-grid">${deepDive.sections.map(section => `<article class="deep-topic"><strong>${escapeHTML(section.title)}</strong><p>${escapeHTML(section.text)}</p></article>`).join("")}</div>
@@ -72,7 +79,7 @@ function noteCard(note) {
       </div>` : "";
   return `<article class="note-card ${note.subject} ${open ? "open" : ""}" data-note-id="${note.id}">
     <div class="note-head">
-      <span class="note-code">${note.number}</span>
+      <span class="note-meta"><span class="note-code">${note.number}</span><span class="scope-badge">${scope}</span></span>
       <button class="note-title" data-action="toggle-note" data-id="${note.id}" aria-expanded="${open}"><strong>${escapeHTML(note.title)}</strong><small>${escapeHTML(note.summary)}</small></button>
       <div class="note-tools">
         <button class="bookmark ${bookmarked ? "active" : ""}" data-action="bookmark" data-id="${note.id}" aria-label="${bookmarked ? "取消待複習" : "加入待複習"}：${escapeHTML(note.title)}">${bookmarked ? "◆" : "◇"}</button>
