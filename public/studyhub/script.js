@@ -249,6 +249,7 @@ import {
       $("#formulaSearch").addEventListener("input", () => this.renderFormulas());
       $("#formulaSubject").addEventListener("change", () => this.renderFormulas());
       $("#formulaVolume").addEventListener("change", () => this.renderFormulas());
+      $("#formulaUnit").addEventListener("change", () => this.renderFormulas());
       $("#majorSearch").addEventListener("input", () => this.renderMajors());
       $("#readerText").addEventListener("input", (event) => {
         if (event.target.value.length > 3000) event.target.value = event.target.value.slice(0, 3000);
@@ -1114,16 +1115,18 @@ import {
       const keyword = $("#formulaSearch")?.value.trim().toLowerCase() || "";
       const subject = $("#formulaSubject")?.value || "";
       const volume = $("#formulaVolume")?.value || "";
+      const unit = $("#formulaUnit")?.value || "";
       const items = this.seed.formulas.filter((item) => {
-        const text = [item.name,item.formula,item.symbols,item.description,item.point,item.example,item.volume].join(" ").toLowerCase();
+        const text = [item.name,item.formula,item.symbols,item.description,item.point,item.example,item.volume,item.unit].join(" ").toLowerCase();
         return (!keyword || text.includes(keyword))
           && (!subject || item.subject === subject)
-          && (!volume || item.volume === volume);
+          && (!volume || item.volume === volume)
+          && (!unit || item.unit === unit);
       });
       $("#formulaResultCount").textContent = `共 ${items.length} 個公式`;
       $("#formulaGrid").innerHTML = items.map((item) => `
         <article class="formula-card">
-          <div class="card-top"><span class="subject-chip">${item.subject} · ${item.volume}</span><button class="favorite-btn ${this.isFavorite("formula",item.id) ? "active" : ""}" data-action="favorite-formula" data-id="${item.id}" aria-label="收藏${item.name}">♥</button></div>
+          <div class="card-top"><span class="subject-chip">${item.subject} · ${item.volume}${item.unit ? ` · ${item.unit}` : ""}</span><button class="favorite-btn ${this.isFavorite("formula",item.id) ? "active" : ""}" data-action="favorite-formula" data-id="${item.id}" aria-label="收藏${item.name}">♥</button></div>
           <h3>${item.name}</h3><p>${item.description}</p>
           <div class="formula">${item.formula}</div>
           <p class="symbol-legend"><strong>代號</strong>${escapeHTML(item.symbols)}</p>

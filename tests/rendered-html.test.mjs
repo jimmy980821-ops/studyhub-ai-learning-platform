@@ -61,6 +61,12 @@ test("bundles the complete StudyHub local-first application", async () => {
   assert.match(css, /\.pomodoro-layout/);
   assert.match(script, /尚未評分/);
   assert.match(html, /formulaVolume/);
+  assert.match(html, /formulaUnit/);
+  for (const unit of ["數與式", "指數", "對數", "多項式函數", "直線與圓", "數列與級數", "數據分析", "排列組合與機率", "三角比"]) {
+    assert.match(html, new RegExp(unit));
+    assert.ok((formulas.match(new RegExp(`"${unit}"`, "g")) ?? []).length >= 5, `${unit} 應至少有 5 個公式`);
+  }
+  assert.match(script, /item\.unit === unit/);
   assert.doesNotMatch(html, /公式符號|symbol-guide/);
   assert.match(script, /formulaCatalog/);
   assert.match(script, /analyzeChinese/);
