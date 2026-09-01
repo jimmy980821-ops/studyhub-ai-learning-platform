@@ -46,6 +46,21 @@ import {
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
   })[char]);
 
+  // 公式顯示統一採用可直接複製的 Unicode 數學符號。
+  const formatMathSymbols = (value = "") => String(value)
+    .replaceAll("<->", "↔")
+    .replaceAll("->", "→")
+    .replaceAll(">=", "≥")
+    .replaceAll("<=", "≤")
+    .replaceAll("!=", "≠")
+    .replaceAll("＞", ">")
+    .replaceAll("＜", "<")
+    .replaceAll("Σ", "∑")
+    .replaceAll("Δ", "∆")
+    .replaceAll("*", "×")
+    .replaceAll("...", "…")
+    .replace(/\s*\/\s*/g, " ÷ ");
+
   // 封裝 localStorage，若瀏覽器禁用儲存仍可安全運作。
   class Store {
     constructor(prefix, onChange = null) { this.prefix = prefix; this.onChange = onChange; }
@@ -1128,10 +1143,10 @@ import {
         <article class="formula-card">
           <div class="card-top"><span class="subject-chip">${item.subject} · ${item.volume}${item.unit ? ` · ${item.unit}` : ""}</span><button class="favorite-btn ${this.isFavorite("formula",item.id) ? "active" : ""}" data-action="favorite-formula" data-id="${item.id}" aria-label="收藏${item.name}">♥</button></div>
           <h3>${item.name}</h3><p>${item.description}</p>
-          <div class="formula">${item.formula}</div>
-          <p class="symbol-legend"><strong>代號</strong>${escapeHTML(item.symbols)}</p>
-          <p class="exam-point"><strong>常考重點</strong><br>${item.point}</p>
-          <details class="card-details"><summary>查看範例</summary><p>${item.example}</p></details>
+          <div class="formula">${escapeHTML(formatMathSymbols(item.formula))}</div>
+          <p class="symbol-legend"><strong>代號</strong>${escapeHTML(formatMathSymbols(item.symbols))}</p>
+          <p class="exam-point"><strong>常考重點</strong><br>${escapeHTML(formatMathSymbols(item.point))}</p>
+          <details class="card-details"><summary>查看範例</summary><p>${escapeHTML(formatMathSymbols(item.example))}</p></details>
         </article>`).join("");
     }
 
