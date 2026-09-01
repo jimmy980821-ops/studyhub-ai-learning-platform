@@ -46,20 +46,26 @@ import {
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
   })[char]);
 
-  // 公式顯示統一採用可直接複製的 Unicode 數學符號。
+  // 依 PiliApp、ToolNeko 的 Unicode 符號表統一公式，可直接複製到筆記。
   const formatMathSymbols = (value = "") => String(value)
+    .replaceAll("<=>", "⇔")
     .replaceAll("<->", "↔")
+    .replaceAll("=>", "⇒")
     .replaceAll("->", "→")
+    .replaceAll("+/-", "±")
+    .replaceAll("-/+", "∓")
     .replaceAll(">=", "≥")
     .replaceAll("<=", "≤")
     .replaceAll("!=", "≠")
+    .replaceAll("~=", "≈")
+    .replaceAll("::", "∶")
     .replaceAll("＞", ">")
     .replaceAll("＜", "<")
     .replaceAll("Σ", "∑")
     .replaceAll("Δ", "∆")
     .replaceAll("*", "×")
     .replaceAll("...", "…")
-    .replace(/\s*\/\s*/g, " ÷ ");
+    .replace(/\s*\/\s*/g, " ⁄ ");
 
   // 封裝 localStorage，若瀏覽器禁用儲存仍可安全運作。
   class Store {
