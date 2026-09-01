@@ -153,6 +153,27 @@ test("includes the complete social studies notes section", async () => {
   }
 });
 
+test("includes the six-unit earth science notes section", async () => {
+  const [home, notesPage, notesModule, appScript] = await Promise.all([
+    readFile(new URL("../public/studyhub/index.html", import.meta.url), "utf8"),
+    readFile(new URL("../public/studyhub/earth-notes/index.html", import.meta.url), "utf8"),
+    import(new URL("../public/studyhub/earth-notes/data.js", import.meta.url)),
+    readFile(new URL("../public/studyhub/earth-notes/app.js", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(home, /href="earth-notes\/"/);
+  assert.match(home, /地球科學六大單元/);
+  assert.match(notesPage, /返回 StudyHub/);
+  assert.equal(notesModule.earthNotes.length, 6);
+  assert.equal(notesModule.earthQuiz.length, 12);
+  for (const title of ["地球的故事", "從地球看宇宙", "千變萬化的大氣", "深藍的脈動", "體驗大地的撼動", "鑑古知今談永續"]) {
+    assert.ok(notesModule.earthNotes.some((note) => note.title === title), `missing earth science unit: ${title}`);
+  }
+  for (const feature of ["earth-bookmarks-v1", "earth-ratings-v1", "renderQuiz", "searchInput"]) {
+    assert.match(appScript, new RegExp(feature));
+  }
+});
+
 test("publishes all CEEC vocabulary entries with Traditional Chinese meanings", async () => {
   const [html, script, rowsText] = await Promise.all([
     readFile(new URL("../public/vocabulary/index.html", import.meta.url), "utf8"),

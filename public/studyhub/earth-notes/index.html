@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#082e35"><meta name="description" content="高中地球科學六大單元考前重點筆記與自我測驗。">
+  <title>地球科學筆記｜六大單元重點複習</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到主要內容</a>
+  <header class="topbar">
+    <a class="brand" href="#home"><span>地</span><div><strong>地球科學筆記</strong><small>六大單元 · 概念脈絡與題型判讀</small></div></a>
+    <nav class="tabs" aria-label="筆記功能" role="tablist"><button class="tab active" data-page-target="notes" role="tab" aria-selected="true">重點筆記</button><button class="tab" data-page-target="review" role="tab" aria-selected="false">待複習 <b id="reviewCount">0</b></button><button class="tab" data-page-target="quiz" role="tab" aria-selected="false">自我測驗</button></nav>
+    <button class="theme-button" id="themeButton" aria-label="切換深色模式">◐</button>
+  </header>
+  <main id="main">
+    <section class="hero" id="home">
+      <div class="hero-copy"><h1>讀懂一顆<br><em>會呼吸的地球</em></h1><p>從 46 億年的岩石記憶走向遙遠宇宙，再回到每一次風雨、潮汐與震動。六個單元不是六座孤島，而是一套交換物質與能量的地球系統。</p><div class="hero-actions"><button class="primary" data-jump="notes">開始複習</button><button class="secondary" data-page-target="quiz">先測觀念</button></div></div>
+      <div class="earth-system" aria-hidden="true"><div class="planet"><span class="core"></span><span class="mantle"></span><strong>地球系統</strong></div><span class="system-label label-space">宇宙<small>尺度與演化</small></span><span class="system-label label-air">大氣<small>能量與水循環</small></span><span class="system-label label-ocean">海洋<small>熱與物質輸送</small></span><span class="system-label label-rock">固體地球<small>板塊與地史</small></span></div>
+      <div class="scope-ribbon"><span>46 億年</span><i></i><span>六大單元</span><i></i><span>12 題快測</span><i></i><span id="masteredStat">0 個已熟悉</span></div>
+    </section>
+    <section class="progress-strip"><div><span>複習進度</span><strong id="progressText">0 / 6</strong></div><div class="progress-track"><i id="progressBar"></i></div><p>單元評為 4 星以上即算完成</p></section>
+
+    <section class="view active" data-page="notes" id="notes" role="tabpanel">
+      <div class="section-head"><div><h2>六大單元知識地圖</h2><p>先掌握主軸，再展開深入整理與題型判讀。</p></div><div class="toolbar"><label class="search"><span>⌕</span><input id="searchInput" type="search" placeholder="搜尋：聖嬰、半衰期、P 波…"></label><button class="tool-button" id="expandButton">全部展開</button></div></div>
+      <div class="unit-nav" id="unitNav"></div><div class="note-list" id="noteList"></div><div class="empty" id="emptyState" hidden><h3>找不到相關內容</h3><p>換一個關鍵字，或清除搜尋後再試。</p></div>
+    </section>
+    <section class="view" data-page="review" role="tabpanel"><div class="section-head"><div><h2 id="reviewHeading" tabindex="-1">我的待複習清單</h2><p>書籤與評為 1–3 星的單元會集中在這裡。</p></div></div><div class="review-dashboard"><article><span>已加書籤</span><strong id="bookmarkStat">0</strong></article><article><span>待加強</span><strong id="weakStat">0</strong></article><article><span>已熟悉</span><strong id="doneStat">0</strong></article></div><div class="note-list" id="reviewList"></div><div class="empty" id="reviewEmpty"><h3>目前沒有待複習單元</h3><p>在筆記上加入書籤或評分後，系統會自動整理。</p></div></section>
+    <section class="view" data-page="quiz" role="tabpanel"><div class="section-head"><div><h2>12 題觀念快測</h2><p>每題作答後立即顯示解析。</p></div><button class="tool-button" id="resetQuiz">重新開始</button></div><div class="quiz-layout"><aside class="quiz-index"><strong id="scoreValue">0</strong><span>答對題數</span><p id="quizPosition">第 1 / 12 題</p><div id="quizDots"></div></aside><article class="quiz-card"><span class="quiz-subject" id="quizSubject"></span><h3 id="quizQuestion">載入中…</h3><div class="quiz-options" id="quizOptions"></div><div class="quiz-feedback" id="quizFeedback">選擇一個答案，檢查核心觀念。</div><div class="quiz-actions"><button class="secondary" id="previousQuestion">上一題</button><button class="primary" id="nextQuestion" disabled>下一題</button></div></article></div></section>
+  </main>
+  <footer><p>地球科學六大單元重點筆記 · 適合學測與校內考前複習</p><a href="../">返回 StudyHub</a></footer><div class="toast" id="toast" aria-live="polite"></div>
+  <script type="module" src="app.js"></script>
+</body></html>
