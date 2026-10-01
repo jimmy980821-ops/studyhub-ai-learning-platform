@@ -18,7 +18,7 @@
 
 ### 化學鍵與分子結構筆記
 
-`public/studyhub/chemistry-notes/` 提供零基礎預備課、2-1～2-6 詳解、逐步例題與 32 題解析測驗，支援搜尋、閱讀進度、深色模式與列印。原始掃描教材不隨網站發布。
+`public/studyhub/chemistry-notes/` 提供零基礎預備課、2-1～2-6 詳解、逐步例題與 32 題解析測驗，支援搜尋、閱讀進度、Google 跨裝置同步、深色模式與列印。原始掃描教材不隨網站發布。
 
 修改 `content.mjs` 後，執行 `node public/studyhub/chemistry-notes/build.mjs` 重新產生靜態 HTML；`app.js` 提供互動。GitHub Pages 會隨主站一起部署此目錄。
 
@@ -69,3 +69,5 @@ OpenAI API、Firebase 或 Supabase 的資料存取層，不需重寫畫面結構
 ## 線上版本
 
 [開啟 GitHub Pages 版 StudyHub](https://jimmy980821-ops.github.io/studyhub-ai-learning-platform/)
+
+化學筆記同步沿用主站 Firebase Google 登入與 `users/{uid}/studyhub/state` 文件的獨立 `chemistryV1` 欄位。章節與題目各自保留版本及清除記錄，離線變更存於帳號分隔的本機佇列，恢復連線後重試；主站寫入僅更新自己的欄位，避免蓋掉筆記進度。

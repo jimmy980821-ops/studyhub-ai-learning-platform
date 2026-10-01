@@ -1360,7 +1360,8 @@ import {
           Date.now(),
           Number(this.getSyncSetting("google-local-updated-at", "0"))
         );
-        await setDoc(this.googleDocument(), { data, updatedAt, schemaVersion: 1 });
+        // Preserve independently synced notebook fields in the same user document.
+        await setDoc(this.googleDocument(), { data, updatedAt, schemaVersion: 1 }, { mergeFields: ["data", "updatedAt", "schemaVersion"] });
         this.setSyncSetting("google-local-updated-at", updatedAt);
         this.setSyncSetting("google-last-updated-at", updatedAt);
         this.setSyncStatus("Google 帳號已同步", "connected");

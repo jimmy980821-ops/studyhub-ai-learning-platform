@@ -4,18 +4,23 @@ import {readFile,mkdir} from 'node:fs/promises';
 import {resolve,extname,sep} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {chapters,quiz} from '../public/studyhub/chemistry-notes/content.mjs';
+import {firebaseFixture} from './chemistry-firebase-fixture.mjs';
 const {chromium}=await import(process.env.PLAYWRIGHT_MODULE?pathToFileURL(process.env.PLAYWRIGHT_MODULE).href:'playwright');
 const root=resolve('public/studyhub');
-const server=createServer(async(req,res)=>{try{let p=decodeURIComponent(new URL(req.url,'http://localhost').pathname);if(p.endsWith('/'))p+='index.html';const file=resolve(root,'.'+p);if(!file.startsWith(root+sep))throw Error('Outside root');const body=await readFile(file);res.writeHead(200,{'Content-Type':({'.html':'text/html; charset=utf-8','.css':'text/css','.js':'text/javascript','.mjs':'text/javascript'})[extname(file)]||'application/octet-stream'});res.end(body);}catch{res.writeHead(404);res.end();}});
+const server=createServer(async(req,res)=>{try{let p=decodeURIComponent(new URL(req.url,'http://localhost').pathname);if(p.endsWith('/'))p+='index.html';const file=resolve(root,'.'+p);if(!file.startsWith(root+sep))throw Error('Outside root');const body=await readFile(file);res.writeHead(200,{'Content-Type':({'.html':'text/html; charset=utf-8','.css':'text/css','.js':'text/javascript','.mjs':'text/javascript','.svg':'image/svg+xml','.png':'image/png','.webmanifest':'application/manifest+json'})[extname(file)]||'application/octet-stream'});res.end(body);}catch{res.writeHead(404);res.end();}});
 await new Promise(r=>server.listen(0,'127.0.0.1',r));
 const url=`http://127.0.0.1:${server.address().port}/chemistry-notes/`;
 const browser=await chromium.launch({channel:process.env.BROWSER_CHANNEL||'msedge',headless:true});
 const errors=[];
+const fixture=firebaseFixture();
 try{
   await mkdir('tmp/chemistry/review',{recursive:true});
   const page=await browser.newPage({viewport:{width:1440,height:1000},colorScheme:'light'});
+  await fixture.install(page);
   page.on('pageerror',e=>errors.push(e.message));
   await page.goto(url);
+  await page.locator('.brand img').evaluate(img=>img.decode());
+  assert.ok(await page.locator('.brand img').evaluate(img=>img.naturalWidth>0));
   assert.equal(await page.locator('.chapter').count(),7);
   assert.equal(await page.locator('.question').count(),32);
   assert.equal(await page.locator('#progressText').textContent(),'0 / 7');
@@ -44,6 +49,8 @@ try{
   // Deliberately answer the first question incorrectly, all others correctly.
   for(const q of quiz){const f=page.locator(`[data-question="${q.id}"]`);await f.locator(`input[value="${q.id===1?(q.answer+1)%4:q.answer}"]`).check();await f.locator('button').click();assert.equal(await f.locator('.feedback').isVisible(),true);}
   assert.equal(await page.locator('#score').textContent(),'已答 32 / 32 · 答對 31 題');
+  await page.reload();
+  assert.equal(await page.locator('#score').textContent(),'已答 32 / 32 · 答對 31 題');
   await page.locator('#wrongOnly').check();
   assert.equal(await page.locator('.question:visible').count(),1);
   assert.equal(await page.locator('.question:visible').getAttribute('data-question'),'1');
@@ -71,10 +78,46 @@ try{
   await noJS.goto(url);
   assert.ok((await noJS.locator('body').textContent()).includes('展開 32 題答案與解析'));
   const corrupted=await browser.newPage();
+  await fixture.install(corrupted);
   await corrupted.addInitScript(()=>localStorage.setItem('studyhub-chemistry-v1','{"complete":42}'));
   await corrupted.goto(url);
   assert.equal(await corrupted.locator('#progressText').textContent(),'0 / 7');
+  // Actual cloud adapter with fixture SDK: exercise two isolated device contexts.
+  await page.emulateMedia({media:'screen'});
+  await page.setViewportSize({width:1440,height:1000});
+  await page.goto(url);
+  fixture.documents.set('test-reader',{data:{'tasks-v1':[{id:'keep-this-task'}]},updatedAt:12,schemaVersion:1});
+  await page.locator('#googleLogin').click();
+  await page.waitForFunction(()=>document.querySelector('#cloudStatus').dataset.state==='synced');
+  await page.locator('[data-complete="foundation"]').check();
+  await page.locator('[data-question="1"] input[value="0"]').check();
+  await page.locator('[data-question="1"] button').click();
+  await page.waitForFunction(()=>document.querySelector('#cloudStatus').dataset.state==='synced');
+  const phone=await browser.newPage({viewport:{width:390,height:844},colorScheme:'light'});
+  phone.on('pageerror',e=>errors.push(e.message));await fixture.install(phone);await phone.goto(url);await phone.locator('#googleLogin').click();
+  await phone.waitForFunction(()=>document.querySelector('#progressText').textContent==='1 / 7');
+  assert.equal(await phone.locator('#score').textContent(),'已答 1 / 32 · 答對 1 題');
+  await phone.locator('#classification .lesson>summary').click();
+  await phone.locator('[data-complete="classification"]').check();
+  await page.waitForFunction(()=>document.querySelector('#progressText').textContent==='2 / 7');
+  await phone.context().setOffline(true);
+  await phone.locator('#resetProgress').click();
+  await phone.locator('#resetQuiz').click();
+  await phone.waitForTimeout(650);
+  assert.equal(await phone.locator('#progressText').textContent(),'0 / 7');
+  await phone.context().setOffline(false);
+  await page.waitForFunction(()=>document.querySelector('#progressText').textContent==='0 / 7');
+  await page.waitForFunction(()=>document.querySelector('#score').textContent==='已答 0 / 32 · 答對 0 題');
+  assert.equal(fixture.documents.get('test-reader').data['tasks-v1'][0].id,'keep-this-task');
+  await phone.locator('#googleLogout').click();
+  await phone.waitForFunction(()=>!document.querySelector('#googleLogin').hidden);
+  await phone.goto(url);await phone.screenshot({path:'tmp/chemistry/review/mobile-sync.png'});
+  await page.goto(url);await page.screenshot({path:'tmp/chemistry/review/desktop-sync.png'});
+  assert.ok(await phone.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+  const icons=await page.locator('link[rel="icon"]').count();assert.equal(icons,2);
+  const manifest=await (await page.request.get(url+'site.webmanifest')).json();assert.equal(manifest.icons.length,3);
+  for(const name of ['icon.svg','icon-32.png','icon-192.png','icon-512.png','apple-touch-icon.png'])assert.equal((await page.request.get(url+name)).status(),200);
   for(const c of chapters){assert.ok(c.body.length>1200);assert.ok(c.body.includes('停下來想一想'));}
   assert.deepEqual(errors,[]);
-  console.log('PASS: 7 chapters; all 32 quiz submissions; scoring; incorrect-answer filter; reset; persisted progress/theme; search; hash navigation; 390/320px overflow; print; no-JS notes; malformed storage; zero browser errors.');
+  console.log('PASS: notes and 32 quiz submissions; persistent answers; search/print/themes; 390/320px; two-device cloud adapter with fixture SDK; offline reset and reconnect; main data preserved; sign-out; icon/manifest assets; zero browser errors. Real Google account consent is not automated.');
 }finally{await browser.close();await new Promise(r=>server.close(r));}
