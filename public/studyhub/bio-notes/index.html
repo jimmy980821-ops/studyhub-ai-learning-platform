@@ -1,0 +1,2148 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>生物學習筆記</title>
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+<link rel="shortcut icon" type="image/png" href="./icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
+<link rel="manifest" href="./site.webmanifest">
+<meta name="theme-color" content="#18201b">
+<style>
+:root {
+  --ink:#18201b;
+  --paper:#fbfaf5;
+  --cream:#f1eadb;
+  --line:#d7cdbb;
+  --green:#2f7d4b;
+  --blue:#2d6694;
+  --red:#bc4b36;
+  --gold:#9a6b20;
+  --muted:#746d62;
+  --highlight:#fff2b8;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;
+  line-height:1.75;
+  font-size:15px;
+}
+.topbar {
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:var(--ink);
+  color:white;
+  padding:12px 24px;
+  border-bottom:4px solid var(--green);
+  display:flex;
+  align-items:center;
+  gap:18px;
+  flex-wrap:wrap;
+}
+.brand { font-weight:800; letter-spacing:1px; font-size:18px; }
+.sub { color:#cfc7ba; font-size:12px; }
+.tabs { margin-left:auto; display:flex; gap:6px; flex-wrap:wrap; }
+button {
+  font:inherit;
+}
+.tab {
+  border:1px solid #566158;
+  background:transparent;
+  color:#ddd;
+  padding:6px 12px;
+  border-radius:3px;
+  cursor:pointer;
+  font-size:13px;
+}
+.tab.active,.tab:hover { background:var(--green); border-color:var(--green); color:white; }
+.pill {
+  position:relative;
+  display:inline-flex;
+}
+.pill input { position:absolute; opacity:0; }
+.pill span {
+  border:1px solid color-mix(in srgb, var(--tab-color, #aeb8b1) 58%, #26342d);
+  background:transparent;
+  color:var(--tab-color, #ddd);
+  padding:6px 12px;
+  border-radius:3px;
+  cursor:pointer;
+  font-size:13px;
+  transition:transform .5s cubic-bezier(.34,1.56,.64,1),
+    background .25s ease,color .25s ease,border-color .25s ease;
+}
+.pill span:hover {
+  background:color-mix(in srgb, var(--tab-color, #ddd) 16%, transparent);
+  border-color:var(--tab-color, #ddd);
+  transform:translateY(-1px);
+}
+.pill input:focus-visible + span {
+  outline:2px solid white;
+  outline-offset:2px;
+}
+.pill input:checked + span {
+  background:var(--tab-color, #ff8a00);
+  color:var(--tab-ink, #101713);
+  border-color:var(--tab-color, #ff8a00);
+  transform:scale(1.06);
+  box-shadow:0 0 0 2px color-mix(in srgb, var(--tab-color, #ff8a00) 30%, transparent);
+}
+.pill-cell { --tab-color:#70d58b; }
+.pill-gene { --tab-color:#ff9b42; }
+.pill-dna { --tab-color:#54c5e8; }
+.pill-energy { --tab-color:#f3d45d; }
+.pill-evo { --tab-color:#ed7f9d; }
+.pill-exams { --tab-color:#b49bea; }
+.pill-wrong { --tab-color:#ff7068; }
+.pill-review { --tab-color:#62d1bd; }
+.pill-cards { --tab-color:#d2d8d3; }
+.container { max-width:1120px; margin:auto; padding:28px 22px 80px; }
+.chapter { display:none; }
+.chapter.active { display:block; }
+.ch-head {
+  border-bottom:2px solid var(--line);
+  padding:24px 0 16px;
+  margin-bottom:24px;
+  display:flex;
+  align-items:flex-end;
+  gap:18px;
+}
+.ch-num {
+  font-family:Georgia,serif;
+  font-size:64px;
+  line-height:1;
+  color:var(--green);
+  opacity:.22;
+  font-weight:800;
+}
+h1,h2,h3 { margin:0; }
+.ch-head h1 { font-size:28px; letter-spacing:1px; }
+.ch-note { color:var(--muted); font-size:13px; margin-top:4px; }
+.section { margin-bottom:22px; }
+.section-title {
+  border-left:5px solid var(--green);
+  padding:8px 12px;
+  background:#fffdf8;
+  cursor:pointer;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-weight:800;
+  box-shadow:0 1px 0 var(--line);
+}
+.section-title > span:first-child {
+  display:flex;
+  align-items:center;
+  gap:6px;
+  flex-wrap:wrap;
+}
+.section-tools {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-left:auto;
+  padding-left:10px;
+}
+.mark {
+  width:28px;
+  height:24px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+}
+.mark input { position:absolute; opacity:0; }
+.mark svg {
+  width:24px;
+  height:24px;
+  fill:transparent;
+  stroke:#a8a6a0;
+  stroke-width:1.9;
+  transition:fill .3s,stroke .3s;
+}
+.mark input:checked + svg {
+  fill:#ff8a00;
+  stroke:#ff8a00;
+  animation:drop .55s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes drop {
+  0% { transform:translateY(-9px) scale(.9); }
+  55% { transform:translateY(3px) scale(1.14); }
+  100% { transform:translateY(0) scale(1); }
+}
+.section-title:hover { background:var(--cream); }
+.section-title .arrow { transition:.2s; color:var(--muted); }
+.section-title.open .arrow { transform:rotate(90deg); }
+.section-body { display:none; padding:14px 0 4px 18px; }
+.section-body.open { display:block; }
+.tag {
+  display:inline-block;
+  font-size:12px;
+  padding:1px 7px;
+  border-radius:3px;
+  margin-right:6px;
+  font-weight:800;
+}
+.tag-cell { background:#e4f4e9; color:var(--green); border:1px solid #aed4ba; }
+.tag-energy { background:#e8f1fa; color:var(--blue); border:1px solid #bad3e8; }
+.tag-gene { background:#fff0dd; color:var(--gold); border:1px solid #e0c28a; }
+.tag-evo { background:#ffe8e4; color:var(--red); border:1px solid #e3b1a9; }
+.callout {
+  border-left:5px solid var(--green);
+  background:#f4fbf6;
+  padding:12px 15px;
+  margin:0 0 14px;
+  border-radius:3px;
+}
+.callout.blue { border-color:var(--blue); background:#f1f7fd; }
+.callout.red { border-color:var(--red); background:#fff4f2; }
+.callout.gold { border-color:var(--gold); background:#fff9ec; }
+.keyword {
+  background:var(--highlight);
+  border:1px solid #e7d37a;
+  padding:0 6px;
+  border-radius:3px;
+  font-weight:800;
+  color:#735200;
+}
+.note-table {
+  width:100%;
+  border-collapse:collapse;
+  background:white;
+  margin:0 0 14px;
+  font-size:14px;
+}
+.note-table th,.note-table td {
+  border:1px solid var(--line);
+  padding:8px 10px;
+  vertical-align:top;
+}
+.note-table th {
+  background:var(--cream);
+  text-align:left;
+  white-space:nowrap;
+}
+.note-table tr:nth-child(even) td { background:#fcfaf6; }
+.grid {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+  margin-bottom:14px;
+}
+.card {
+  border:1px solid var(--line);
+  background:white;
+  border-radius:4px;
+  overflow:hidden;
+}
+.card h3 {
+  background:var(--cream);
+  padding:8px 12px;
+  font-size:15px;
+}
+.card div { padding:10px 12px; font-size:14px; }
+.timeline {
+  border-left:3px solid var(--line);
+  margin:0 0 14px 9px;
+  padding-left:18px;
+}
+.tl {
+  position:relative;
+  margin:0 0 10px;
+}
+.tl::before {
+  content:"";
+  position:absolute;
+  left:-26px;
+  top:9px;
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 0 3px white,0 0 0 4px var(--green);
+}
+.formula {
+  font-family:"Consolas","JetBrains Mono",monospace;
+  background:#202820;
+  color:#eaf7ea;
+  padding:8px 10px;
+  border-radius:4px;
+  display:inline-block;
+  margin:4px 0;
+}
+ul.clean { list-style:none; padding:0; margin:0 0 14px; }
+ul.clean li {
+  border-bottom:1px dashed var(--line);
+  padding:5px 0 5px 18px;
+  position:relative;
+}
+ul.clean li::before {
+  content:"›";
+  position:absolute;
+  left:4px;
+  color:var(--green);
+  font-weight:900;
+}
+.fc-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:12px;
+}
+.fc {
+  height:160px;
+  perspective:900px;
+  cursor:pointer;
+}
+.fc-inner {
+  height:100%;
+  position:relative;
+  transition:transform .45s;
+  transform-style:preserve-3d;
+}
+.fc.flipped .fc-inner { transform:rotateY(180deg); }
+.front,.back {
+  position:absolute;
+  inset:0;
+  backface-visibility:hidden;
+  border-radius:5px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:14px;
+  text-align:center;
+}
+.front { background:var(--ink); color:white; font-weight:900; }
+.back { background:var(--highlight); border:2px solid #e7d37a; transform:rotateY(180deg); font-size:13px; }
+.mini { color:var(--muted); font-size:12px; margin-bottom:12px; }
+.review-list {
+  display:grid;
+  gap:10px;
+  margin-top:12px;
+}
+.review-item {
+  border:1px solid var(--line);
+  background:white;
+  border-left:5px solid #ff8a00;
+  border-radius:5px;
+  padding:10px 12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+.review-item strong { display:block; }
+.review-meta {
+  color:var(--muted);
+  font-size:12px;
+}
+.review-jump {
+  border:1px solid #ff8a00;
+  background:#ff8a00;
+  color:#0e0e10;
+  border-radius:4px;
+  padding:6px 10px;
+  font-weight:800;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.empty-review {
+  border:1px dashed var(--line);
+  background:#fffdf8;
+  border-radius:5px;
+  padding:16px;
+  color:var(--muted);
+}
+.self-check {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  border:1px dashed var(--line);
+  background:#fffdf8;
+  padding:8px 10px;
+  margin:0 0 12px;
+  border-radius:5px;
+  font-size:13px;
+  color:var(--muted);
+}
+.stars { display:inline-flex; gap:2px; }
+.star {
+  border:0;
+  background:transparent;
+  color:#2a2a2e;
+  cursor:pointer;
+  padding:0 1px;
+  font-size:21px;
+  line-height:1;
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1),color .15s ease;
+}
+.star.on { color:#ff8a00; }
+.star.pop { transform:scale(1.3); }
+.gene-tool {
+  border:1px solid var(--line);
+  background:white;
+  border-radius:6px;
+  padding:14px;
+  margin:14px 0;
+}
+.tool-row {
+  display:flex;
+  gap:10px;
+  align-items:flex-end;
+  flex-wrap:wrap;
+  margin-bottom:12px;
+}
+.tool-field {
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  font-size:13px;
+  color:var(--muted);
+}
+.tool-field input {
+  min-width:150px;
+  border:1px solid var(--line);
+  border-radius:4px;
+  padding:8px 10px;
+  font:inherit;
+  background:#fffdf8;
+}
+.tool-button {
+  border:1px solid #ff8a00;
+  background:#ff8a00;
+  color:#0e0e10;
+  padding:8px 14px;
+  border-radius:4px;
+  cursor:pointer;
+  font-weight:800;
+}
+.punnett-wrap { overflow-x:auto; }
+.punnett {
+  border-collapse:collapse;
+  margin:10px auto;
+  background:white;
+}
+.punnett th,.punnett td {
+  border:4px solid var(--line);
+  min-width:92px;
+  height:72px;
+  text-align:center;
+  font-size:22px;
+  font-weight:900;
+  padding:8px;
+}
+.punnett th {
+  background:#fffdf8;
+  color:var(--ink);
+}
+.tool-result {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+  margin-top:10px;
+}
+.result-card {
+  border:1px solid var(--line);
+  background:#fcfaf6;
+  border-radius:5px;
+  padding:10px;
+  font-size:14px;
+}
+.result-card strong { display:block; margin-bottom:4px; }
+.tool-error {
+  color:var(--red);
+  font-weight:800;
+  margin-top:8px;
+}
+.exam-panel {
+  border:1px solid var(--line);
+  background:white;
+  border-radius:6px;
+  padding:14px;
+  margin-bottom:14px;
+}
+.exam-controls {
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+  margin-bottom:12px;
+}
+.exam-controls select {
+  border:1px solid var(--line);
+  background:#fffdf8;
+  border-radius:4px;
+  padding:8px 10px;
+  font:inherit;
+}
+.exam-score {
+  margin-left:auto;
+  color:var(--muted);
+  font-size:13px;
+}
+.question-list {
+  display:grid;
+  gap:12px;
+}
+.question-card {
+  border:1px solid var(--line);
+  background:#fffdf8;
+  border-radius:6px;
+  padding:12px;
+}
+.question-head {
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:8px;
+  font-weight:900;
+}
+.question-unit {
+  color:var(--muted);
+  font-size:12px;
+  white-space:nowrap;
+}
+.choice-grid {
+  display:grid;
+  gap:8px;
+  margin-top:10px;
+}
+.choice {
+  border:1px solid var(--line);
+  background:white;
+  border-radius:4px;
+  padding:8px 10px;
+  text-align:left;
+  cursor:pointer;
+  font:inherit;
+}
+.choice:hover { border-color:#ff8a00; }
+.choice.correct {
+  background:#e4f4e9;
+  border-color:var(--green);
+  font-weight:800;
+}
+.choice.wrong {
+  background:#fff4f2;
+  border-color:var(--red);
+  font-weight:800;
+}
+.explain {
+  margin-top:10px;
+  border-left:4px solid var(--green);
+  background:#f4fbf6;
+  padding:8px 10px;
+  border-radius:3px;
+  font-size:14px;
+  display:none;
+}
+.explain.show { display:block; }
+.wrong-book-summary {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:14px;
+}
+.wrong-count {
+  font-weight:900;
+  color:var(--red);
+}
+.empty-state {
+  border:1px dashed var(--line);
+  background:#fffdf8;
+  color:var(--muted);
+  padding:28px 18px;
+  text-align:center;
+  border-radius:6px;
+}
+.diagram {
+  position:relative;
+  width:100%;
+  background:#fffdf8;
+  border:1px solid var(--line);
+  border-radius:6px;
+  margin:0 0 14px;
+  padding:12px;
+  overflow:hidden;
+}
+.diagram-title {
+  font-weight:900;
+  margin-bottom:8px;
+  color:var(--ink);
+}
+.diagram svg {
+  width:100%;
+  height:auto;
+  display:block;
+}
+.diagram svg text {
+  paint-order:stroke;
+  stroke:#fffdf8;
+  stroke-width:3px;
+  stroke-linejoin:round;
+}
+.diagram svg .no-halo {
+  paint-order:normal;
+  stroke:none;
+}
+.diagram-zoom {
+  display:none;
+  position:absolute;
+  top:8px;
+  right:8px;
+  z-index:2;
+  width:34px;
+  height:34px;
+  padding:0;
+  border:1px solid var(--line);
+  border-radius:4px;
+  background:#fffdf8;
+  color:var(--ink);
+  font-size:21px;
+  line-height:1;
+  cursor:pointer;
+}
+.diagram-lightbox {
+  position:fixed;
+  inset:0;
+  z-index:1000;
+  display:none;
+  grid-template-rows:auto 1fr;
+  background:rgba(14,23,18,.97);
+}
+.diagram-lightbox.open { display:grid; }
+.diagram-lightbox-bar {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  min-height:54px;
+  padding:8px 14px;
+  color:white;
+  border-bottom:1px solid #46554c;
+}
+.diagram-lightbox-title {
+  font-weight:800;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.diagram-lightbox-close {
+  flex:0 0 auto;
+  width:38px;
+  height:38px;
+  padding:0;
+  border:1px solid #87938b;
+  border-radius:4px;
+  background:transparent;
+  color:white;
+  font-size:25px;
+  cursor:pointer;
+}
+.diagram-lightbox-canvas {
+  overflow:auto;
+  padding:18px;
+  overscroll-behavior:contain;
+}
+.diagram-lightbox-canvas svg {
+  width:900px;
+  max-width:none;
+  height:auto;
+  display:block;
+  background:#fffdf8;
+}
+@media (max-width:640px) {
+  .diagram { padding:8px; overflow:visible; }
+  .diagram svg { min-width:0; width:100%; }
+  .diagram-title { min-height:34px; padding-right:42px; }
+  .diagram-zoom { display:grid; place-items:center; }
+  .wrong-book-summary { align-items:flex-start; flex-direction:column; }
+}
+.svg-label { font-size:13px; font-weight:700; fill:var(--ink); }
+.svg-small { font-size:11px; fill:var(--muted); }
+.svg-line { stroke:var(--ink); stroke-width:1.8; fill:none; }
+.svg-arrow { stroke:var(--red); stroke-width:2; fill:none; marker-end:url(#arrow-red); }
+.process {
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:8px;
+  margin:0 0 14px;
+}
+.step {
+  background:white;
+  border:1px solid var(--line);
+  border-top:4px solid var(--green);
+  padding:10px;
+  border-radius:4px;
+  min-height:88px;
+}
+.step strong { display:block; margin-bottom:4px; }
+.table-wrap { overflow-x:auto; margin-bottom:14px; }
+@media (max-width:720px) {
+  .tabs { margin-left:0; }
+  .grid { grid-template-columns:1fr; }
+  .tool-result { grid-template-columns:1fr; }
+  .exam-score { margin-left:0; }
+  .process { grid-template-columns:1fr; }
+  .ch-num { font-size:44px; }
+  .note-table { font-size:13px; }
+}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div>
+    <div class="brand">生物學習筆記</div>
+    <div class="sub">依掃描筆記整理 · 細胞、能量、遺傳、演化</div>
+  </div>
+  <div class="tabs">
+    <label class="pill pill-cell"><input class="tab-choice" type="radio" name="chapter" checked onchange="showChapter('cell')"><span>細胞</span></label>
+    <label class="pill pill-gene"><input class="tab-choice" type="radio" name="chapter" onchange="showChapter('gene')"><span>遺傳</span></label>
+    <label class="pill pill-dna"><input class="tab-choice" type="radio" name="chapter" onchange="showChapter('dna')"><span>DNA</span></label>
+    <label class="pill pill-energy"><input class="tab-choice" type="radio" name="chapter" onchange="showChapter('energy')"><span>能量</span></label>
+    <label class="pill pill-evo"><input class="tab-choice" type="radio" name="chapter" onchange="showChapter('evo')"><span>演化</span></label>
+    <label class="pill pill-exams"><input class="tab-choice" type="radio" name="chapter" onchange="showChapter('exams')"><span>題目</span></label>
+    <label class="pill pill-wrong"><input class="tab-choice" type="radio" name="chapter" onchange="showChapter('wrong')"><span>錯題本</span></label>
+    <label class="pill pill-review"><input class="tab-choice" type="radio" name="chapter" onchange="showChapter('review')"><span>複習</span></label>
+    <label class="pill pill-cards"><input class="tab-choice" type="radio" name="chapter" onchange="showChapter('cards')"><span>字卡</span></label>
+  </div>
+</div>
+
+<main class="container">
+<section id="cell" class="chapter active">
+  <div class="ch-head">
+    <div class="ch-num">01</div>
+    <div>
+      <h1>細胞與胞器</h1>
+      <div class="ch-note">對應掃描頁 1-7：細胞學說、細胞構造、細胞膜、胞器、原核與真核比較</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title open" onclick="toggle(this)"><span><span class="tag tag-cell">概念</span>細胞學說</span><span class="arrow">›</span></div>
+    <div class="section-body open">
+      <div class="callout">細胞是生物體構造與功能的基本單位。新的細胞來自原有細胞，細胞內含有遺傳物質，能把生命訊息傳給下一代。</div>
+      <table class="note-table">
+        <tr><th>人物</th><th>重點</th></tr>
+        <tr><td>虎克 Hooke</td><td>觀察軟木塞，提出「細胞」一詞。</td></tr>
+        <tr><td>雷文霍克 Leeuwenhoek</td><td>觀察水中微生物與原生生物。</td></tr>
+        <tr><td>許旺、許萊登</td><td>提出動物與植物都由細胞組成。</td></tr>
+        <tr><td>魏修 Virchow</td><td>主張「細胞來自既有細胞」，補足細胞學說第三點。</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="toggle(this)"><span><span class="tag tag-cell">構造</span>動物細胞 vs 植物細胞</span><span class="arrow">›</span></div>
+    <div class="section-body">
+      <div class="diagram">
+        <div class="diagram-title">動物細胞與植物細胞示意圖</div>
+        <svg viewBox="0 0 980 430" role="img" aria-label="動物細胞與植物細胞的構造比較">
+          <defs>
+            <marker id="arrow-red" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#bc4b36"/></marker>
+          </defs>
+          <text x="210" y="28" class="svg-label" text-anchor="middle">動物細胞</text>
+          <text x="705" y="28" class="svg-label" text-anchor="middle">植物細胞</text>
+          <path d="M82,198 C65,105 145,55 245,67 C330,77 388,140 360,235 C335,320 250,360 160,330 C105,312 90,260 82,198Z" fill="#f7d8cf" stroke="#bc4b36" stroke-width="3"/>
+          <ellipse cx="220" cy="198" rx="72" ry="54" fill="#dbe9fb" stroke="#2d6694" stroke-width="3"/>
+          <circle cx="220" cy="198" r="18" fill="#2d6694" opacity=".85"/>
+          <ellipse cx="145" cy="265" rx="36" ry="16" fill="#f3c072" stroke="#9a6b20" stroke-width="2"/>
+          <path d="M126,265 C140,254 154,276 168,265" class="svg-line"/>
+          <ellipse cx="302" cy="245" rx="34" ry="15" fill="#f3c072" stroke="#9a6b20" stroke-width="2"/>
+          <path d="M286,245 C300,235 313,256 326,245" class="svg-line"/>
+          <path d="M140,145 C170,128 198,130 220,146 M136,162 C170,148 201,151 232,170" stroke="#7a5c2a" stroke-width="3" fill="none"/>
+          <path d="M270,132 C295,140 315,160 325,184 M266,150 C288,158 303,174 315,195" stroke="#7a5c2a" stroke-width="3" fill="none"/>
+          <circle cx="270" cy="305" r="14" fill="#9b59b6" opacity=".8"/>
+          <circle cx="112" cy="210" r="5" fill="#18201b"/>
+          <circle cx="320" cy="115" r="5" fill="#18201b"/>
+          <line x1="220" y1="145" x2="220" y2="74" class="svg-arrow"/><text x="220" y="62" class="svg-small" text-anchor="middle">細胞核、核仁</text>
+          <line x1="145" y1="265" x2="60" y2="335" class="svg-arrow"/><text x="56" y="355" class="svg-small">粒線體</text>
+          <line x1="150" y1="145" x2="50" y2="118" class="svg-arrow"/><text x="18" y="112" class="svg-small">內質網</text>
+          <line x1="82" y1="198" x2="36" y2="206" class="svg-arrow"/><text x="8" y="228" class="svg-small">細胞膜</text>
+          <line x1="270" y1="305" x2="330" y2="366" class="svg-arrow"/><text x="338" y="382" class="svg-small">溶體</text>
+
+          <rect x="515" y="70" width="360" height="280" rx="24" fill="#d7ebc6" stroke="#2f7d4b" stroke-width="12"/>
+          <rect x="535" y="90" width="320" height="240" rx="18" fill="#f2f9ed" stroke="#5ba36e" stroke-width="3"/>
+          <ellipse cx="690" cy="204" rx="90" ry="66" fill="#d7e8fb" stroke="#2d6694" stroke-width="3"/>
+          <circle cx="690" cy="204" r="20" fill="#2d6694" opacity=".8"/>
+          <ellipse cx="610" cy="284" rx="55" ry="24" fill="#9bd67f" stroke="#2f7d4b" stroke-width="3"/>
+          <path d="M580,284 C600,264 622,304 644,284" stroke="#2f7d4b" stroke-width="2" fill="none"/>
+          <ellipse cx="800" cy="140" rx="45" ry="20" fill="#9bd67f" stroke="#2f7d4b" stroke-width="3"/>
+          <path d="M778,140 C795,124 812,154 828,140" stroke="#2f7d4b" stroke-width="2" fill="none"/>
+          <ellipse cx="796" cy="278" rx="40" ry="18" fill="#f3c072" stroke="#9a6b20" stroke-width="2"/>
+          <path d="M778,278 C794,266 812,292 828,278" class="svg-line"/>
+          <path d="M570,135 C615,110 665,112 708,138 M570,154 C620,132 664,135 724,166" stroke="#7a5c2a" stroke-width="3" fill="none"/>
+          <path d="M745,220 C780,224 815,236 835,260" stroke="#7a5c2a" stroke-width="3" fill="none"/>
+          <line x1="515" y1="76" x2="470" y2="54" class="svg-arrow"/><text x="424" y="48" class="svg-small">細胞壁</text>
+          <line x1="535" y1="106" x2="465" y2="112" class="svg-arrow"/><text x="407" y="118" class="svg-small">細胞膜</text>
+          <line x1="690" y1="138" x2="690" y2="52" class="svg-arrow"/><text x="690" y="42" class="svg-small" text-anchor="middle">細胞核、核仁</text>
+          <line x1="610" y1="284" x2="550" y2="380" class="svg-arrow"/><text x="495" y="398" class="svg-small">葉綠體</text>
+          <line x1="796" y1="278" x2="880" y2="375" class="svg-arrow"/><text x="888" y="392" class="svg-small">粒線體</text>
+          <line x1="785" y1="150" x2="925" y2="125" class="svg-arrow"/><text x="930" y="130" class="svg-small">大型液胞</text>
+          <text x="210" y="404" class="svg-small" text-anchor="middle">無細胞壁、無葉綠體，常有中心粒與較小液胞</text>
+          <text x="705" y="404" class="svg-small" text-anchor="middle">有細胞壁、葉綠體、大型液胞，形狀較固定</text>
+        </svg>
+      </div>
+      <table class="note-table">
+        <tr><th>構造</th><th>動物細胞</th><th>植物細胞</th></tr>
+        <tr><td>細胞膜</td><td>有</td><td>有</td></tr>
+        <tr><td>細胞壁</td><td>無</td><td>有，植物主要成分為纖維素；真菌為幾丁質、細菌為肽聚醣。</td></tr>
+        <tr><td>葉綠體</td><td>無</td><td>有，行光合作用。</td></tr>
+        <tr><td>液胞</td><td>小且較不明顯</td><td>大型液胞，儲存水分、養分與廢物。</td></tr>
+        <tr><td>中心粒</td><td>常見</td><td>多數高等植物沒有。</td></tr>
+        <tr><td>形狀</td><td>較不固定</td><td>因細胞壁較固定。</td></tr>
+      </table>
+      <table class="note-table">
+        <tr><th>構造</th><th>組成</th><th>位置</th><th>重點功能</th></tr>
+        <tr><td>細胞膜</td><td>磷脂雙層、蛋白質、醣類、固醇類。</td><td>包圍細胞外側；植物細胞位於細胞壁內側。</td><td>區隔細胞內外水溶液，控制物質進出，並透過膜蛋白與醣類進行運輸、受器作用與細胞辨識。</td></tr>
+        <tr><td>細胞壁</td><td>植物為纖維素；真菌為幾丁質；細菌為肽聚醣。</td><td>細胞膜外側。</td><td>保護細胞、維持細胞形狀並提供支持。</td></tr>
+        <tr><td>細胞核</td><td>核膜、核質、染色體、核仁；染色體由 DNA 與蛋白質組成。</td><td>真核細胞內。</td><td>儲存遺傳物質、控制細胞活動；核仁製造核糖體組成成分。</td></tr>
+        <tr><td>細胞質</td><td>胞質液、膜狀胞器與非膜構造；胞質液含水、離子、酵素與膠狀物質。</td><td>細胞膜以內、細胞核以外。</td><td>許多化學反應進行處，也是胞器分布與物質運輸的環境。</td></tr>
+        <tr><td>中心體 / 中心粒</td><td>動物細胞常見，中心粒由微管蛋白構成。</td><td>細胞核附近。</td><td>細胞分裂時幫助形成紡錘絲。</td></tr>
+        <tr><td>核糖體</td><td>RNA 與蛋白質組成。</td><td>可游離於細胞質，也可附著在粗糙內質網、核膜外側；粒線體與葉綠體內也有。</td><td>合成蛋白質。</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="toggle(this)"><span><span class="tag tag-cell">整理</span>細胞膜、細胞壁與胞器</span><span class="arrow">›</span></div>
+    <div class="section-body">
+      <div class="diagram">
+        <div class="diagram-title">細胞膜：磷脂雙層與選擇性通透</div>
+        <svg viewBox="0 0 900 220" role="img" aria-label="磷脂雙層示意圖">
+          <defs>
+            <marker id="arrow-red" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#bc4b36"/></marker>
+          </defs>
+          <rect x="0" y="0" width="900" height="220" fill="#fffdf8"/>
+          <text x="450" y="24" class="svg-label" text-anchor="middle">親水端朝外，疏水端相對；膜蛋白協助運輸、辨識與受器作用</text>
+          <g transform="translate(80,62)">
+            <script type="application/ecmascript"><![CDATA[]]></script>
+            <circle cx="0" cy="0" r="12" fill="#2d6694"/><line x1="-5" y1="12" x2="-12" y2="48" stroke="#2d6694" stroke-width="3"/><line x1="5" y1="12" x2="12" y2="48" stroke="#2d6694" stroke-width="3"/>
+            <circle cx="55" cy="0" r="12" fill="#2d6694"/><line x1="50" y1="12" x2="43" y2="48" stroke="#2d6694" stroke-width="3"/><line x1="60" y1="12" x2="67" y2="48" stroke="#2d6694" stroke-width="3"/>
+            <circle cx="110" cy="0" r="12" fill="#2d6694"/><line x1="105" y1="12" x2="98" y2="48" stroke="#2d6694" stroke-width="3"/><line x1="115" y1="12" x2="122" y2="48" stroke="#2d6694" stroke-width="3"/>
+            <circle cx="165" cy="0" r="12" fill="#2d6694"/><line x1="160" y1="12" x2="153" y2="48" stroke="#2d6694" stroke-width="3"/><line x1="170" y1="12" x2="177" y2="48" stroke="#2d6694" stroke-width="3"/>
+            <circle cx="220" cy="0" r="12" fill="#2d6694"/><line x1="215" y1="12" x2="208" y2="48" stroke="#2d6694" stroke-width="3"/><line x1="225" y1="12" x2="232" y2="48" stroke="#2d6694" stroke-width="3"/>
+            <circle cx="275" cy="0" r="12" fill="#2d6694"/><line x1="270" y1="12" x2="263" y2="48" stroke="#2d6694" stroke-width="3"/><line x1="280" y1="12" x2="287" y2="48" stroke="#2d6694" stroke-width="3"/>
+            <circle cx="330" cy="0" r="12" fill="#2d6694"/><line x1="325" y1="12" x2="318" y2="48" stroke="#2d6694" stroke-width="3"/><line x1="335" y1="12" x2="342" y2="48" stroke="#2d6694" stroke-width="3"/>
+            <circle cx="385" cy="0" r="12" fill="#2d6694"/><line x1="380" y1="12" x2="373" y2="48" stroke="#2d6694" stroke-width="3"/><line x1="390" y1="12" x2="397" y2="48" stroke="#2d6694" stroke-width="3"/>
+            <circle cx="0" cy="96" r="12" fill="#2d6694"/><line x1="-12" y1="48" x2="-5" y2="84" stroke="#2d6694" stroke-width="3"/><line x1="12" y1="48" x2="5" y2="84" stroke="#2d6694" stroke-width="3"/>
+            <circle cx="55" cy="96" r="12" fill="#2d6694"/><line x1="43" y1="48" x2="50" y2="84" stroke="#2d6694" stroke-width="3"/><line x1="67" y1="48" x2="60" y2="84" stroke="#2d6694" stroke-width="3"/>
+            <circle cx="110" cy="96" r="12" fill="#2d6694"/><line x1="98" y1="48" x2="105" y2="84" stroke="#2d6694" stroke-width="3"/><line x1="122" y1="48" x2="115" y2="84" stroke="#2d6694" stroke-width="3"/>
+            <circle cx="165" cy="96" r="12" fill="#2d6694"/><line x1="153" y1="48" x2="160" y2="84" stroke="#2d6694" stroke-width="3"/><line x1="177" y1="48" x2="170" y2="84" stroke="#2d6694" stroke-width="3"/>
+            <circle cx="220" cy="96" r="12" fill="#2d6694"/><line x1="208" y1="48" x2="215" y2="84" stroke="#2d6694" stroke-width="3"/><line x1="232" y1="48" x2="225" y2="84" stroke="#2d6694" stroke-width="3"/>
+            <circle cx="275" cy="96" r="12" fill="#2d6694"/><line x1="263" y1="48" x2="270" y2="84" stroke="#2d6694" stroke-width="3"/><line x1="287" y1="48" x2="280" y2="84" stroke="#2d6694" stroke-width="3"/>
+            <circle cx="330" cy="96" r="12" fill="#2d6694"/><line x1="318" y1="48" x2="325" y2="84" stroke="#2d6694" stroke-width="3"/><line x1="342" y1="48" x2="335" y2="84" stroke="#2d6694" stroke-width="3"/>
+            <circle cx="385" cy="96" r="12" fill="#2d6694"/><line x1="373" y1="48" x2="380" y2="84" stroke="#2d6694" stroke-width="3"/><line x1="397" y1="48" x2="390" y2="84" stroke="#2d6694" stroke-width="3"/>
+          </g>
+          <path d="M580,55 C545,80 545,140 580,165 C615,140 615,80 580,55Z" fill="#9bd67f" stroke="#2f7d4b" stroke-width="3"/>
+          <path d="M695,75 L808,75" class="svg-arrow"/><text x="752" y="66" class="svg-small" text-anchor="middle">小分子可通過</text>
+          <path d="M695,132 L808,132" stroke="#bc4b36" stroke-width="2" stroke-dasharray="7 5"/><text x="752" y="154" class="svg-small" text-anchor="middle">大型/帶電物質需蛋白質協助</text>
+          <text x="80" y="195" class="svg-small">磷脂</text><text x="565" y="195" class="svg-small">膜蛋白</text><text x="708" y="195" class="svg-small">物質進出</text>
+        </svg>
+      </div>
+      <div class="grid">
+        <div class="card"><h3>細胞膜</h3><div>主要由<span class="keyword">磷脂雙層</span>、膜蛋白、醣類與固醇類組成。磷脂的親水端朝水溶液，疏水端相對，使膜具選擇性通透。</div></div>
+        <div class="card"><h3>細胞壁</h3><div>植物細胞壁主要為纖維素；真菌為幾丁質；細菌為肽聚醣。功能是支持、保護並維持細胞形狀。</div></div>
+        <div class="card"><h3>細胞核</h3><div>核膜為雙層膜並有核孔；核質含膠狀物質與酵素，是化學反應進行處；染色體由 DNA 與蛋白質組成。</div></div>
+        <div class="card"><h3>細胞質</h3><div>由胞質液、膜狀胞器與非膜構造組成。胞質液富含水、離子、酵素和膠狀物質，是細胞代謝反應的重要場所。</div></div>
+      </div>
+      <div class="table-wrap">
+        <table class="note-table">
+          <tr><th>胞器</th><th>位址</th><th>型態</th><th>功能</th></tr>
+          <tr>
+            <td>粗糙內質網 RER</td>
+            <td>細胞質中，核外側，並可與核膜相連。</td>
+            <td>單層膜囊狀管道，表面附有核糖體，所以外觀較粗糙。</td>
+            <td>合成、修飾並運輸蛋白質，特別是分泌蛋白與膜蛋白，也可作為物質運輸管道。</td>
+          </tr>
+          <tr>
+            <td>平滑內質網 SER</td>
+            <td>粗糙內質網外側或延伸處。</td>
+            <td>單層膜管狀構造，表面不附核糖體，所以較平滑。</td>
+            <td>合成脂質、固醇類，進行解毒並儲存鈣離子；肝細胞的 SER 特別發達。</td>
+          </tr>
+          <tr>
+            <td>高基氏體</td>
+            <td>細胞質中，通常位於內質網與細胞膜之間。</td>
+            <td>單層膜，由多層扁平囊堆疊而成，旁邊常有小囊泡。</td>
+            <td>接收內質網來的物質，進行修飾、分類、包裝，再形成囊泡分泌。</td>
+          </tr>
+          <tr>
+            <td>溶體</td>
+            <td>高基氏體外側形成，動物細胞的細胞質中較常見。</td>
+            <td>單層膜小囊，內含多種消化酵素。</td>
+            <td>胞內消化、胞器更新與分解外來物；也可協助汰換細胞。</td>
+          </tr>
+          <tr>
+            <td>液胞</td>
+            <td>細胞質中；植物細胞常有大型中央液胞。</td>
+            <td>單層膜囊狀構造，植物細胞的液胞通常很大。</td>
+            <td>儲存水分、養分、色素與廢物，並維持植物細胞膨壓。</td>
+          </tr>
+          <tr>
+            <td>粒線體</td>
+            <td>動植物細胞的細胞質中；耗能多的細胞通常較多。</td>
+            <td>雙層膜，內膜向內摺疊形成皺褶；含自己的環狀 DNA 與核糖體。</td>
+            <td>進行有氧呼吸，分解葡萄糖並產生大量 ATP。</td>
+          </tr>
+          <tr>
+            <td>葉綠體</td>
+            <td>植物綠色部位細胞的細胞質中，如葉肉細胞。</td>
+            <td>雙層膜，內含類囊體、基質、葉綠素、自己的 DNA 與核糖體。</td>
+            <td>進行光合作用，將光能轉成葡萄糖中的化學能。</td>
+          </tr>
+          <tr>
+            <td>中心體 / 中心粒</td>
+            <td>動物細胞核附近。</td>
+            <td>非膜構造，中心粒由微管蛋白組成。</td>
+            <td>細胞分裂時協助紡錘絲形成。</td>
+          </tr>
+          <tr>
+            <td>細胞骨架</td>
+            <td>細胞質中。</td>
+            <td>由微管、微絲與中間絲等蛋白質纖維構成。</td>
+            <td>維持細胞形狀、固定胞器位置，也和細胞運動與胞內運輸有關。</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="toggle(this)"><span><span class="tag tag-cell">比較</span>原核細胞 vs 真核細胞</span><span class="arrow">›</span></div>
+    <div class="section-body">
+      <table class="note-table">
+        <tr><th>項目</th><th>原核細胞</th><th>真核細胞</th></tr>
+        <tr><td>細胞核</td><td>沒有真正細胞核，DNA 位於核區。</td><td>有核膜包圍的細胞核。</td></tr>
+        <tr><td>膜狀胞器</td><td>無</td><td>有，如粒線體、內質網、高基氏體。</td></tr>
+        <tr><td>DNA</td><td>多為環狀 DNA。</td><td>線狀 DNA，與蛋白質形成染色體。</td></tr>
+        <tr><td>大小</td><td>較小</td><td>較大</td></tr>
+        <tr><td>例子</td><td>細菌、藍綠菌</td><td>動物、植物、真菌、原生生物</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="energy" class="chapter">
+  <div class="ch-head">
+    <div class="ch-num">04</div>
+    <div>
+      <h1>細胞與能量</h1>
+      <div class="ch-note">對應掃描頁 8-10：ATP、光合作用、呼吸作用、能量轉換</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title open" onclick="toggle(this)"><span><span class="tag tag-energy">能量</span>ATP 與能量循環</span><span class="arrow">›</span></div>
+    <div class="section-body open">
+      <div class="callout blue">ATP 是細胞可直接使用的能量貨幣。ATP 分解成 ADP + Pi 時釋放能量；ADP 加上 Pi 則需要能量重新合成 ATP。</div>
+      <table class="note-table">
+        <tr><th>ATP 組成</th><th>說明</th></tr>
+        <tr><td>腺嘌呤</td><td>含氮鹼基，和核糖共同形成腺苷。</td></tr>
+        <tr><td>核糖</td><td>五碳糖，連接腺嘌呤與磷酸基。</td></tr>
+        <tr><td>三個磷酸基</td><td>ATP 名稱中的「三磷酸」來源。末端磷酸鍵水解時釋放能量，形成 ADP + Pi。</td></tr>
+      </table>
+      <div class="diagram">
+        <div class="diagram-title">ATP - ADP 循環</div>
+        <svg viewBox="0 0 900 330" role="img" aria-label="ATP 與 ADP 的能量循環圖">
+          <defs>
+            <marker id="arrow-red" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#bc4b36"/></marker>
+          </defs>
+          <circle cx="210" cy="165" r="78" fill="#e8f1fa" stroke="#2d6694" stroke-width="4"/>
+          <text x="210" y="158" class="svg-label no-halo" text-anchor="middle">ATP</text>
+          <text x="210" y="184" class="svg-small no-halo" text-anchor="middle">高能分子</text>
+          <circle cx="690" cy="165" r="78" fill="#fff0dd" stroke="#9a6b20" stroke-width="4"/>
+          <text x="690" y="158" class="svg-label no-halo" text-anchor="middle">ADP + Pi</text>
+          <text x="690" y="184" class="svg-small no-halo" text-anchor="middle">相對低能</text>
+          <path d="M276,122 C390,62 510,62 624,122" class="svg-arrow"/>
+          <text x="450" y="42" class="svg-label" text-anchor="middle">水解，釋放能量</text>
+          <text x="450" y="66" class="svg-small" text-anchor="middle">供肌肉收縮、主動運輸與合成反應</text>
+          <path d="M624,208 C510,268 390,268 276,208" class="svg-arrow"/>
+          <text x="450" y="286" class="svg-label" text-anchor="middle">吸收能量，重新合成 ATP</text>
+          <text x="450" y="311" class="svg-small" text-anchor="middle">能量來自呼吸作用；植物也可來自光合作用</text>
+        </svg>
+      </div>
+      <table class="note-table">
+        <tr><th>反應</th><th>意義</th></tr>
+        <tr><td><span class="formula">ATP + H2O → ADP + Pi + 能量</span></td><td>放能反應，供應肌肉收縮、主動運輸、合成作用等。</td></tr>
+        <tr><td><span class="formula">ADP + Pi + 能量 → ATP</span></td><td>儲能反應，能量多來自呼吸作用或光合作用。</td></tr>
+      </table>
+      <div class="grid">
+        <div class="card"><h3>分解代謝</h3><div>大分子分解成小分子，通常釋放能量，例如呼吸作用分解葡萄糖產生 ATP。</div></div>
+        <div class="card"><h3>合成代謝</h3><div>小分子合成大分子，通常需要能量，例如光合作用把 CO2、H2O 合成葡萄糖。</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="toggle(this)"><span><span class="tag tag-energy">作用</span>光合作用</span><span class="arrow">›</span></div>
+    <div class="section-body">
+      <div class="callout gold">光合作用把光能轉成化學能，儲存在葡萄糖中；主要在葉綠體進行。</div>
+      <div class="diagram">
+        <div class="diagram-title">光合作用流程圖：光反應 → 固碳反應</div>
+        <svg viewBox="0 0 980 320" role="img" aria-label="光合作用光反應與固碳反應流程">
+          <defs>
+            <marker id="arrow-red" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#bc4b36"/></marker>
+          </defs>
+          <rect x="160" y="42" width="660" height="238" rx="26" fill="#eef8e7" stroke="#2f7d4b" stroke-width="5"/>
+          <text x="490" y="28" class="svg-label" text-anchor="middle">葉綠體</text>
+          <rect x="230" y="88" width="210" height="120" rx="10" fill="#e8f1fa" stroke="#2d6694" stroke-width="3"/>
+          <text x="335" y="126" class="svg-label no-halo" text-anchor="middle">光反應</text>
+          <text x="335" y="154" class="svg-small no-halo" text-anchor="middle">類囊體膜</text>
+          <text x="335" y="182" class="svg-small no-halo" text-anchor="middle">H2O → O2</text>
+          <rect x="560" y="88" width="210" height="120" rx="10" fill="#fff0dd" stroke="#9a6b20" stroke-width="3"/>
+          <text x="665" y="126" class="svg-label no-halo" text-anchor="middle">固碳反應</text>
+          <text x="665" y="154" class="svg-small no-halo" text-anchor="middle">葉綠體基質</text>
+          <text x="665" y="182" class="svg-small no-halo" text-anchor="middle">CO2 → 糖類</text>
+          <path d="M440,132 L560,132" class="svg-arrow"/>
+          <text x="500" y="112" class="svg-small" text-anchor="middle">ATP、NADPH</text>
+          <path d="M560,178 L440,178" class="svg-arrow"/>
+          <text x="500" y="202" class="svg-small" text-anchor="middle">ADP、NADP+</text>
+          <path d="M55,102 L230,126" class="svg-arrow"/><text x="58" y="86" class="svg-small">光能</text>
+          <path d="M55,184 L230,172" class="svg-arrow"/><text x="58" y="208" class="svg-small">H2O</text>
+          <path d="M335,208 L335,260" class="svg-arrow"/><text x="352" y="252" class="svg-small">O2 釋出</text>
+          <path d="M925,112 L770,136" class="svg-arrow"/><text x="900" y="96" class="svg-small">CO2</text>
+          <path d="M665,208 L665,260" class="svg-arrow"/><text x="682" y="252" class="svg-small">C6H12O6</text>
+        </svg>
+      </div>
+      <table class="note-table">
+        <tr><th>總反應</th><td><span class="formula">6CO2 + 6H2O + 光能 → C6H12O6 + 6O2</span></td></tr>
+        <tr><th>意義</th><td>把光能存入有機物，屬於合成作用；產物葡萄糖可供呼吸作用分解放能。</td></tr>
+        <tr><th>場所</th><td>葉綠體。光反應在類囊體膜，固碳反應在基質。</td></tr>
+        <tr><th>光反應</th><td>水分解產生 O2，電子與 H+ 使 NADP+ 還原成 NADPH，並把 ADP + Pi 合成 ATP。</td></tr>
+        <tr><th>暗反應 / 固碳反應</th><td>固定 CO2，在基質中利用 ATP 與 NADPH 還原合成葡萄糖等醣類。</td></tr>
+        <tr><th>影響因子</th><td>光強度、二氧化碳濃度、溫度、水分、葉綠素含量。</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="toggle(this)"><span><span class="tag tag-energy">作用</span>呼吸作用與發酵</span><span class="arrow">›</span></div>
+    <div class="section-body">
+      <div class="diagram">
+        <div class="diagram-title">呼吸作用流程圖：葡萄糖逐步釋放能量</div>
+        <svg viewBox="0 0 980 330" role="img" aria-label="細胞呼吸作用與發酵流程">
+          <defs>
+            <marker id="arrow-red" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#bc4b36"/></marker>
+          </defs>
+          <rect x="40" y="108" width="155" height="82" rx="8" fill="#fff0dd" stroke="#9a6b20" stroke-width="3"/>
+          <text x="117" y="141" class="svg-label no-halo" text-anchor="middle">葡萄糖</text>
+          <text x="117" y="168" class="svg-small no-halo" text-anchor="middle">C6H12O6</text>
+          <rect x="275" y="108" width="190" height="82" rx="8" fill="#e8f1fa" stroke="#2d6694" stroke-width="3"/>
+          <text x="370" y="141" class="svg-label no-halo" text-anchor="middle">糖解作用</text>
+          <text x="370" y="168" class="svg-small no-halo" text-anchor="middle">細胞質，少量 ATP</text>
+          <path d="M195,149 L275,149" class="svg-arrow"/>
+          <rect x="585" y="48" width="325" height="112" rx="42" fill="#f7d8cf" stroke="#bc4b36" stroke-width="4"/>
+          <text x="747" y="34" class="svg-label" text-anchor="middle">粒線體</text>
+          <text x="747" y="91" class="svg-label no-halo" text-anchor="middle">有氧呼吸</text>
+          <text x="747" y="121" class="svg-small no-halo" text-anchor="middle">大量 ATP、CO2、H2O</text>
+          <rect x="585" y="220" width="325" height="82" rx="8" fill="#f4fbf6" stroke="#2f7d4b" stroke-width="3"/>
+          <text x="747" y="252" class="svg-label no-halo" text-anchor="middle">無氧：發酵</text>
+          <text x="747" y="280" class="svg-small no-halo" text-anchor="middle">酒精或乳酸發酵，ATP 少</text>
+          <path d="M465,136 C515,118 540,104 585,104" class="svg-arrow"/>
+          <text x="522" y="91" class="svg-small" text-anchor="middle">有 O2</text>
+          <path d="M465,166 C515,190 540,240 585,260" class="svg-arrow"/>
+          <text x="520" y="220" class="svg-small" text-anchor="middle">無 O2</text>
+          <text x="490" y="322" class="svg-small" text-anchor="middle">氧充足時進入粒線體產生較多 ATP；缺氧時進行發酵。</text>
+        </svg>
+      </div>
+      <table class="note-table">
+        <tr><th>有氧呼吸總反應</th><td><span class="formula">C6H12O6 + 6O2 → 6CO2 + 6H2O + ATP</span></td></tr>
+        <tr><th>糖解作用</th><td>在細胞質中進行，葡萄糖分解成 2 個丙酮酸，淨產生 2 ATP。</td></tr>
+        <tr><th>有氧呼吸</th><td>丙酮酸進入粒線體，在氧氣參與下產生 CO2、H2O 與大量 ATP，常記約 30-32 ATP。</td></tr>
+        <tr><th>酒精發酵</th><td>酵母菌、部分植物根細胞缺氧時可進行，產生酒精與 CO2，ATP 少。</td></tr>
+        <tr><th>乳酸發酵</th><td>乳酸菌、骨骼肌缺氧時可進行，產生乳酸，ATP 少。</td></tr>
+        <tr><th>影響因子</th><td>溫度、氧氣濃度與酵素活性；溫度太高會使酵素失去活性。</td></tr>
+      </table>
+      <div class="grid">
+        <div class="card"><h3>光合作用</h3><div>儲存能量：CO2 和 H2O 變成葡萄糖與 O2。</div></div>
+        <div class="card"><h3>呼吸作用</h3><div>釋放能量：葡萄糖和 O2 變成 CO2、H2O 與 ATP。</div></div>
+        <div class="card"><h3>能量流動</h3><div>能量流動是單向的：光能進入生態系，經生產者轉成化學能，最後多以熱能散失。</div></div>
+        <div class="card"><h3>物質循環</h3><div>元素可反覆循環，例如 CO2 在光合作用與呼吸作用之間轉換。</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="gene" class="chapter">
+  <div class="ch-head">
+    <div class="ch-num">02</div>
+    <div>
+      <h1>細胞分裂與遺傳</h1>
+      <div class="ch-note">對應掃描頁 11-26：染色體、細胞週期、有絲分裂、減數分裂、孟德爾遺傳</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title open" onclick="toggle(this)"><span><span class="tag tag-gene">分裂</span>染色體與細胞週期</span><span class="arrow">›</span></div>
+    <div class="section-body open">
+      <div class="callout gold">DNA 複製前是一條染色質；複製後形成兩條姊妹染色分體，由著絲點連接。分裂時染色質濃縮成染色體，方便平均分配。</div>
+      <div class="diagram">
+        <div class="diagram-title">染色體構造：DNA、染色質、染色體</div>
+        <svg viewBox="0 0 960 320" role="img" aria-label="染色質與染色體構造圖">
+          <defs>
+            <marker id="arrow-red" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#bc4b36"/></marker>
+          </defs>
+          <path d="M55,90 C95,40 145,140 185,90 S275,140 315,90" stroke="#2d6694" stroke-width="5" fill="none"/>
+          <path d="M55,130 C95,80 145,180 185,130 S275,180 315,130" stroke="#bc4b36" stroke-width="5" fill="none"/>
+          <line x1="92" y1="84" x2="92" y2="136" stroke="#9a6b20" stroke-width="2"/>
+          <line x1="140" y1="118" x2="140" y2="152" stroke="#9a6b20" stroke-width="2"/>
+          <line x1="190" y1="86" x2="190" y2="134" stroke="#9a6b20" stroke-width="2"/>
+          <line x1="250" y1="120" x2="250" y2="154" stroke="#9a6b20" stroke-width="2"/>
+          <text x="185" y="215" class="svg-label" text-anchor="middle">DNA 雙股螺旋</text>
+          <path d="M340,110 L430,110" class="svg-arrow"/>
+          <path d="M480,60 C430,95 520,105 470,140 C430,170 535,190 480,225" stroke="#7a5c2a" stroke-width="6" fill="none"/>
+          <circle cx="458" cy="84" r="14" fill="#f3c072" stroke="#9a6b20" stroke-width="2"/>
+          <circle cx="500" cy="122" r="14" fill="#f3c072" stroke="#9a6b20" stroke-width="2"/>
+          <circle cx="462" cy="162" r="14" fill="#f3c072" stroke="#9a6b20" stroke-width="2"/>
+          <text x="482" y="270" class="svg-label" text-anchor="middle">DNA 纏繞蛋白質 → 染色質</text>
+          <path d="M560,110 L650,110" class="svg-arrow"/>
+          <path d="M720,52 C765,88 785,142 746,168 C718,188 690,222 670,265" stroke="#2d6694" stroke-width="18" stroke-linecap="round" fill="none"/>
+          <path d="M818,52 C773,88 753,142 792,168 C820,188 848,222 868,265" stroke="#bc4b36" stroke-width="18" stroke-linecap="round" fill="none"/>
+          <circle cx="769" cy="166" r="22" fill="#9a6b20"/>
+          <text x="770" y="290" class="svg-label" text-anchor="middle">複製後染色體</text>
+          <line x1="769" y1="166" x2="890" y2="150" class="svg-arrow"/><text x="898" y="154" class="svg-small">著絲點</text>
+          <line x1="720" y1="52" x2="664" y2="34" class="svg-arrow"/><text x="574" y="34" class="svg-small">姊妹染色分體</text>
+        </svg>
+      </div>
+      <table class="note-table">
+        <tr><th>名詞</th><th>重點</th></tr>
+        <tr><td>染色質</td><td>平時呈細絲狀，主要由 DNA 與蛋白質組成。</td></tr>
+        <tr><td>染色體</td><td>細胞分裂時染色質濃縮纏繞形成，較容易被平均分配。</td></tr>
+        <tr><td>基因</td><td>DNA 上控制性狀的片段，可視為蛋白質或功能產物的訊息。</td></tr>
+        <tr><td>等位基因</td><td>位於同源染色體相同位置、控制同一性狀的不同形式，例如 A 與 a。</td></tr>
+        <tr><td>同源染色體</td><td>大小、形狀與基因位置相似，一條來自父方，一條來自母方。</td></tr>
+        <tr><td>姊妹染色分體</td><td>DNA 複製後形成的兩條相同染色分體，由著絲點連接。</td></tr>
+      </table>
+      <table class="note-table">
+        <tr><th>時期</th><th>重點</th></tr>
+        <tr><td>間期 G1</td><td>細胞生長，合成蛋白質與胞器，準備 DNA 複製。</td></tr>
+        <tr><td>間期 S</td><td>DNA 複製，染色體由一條染色分體變成兩條姊妹染色分體。</td></tr>
+        <tr><td>間期 G2</td><td>檢查 DNA、合成分裂所需物質，準備進入分裂期。</td></tr>
+        <tr><td>前期</td><td>染色體凝縮，核膜、核仁逐漸消失，紡錘絲形成。</td></tr>
+        <tr><td>中期</td><td>染色體排列在赤道板，紡錘絲連接著絲點。</td></tr>
+        <tr><td>後期</td><td>姊妹染色分體分離，移向兩極。</td></tr>
+        <tr><td>末期</td><td>染色體鬆開，核膜重建，接著細胞質分裂。</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="toggle(this)"><span><span class="tag tag-gene">比較</span>有絲分裂 vs 減數分裂</span><span class="arrow">›</span></div>
+    <div class="section-body">
+      <div class="diagram">
+        <div class="diagram-title">有絲分裂與減數分裂過程圖</div>
+        <svg viewBox="0 0 980 360" role="img" aria-label="有絲分裂與減數分裂比較流程圖">
+          <defs>
+            <marker id="arrow-red" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#bc4b36"/></marker>
+          </defs>
+          <text x="135" y="28" class="svg-label" text-anchor="middle">有絲分裂</text>
+          <text x="625" y="28" class="svg-label" text-anchor="middle">減數分裂</text>
+          <circle cx="135" cy="95" r="45" fill="#e8f1fa" stroke="#2d6694" stroke-width="3"/>
+          <text x="135" y="99" class="svg-small" text-anchor="middle">母細胞 2n</text>
+          <path d="M135,140 L135,190 M135,190 L75,232 M135,190 L195,232" stroke="#bc4b36" stroke-width="2.5" fill="none"/>
+          <circle cx="135" cy="190" r="4" fill="#bc4b36"/>
+          <text x="155" y="174" class="svg-small">一次分裂</text>
+          <circle cx="75" cy="270" r="38" fill="#e8f1fa" stroke="#2d6694" stroke-width="3"/>
+          <circle cx="195" cy="270" r="38" fill="#e8f1fa" stroke="#2d6694" stroke-width="3"/>
+          <text x="75" y="274" class="svg-small" text-anchor="middle">2n</text><text x="195" y="274" class="svg-small" text-anchor="middle">2n</text>
+          <text x="135" y="332" class="svg-small" text-anchor="middle">兩個子細胞，染色體數與母細胞相同</text>
+
+          <circle cx="635" cy="78" r="42" fill="#fff0dd" stroke="#9a6b20" stroke-width="3"/>
+          <text x="635" y="83" class="svg-small no-halo" text-anchor="middle">母細胞 2n</text>
+          <path d="M635,120 L635,148" class="svg-arrow"/>
+          <text x="665" y="140" class="svg-small">減 I：同源染色體分離</text>
+          <path d="M635,148 L555,180 M635,148 L715,180" stroke="#bc4b36" stroke-width="2" fill="none"/>
+          <circle cx="555" cy="205" r="34" fill="#fff0dd" stroke="#9a6b20" stroke-width="3"/>
+          <circle cx="715" cy="205" r="34" fill="#fff0dd" stroke="#9a6b20" stroke-width="3"/>
+          <text x="555" y="210" class="svg-small no-halo" text-anchor="middle">n</text>
+          <text x="715" y="210" class="svg-small no-halo" text-anchor="middle">n</text>
+          <text x="815" y="205" class="svg-small">減 II：姊妹染色分體分離</text>
+          <path d="M540,237 L500,276 M570,237 L590,276 M700,237 L680,276 M730,237 L770,276" stroke="#bc4b36" stroke-width="2" fill="none"/>
+          <circle cx="500" cy="304" r="27" fill="#fff0dd" stroke="#9a6b20" stroke-width="3"/>
+          <circle cx="590" cy="304" r="27" fill="#fff0dd" stroke="#9a6b20" stroke-width="3"/>
+          <circle cx="680" cy="304" r="27" fill="#fff0dd" stroke="#9a6b20" stroke-width="3"/>
+          <circle cx="770" cy="304" r="27" fill="#fff0dd" stroke="#9a6b20" stroke-width="3"/>
+          <text x="635" y="352" class="svg-small" text-anchor="middle">四個配子：染色體數減半，基因組合不同</text>
+        </svg>
+      </div>
+      <table class="note-table">
+        <tr><th>項目</th><th>有絲分裂</th><th>減數分裂</th></tr>
+        <tr><td>重要性</td><td>生長、修補、無性生殖。</td><td>形成配子，維持世代染色體數穩定。</td></tr>
+        <tr><td>複製次數</td><td>DNA 複製 1 次。</td><td>DNA 複製 1 次。</td></tr>
+        <tr><td>分裂次數</td><td>1 次。</td><td>2 次。</td></tr>
+        <tr><td>子細胞數目</td><td>2 個。</td><td>4 個。</td></tr>
+        <tr><td>染色體數</td><td>與母細胞相同。</td><td>母細胞的一半。</td></tr>
+        <tr><td>基因組合</td><td>子細胞彼此相同。</td><td>子細胞彼此不同，增加遺傳變異。</td></tr>
+        <tr><td>特殊事件</td><td>無同源染色體配對。</td><td>同源染色體配對、互換、分離。</td></tr>
+        <tr><td>發生細胞</td><td>體細胞。</td><td>生殖母細胞，產生精子或卵。</td></tr>
+        <tr><td>人類例子</td><td>體細胞 46 條染色體，分裂後仍為 46 條。</td><td>配子 23 條染色體，受精後恢復 46 條。</td></tr>
+      </table>
+      <div class="callout gold">減數分裂 I 分離的是同源染色體；減數分裂 II 分離的是姊妹染色分體。這是判斷題最常考的差異。</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="toggle(this)"><span><span class="tag tag-gene">定律</span>孟德爾遺傳</span><span class="arrow">›</span></div>
+    <div class="section-body">
+      <div class="grid">
+        <div class="card"><h3>分離律</h3><div>成對的等位基因在形成配子時分離，每個配子只得到其中一個。</div></div>
+        <div class="card"><h3>獨立分配律</h3><div>不同性狀的等位基因在形成配子時可自由組合，前提是基因位於不同染色體或距離夠遠。</div></div>
+      </div>
+      <table class="note-table">
+        <tr><th>名詞</th><th>說明</th></tr>
+        <tr><td>顯性</td><td>在雜合狀態會表現出來的性狀，如 A。</td></tr>
+        <tr><td>隱性</td><td>需同型合子才表現，如 aa。</td></tr>
+        <tr><td>基因型</td><td>個體的基因組成，例如 AA、Aa、aa。</td></tr>
+        <tr><td>表現型</td><td>實際呈現的性狀，例如高莖、矮莖。</td></tr>
+        <tr><td>同型合子</td><td>成對等位基因相同，例如 AA 或 aa。</td></tr>
+        <tr><td>異型合子</td><td>成對等位基因不同，例如 Aa。</td></tr>
+        <tr><td>親代 / 子代</td><td>P 代表親代，F1 為第一子代，F2 為第二子代。</td></tr>
+        <tr><td>測交</td><td>未知顯性個體 × 隱性同型合子，用來判斷未知個體基因型。</td></tr>
+      </table>
+      <div class="callout">常見比例：單性雜交 Aa × Aa，基因型 1:2:1，表現型 3:1。測交 Aa × aa，表現型常見 1:1。雙性雜交 AaBb × AaBb，表現型常見 9:3:3:1。</div>
+      <div class="gene-tool">
+        <h3>基因型互動推算</h3>
+        <div class="mini">輸入親代基因型，可使用單性雜交或雙性雜交，例如 Aa × Aa、AaBb × AaBb、AA × aa。</div>
+        <div class="tool-row">
+          <label class="tool-field">親代 1
+            <input id="parentA" value="Aa" autocomplete="off" spellcheck="false">
+          </label>
+          <label class="tool-field">親代 2
+            <input id="parentB" value="Aa" autocomplete="off" spellcheck="false">
+          </label>
+          <button class="tool-button" type="button" onclick="runPunnett()">產生結果</button>
+        </div>
+        <div id="punnettError" class="tool-error"></div>
+        <div id="punnettOutput"></div>
+      </div>
+      <div class="diagram">
+        <div class="diagram-title">單性雜交：Aa × Aa</div>
+        <svg viewBox="0 0 620 300" role="img" aria-label="孟德爾單性雜交方格">
+          <rect x="170" y="70" width="300" height="180" fill="white" stroke="#d7cdbb" stroke-width="3"/>
+          <line x1="170" y1="130" x2="470" y2="130" stroke="#d7cdbb" stroke-width="3"/>
+          <line x1="170" y1="190" x2="470" y2="190" stroke="#d7cdbb" stroke-width="3"/>
+          <line x1="270" y1="70" x2="270" y2="250" stroke="#d7cdbb" stroke-width="3"/>
+          <line x1="370" y1="70" x2="370" y2="250" stroke="#d7cdbb" stroke-width="3"/>
+          <text x="320" y="38" class="svg-label" text-anchor="middle">親代配子</text>
+          <text x="320" y="105" class="svg-label" text-anchor="middle">A</text><text x="420" y="105" class="svg-label" text-anchor="middle">a</text>
+          <text x="220" y="165" class="svg-label" text-anchor="middle">A</text><text x="220" y="225" class="svg-label" text-anchor="middle">a</text>
+          <text x="320" y="165" class="svg-label" text-anchor="middle">AA</text><text x="420" y="165" class="svg-label" text-anchor="middle">Aa</text>
+          <text x="320" y="225" class="svg-label" text-anchor="middle">Aa</text><text x="420" y="225" class="svg-label" text-anchor="middle">aa</text>
+          <text x="320" y="282" class="svg-small" text-anchor="middle">基因型 1 AA : 2 Aa : 1 aa；若 A 顯性，表現型 3 : 1</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="toggle(this)"><span><span class="tag tag-gene">延伸</span>非典型遺傳與血型</span><span class="arrow">›</span></div>
+    <div class="section-body">
+      <table class="note-table">
+        <tr><th>類型</th><th>重點</th><th>例子</th></tr>
+        <tr><td>不完全顯性</td><td>雜合子表現介於兩種同型合子之間。</td><td>紅花 × 白花 → 粉紅花。</td></tr>
+        <tr><td>共顯性</td><td>雜合子同時表現兩種等位基因的效果。</td><td>AB 型同時有 A、B 抗原。</td></tr>
+        <tr><td>多基因遺傳</td><td>一個性狀由多對基因控制，表現常呈連續分布。</td><td>身高、膚色。</td></tr>
+        <tr><td>複等位基因</td><td>族群中同一基因位置有超過兩種等位基因。</td><td>ABO 血型。</td></tr>
+        <tr><td>性聯遺傳</td><td>基因位於性染色體上，常見 X 聯遺傳。</td><td>紅綠色盲、血友病。</td></tr>
+      </table>
+      <table class="note-table">
+        <tr><th>血型</th><th>可能基因型</th><th>紅血球表面抗原</th><th>血清抗體</th></tr>
+        <tr><td>A 型</td><td>IAIA 或 IAi</td><td>A 抗原</td><td>抗 B</td></tr>
+        <tr><td>B 型</td><td>IBIB 或 IBi</td><td>B 抗原</td><td>抗 A</td></tr>
+        <tr><td>AB 型</td><td>IAIB</td><td>A、B 抗原</td><td>無抗 A、抗 B 抗體</td></tr>
+        <tr><td>O 型</td><td>ii</td><td>無 A、B 抗原</td><td>抗 A、抗 B</td></tr>
+      </table>
+      <table class="note-table">
+        <tr><th>血型補充</th><th>重點</th></tr>
+        <tr><td>IA 與 IB</td><td>彼此為共顯性，所以 IAIB 表現 AB 型。</td></tr>
+        <tr><td>i</td><td>對 IA、IB 皆為隱性，所以 ii 才表現 O 型。</td></tr>
+        <tr><td>Rh 血型</td><td>有 Rh 抗原為 Rh+，沒有為 Rh-；輸血時也需注意相容性。</td></tr>
+      </table>
+      <div class="callout gold">性聯遺傳筆記重點：基因位於 X 或 Y 染色體上。男性為 XY，只有一條 X，所以 X 聯隱性性狀較容易在男性表現；女性 XX 通常需兩個隱性等位基因才表現。</div>
+      <table class="note-table">
+        <tr><th>項目</th><th>重點整理</th></tr>
+        <tr><td>性染色體</td><td>女性 XX、男性 XY；卵細胞只帶 X，精子可帶 X 或 Y，因此父方精子決定子女性別。</td></tr>
+        <tr><td>X 聯隱性</td><td>如紅綠色盲、血友病；男性只要 X 上帶隱性基因就會表現。</td></tr>
+        <tr><td>帶因者</td><td>女性雜合通常不表現，但可把隱性基因傳給子代。</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="dna" class="chapter">
+  <div class="ch-head">
+    <div class="ch-num">03</div>
+    <div>
+      <h1>DNA、蛋白質與基因科技</h1>
+      <div class="ch-note">對應掃描頁 27-31：核酸、DNA 複製、轉錄、翻譯、基因工程</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title open" onclick="toggle(this)"><span><span class="tag tag-gene">分子</span>核酸與 DNA</span><span class="arrow">›</span></div>
+    <div class="section-body open">
+      <div class="diagram">
+        <div class="diagram-title">DNA 與 RNA 結構比較</div>
+        <svg viewBox="0 0 960 320" role="img" aria-label="DNA 與 RNA 結構比較圖">
+          <defs>
+            <marker id="arrow-red" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#bc4b36"/></marker>
+          </defs>
+          <text x="230" y="30" class="svg-label" text-anchor="middle">DNA：雙股，A-T、C-G</text>
+          <path d="M120,65 C190,120 270,120 340,65" stroke="#2d6694" stroke-width="5" fill="none"/>
+          <path d="M120,245 C190,190 270,190 340,245" stroke="#bc4b36" stroke-width="5" fill="none"/>
+          <line x1="150" y1="86" x2="150" y2="224" stroke="#9a6b20" stroke-width="2"/>
+          <line x1="190" y1="105" x2="190" y2="205" stroke="#9a6b20" stroke-width="2"/>
+          <line x1="230" y1="112" x2="230" y2="198" stroke="#9a6b20" stroke-width="2"/>
+          <line x1="270" y1="105" x2="270" y2="205" stroke="#9a6b20" stroke-width="2"/>
+          <line x1="310" y1="86" x2="310" y2="224" stroke="#9a6b20" stroke-width="2"/>
+          <text x="150" y="155" class="svg-small" text-anchor="middle">A=T</text>
+          <text x="190" y="155" class="svg-small" text-anchor="middle">C≡G</text>
+          <text x="230" y="155" class="svg-small" text-anchor="middle">T=A</text>
+          <text x="270" y="155" class="svg-small" text-anchor="middle">G≡C</text>
+          <text x="310" y="155" class="svg-small" text-anchor="middle">A=T</text>
+          <text x="700" y="30" class="svg-label" text-anchor="middle">RNA：單股，A-U、C-G</text>
+          <path d="M555,105 C610,72 655,148 710,118 S805,90 850,170" stroke="#2f7d4b" stroke-width="7" fill="none"/>
+          <circle cx="575" cy="98" r="20" fill="#e4f4e9" stroke="#2f7d4b" stroke-width="2"/><text x="575" y="103" class="svg-small no-halo" text-anchor="middle">A</text>
+          <circle cx="630" cy="112" r="20" fill="#e4f4e9" stroke="#2f7d4b" stroke-width="2"/><text x="630" y="117" class="svg-small no-halo" text-anchor="middle">U</text>
+          <circle cx="690" cy="126" r="20" fill="#e4f4e9" stroke="#2f7d4b" stroke-width="2"/><text x="690" y="131" class="svg-small no-halo" text-anchor="middle">C</text>
+          <circle cx="750" cy="108" r="20" fill="#e4f4e9" stroke="#2f7d4b" stroke-width="2"/><text x="750" y="113" class="svg-small no-halo" text-anchor="middle">G</text>
+          <circle cx="815" cy="132" r="20" fill="#e4f4e9" stroke="#2f7d4b" stroke-width="2"/><text x="815" y="137" class="svg-small no-halo" text-anchor="middle">A</text>
+          <text x="230" y="290" class="svg-small" text-anchor="middle">DNA：去氧核糖、雙股、儲存遺傳訊息</text>
+          <text x="700" y="290" class="svg-small" text-anchor="middle">RNA：核糖、單股、參與蛋白質合成</text>
+        </svg>
+      </div>
+      <table class="note-table">
+        <tr><th>核酸基本單位</th><td colspan="2">核酸由許多核苷酸連接而成；每個核苷酸包含一個磷酸基、一個五碳糖與一個含氮鹼基。</td></tr>
+        <tr><th>項目</th><th>DNA</th><th>RNA</th></tr>
+        <tr><td>五碳糖</td><td>去氧核糖</td><td>核糖</td></tr>
+        <tr><td>鹼基</td><td>A、T、C、G</td><td>A、U、C、G</td></tr>
+        <tr><td>構造</td><td>雙股螺旋</td><td>多為單股</td></tr>
+        <tr><td>功能</td><td>儲存遺傳訊息，可作為複製與轉錄模板。</td><td>參與蛋白質合成，可分為 mRNA、tRNA、rRNA 等。</td></tr>
+        <tr><td>所在位置</td><td>主要在細胞核；粒線體與葉綠體也有自己的 DNA。</td><td>可在細胞核、細胞質與核糖體中發現。</td></tr>
+      </table>
+      <div class="callout">DNA 鹼基配對：A 配 T，C 配 G。複製時兩股分開，各自作為模板合成互補新股。</div>
+      <div class="diagram">
+        <div class="diagram-title">DNA 複製：半保留複製</div>
+        <svg viewBox="0 0 900 280" role="img" aria-label="DNA 半保留複製圖">
+          <defs>
+            <marker id="arrow-red" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#bc4b36"/></marker>
+          </defs>
+          <text x="130" y="35" class="svg-label" text-anchor="middle">原 DNA</text>
+          <path d="M70,70 C110,110 150,110 190,70 M70,190 C110,150 150,150 190,190" stroke="#2d6694" stroke-width="5" fill="none"/>
+          <path d="M240,130 L350,130" class="svg-arrow"/><text x="294" y="112" class="svg-small" text-anchor="middle">解旋、互補配對</text>
+          <text x="520" y="35" class="svg-label" text-anchor="middle">子代 DNA 1</text>
+          <path d="M440,70 C480,110 520,110 560,70" stroke="#2d6694" stroke-width="5" fill="none"/>
+          <path d="M440,190 C480,150 520,150 560,190" stroke="#bc4b36" stroke-width="5" fill="none"/>
+          <text x="730" y="35" class="svg-label" text-anchor="middle">子代 DNA 2</text>
+          <path d="M650,70 C690,110 730,110 770,70" stroke="#bc4b36" stroke-width="5" fill="none"/>
+          <path d="M650,190 C690,150 730,150 770,190" stroke="#2d6694" stroke-width="5" fill="none"/>
+          <text x="450" y="242" class="svg-small" text-anchor="middle">每個新 DNA 都保留一股舊股，並合成一股新股，所以稱「半保留複製」。</text>
+        </svg>
+      </div>
+      <table class="note-table">
+        <tr><th>DNA 複製重點</th><th>說明</th></tr>
+        <tr><td>半保留複製</td><td>每個子代 DNA 都含一股舊股與一股新股。</td></tr>
+        <tr><td>解旋</td><td>雙股 DNA 先分開，露出兩股模板。</td></tr>
+        <tr><td>互補配對</td><td>A 對 T、C 對 G，新股依模板合成。</td></tr>
+        <tr><td>意義</td><td>讓細胞分裂前能複製遺傳訊息，使子細胞取得完整 DNA。</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="toggle(this)"><span><span class="tag tag-gene">中心法則</span>轉錄與翻譯</span><span class="arrow">›</span></div>
+    <div class="section-body">
+      <div class="diagram">
+        <div class="diagram-title">中心法則：DNA → RNA → 蛋白質</div>
+        <svg viewBox="0 0 980 340" role="img" aria-label="轉錄與翻譯過程圖">
+          <defs>
+            <marker id="arrow-red" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#bc4b36"/></marker>
+          </defs>
+          <rect x="55" y="58" width="210" height="92" rx="10" fill="#e8f1fa" stroke="#2d6694" stroke-width="3"/>
+          <text x="160" y="92" class="svg-label" text-anchor="middle">DNA</text>
+          <text x="160" y="120" class="svg-small" text-anchor="middle">基因：蛋白質設計圖</text>
+          <path d="M265,104 L390,104" class="svg-arrow"/><text x="328" y="88" class="svg-small" text-anchor="middle">轉錄</text>
+          <rect x="390" y="58" width="210" height="92" rx="10" fill="#e4f4e9" stroke="#2f7d4b" stroke-width="3"/>
+          <text x="495" y="92" class="svg-label" text-anchor="middle">mRNA</text>
+          <text x="495" y="120" class="svg-small" text-anchor="middle">密碼子：AUG、GCU...</text>
+          <path d="M600,104 L735,104" class="svg-arrow"/><text x="668" y="88" class="svg-small" text-anchor="middle">翻譯</text>
+          <rect x="735" y="58" width="190" height="92" rx="10" fill="#fff0dd" stroke="#9a6b20" stroke-width="3"/>
+          <text x="830" y="92" class="svg-label" text-anchor="middle">蛋白質</text>
+          <text x="830" y="120" class="svg-small" text-anchor="middle">胺基酸序列摺疊</text>
+          <path d="M410,252 H730" stroke="#2f7d4b" stroke-width="6" fill="none"/>
+          <ellipse cx="565" cy="222" rx="112" ry="50" fill="#f7d8cf" stroke="#bc4b36" stroke-width="3"/>
+          <rect x="515" y="208" width="100" height="28" rx="5" fill="#fff7f5"/>
+          <text x="565" y="228" class="svg-label no-halo" text-anchor="middle">核糖體</text>
+          <text x="570" y="312" class="svg-small" text-anchor="middle">tRNA 以反密碼子配對 mRNA 密碼子，把胺基酸接成多胜肽。</text>
+          <path d="M480,172 L530,172 L580,172 L630,172" stroke="#9a6b20" stroke-width="4" fill="none"/>
+          <circle cx="480" cy="172" r="14" fill="#9a6b20"/><circle cx="530" cy="172" r="14" fill="#9a6b20"/><circle cx="580" cy="172" r="14" fill="#9a6b20"/>
+          <circle cx="630" cy="172" r="14" fill="#9a6b20"/>
+        </svg>
+      </div>
+      <div class="timeline">
+        <div class="tl"><strong>DNA</strong>：儲存蛋白質設計圖。</div>
+        <div class="tl"><strong>轉錄</strong>：DNA 的部分訊息被複製成 mRNA。</div>
+        <div class="tl"><strong>mRNA</strong>：把訊息帶到核糖體。</div>
+        <div class="tl"><strong>翻譯</strong>：核糖體讀取 mRNA 密碼子，tRNA 帶來胺基酸。</div>
+        <div class="tl"><strong>蛋白質</strong>：胺基酸依序連接，形成具有功能的蛋白質。</div>
+      </div>
+      <table class="note-table">
+        <tr><th>名詞</th><th>重點</th></tr>
+        <tr><td>密碼子</td><td>mRNA 上每三個鹼基為一組，決定一個胺基酸。</td></tr>
+        <tr><td>反密碼子</td><td>tRNA 上與密碼子互補配對的三個鹼基。</td></tr>
+        <tr><td>核糖體</td><td>翻譯作用場所，讓 mRNA 與 tRNA 配對並形成多胜肽。</td></tr>
+        <tr><td>mRNA</td><td>信使 RNA，將 DNA 訊息帶到核糖體。</td></tr>
+        <tr><td>tRNA</td><td>轉運 RNA，攜帶特定胺基酸，反密碼子與 mRNA 密碼子配對。</td></tr>
+        <tr><td>rRNA</td><td>核糖體 RNA，與蛋白質共同組成核糖體。</td></tr>
+        <tr><td>起始密碼</td><td>AUG 通常作為起始密碼，對應甲硫胺酸。</td></tr>
+        <tr><td>終止密碼</td><td>UAA、UAG、UGA 不對應胺基酸，使翻譯停止。</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="toggle(this)"><span><span class="tag tag-gene">科技</span>基因工程與應用</span><span class="arrow">›</span></div>
+    <div class="section-body">
+      <div class="diagram">
+        <div class="diagram-title">基因工程操作流程：限制酶、質體、重組 DNA</div>
+        <svg viewBox="0 0 980 300" role="img" aria-label="基因工程流程圖">
+          <defs>
+            <marker id="arrow-red" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#bc4b36"/></marker>
+          </defs>
+          <rect x="38" y="78" width="150" height="92" rx="8" fill="#e8f1fa" stroke="#2d6694" stroke-width="3"/>
+          <text x="113" y="112" class="svg-label" text-anchor="middle">目標 DNA</text>
+          <text x="113" y="140" class="svg-small" text-anchor="middle">抗病/胰島素基因</text>
+          <path d="M188,124 L270,124" class="svg-arrow"/><text x="230" y="104" class="svg-small" text-anchor="middle">限制酶切割</text>
+          <circle cx="348" cy="124" r="54" fill="#fff0dd" stroke="#9a6b20" stroke-width="4"/>
+          <path d="M320,112 C350,82 380,110 365,140 C345,174 310,150 320,112" stroke="#9a6b20" stroke-width="3" fill="none"/>
+          <text x="348" y="205" class="svg-small" text-anchor="middle">質體載體</text>
+          <path d="M402,124 L492,124" class="svg-arrow"/><text x="448" y="104" class="svg-small" text-anchor="middle">接合酶</text>
+          <circle cx="568" cy="124" r="56" fill="#e4f4e9" stroke="#2f7d4b" stroke-width="4"/>
+          <path d="M538,112 C568,82 598,110 583,140 C563,174 528,150 538,112" stroke="#2f7d4b" stroke-width="3" fill="none"/>
+          <rect x="556" y="70" width="36" height="18" fill="#bc4b36"/>
+          <text x="568" y="205" class="svg-small" text-anchor="middle">重組 DNA</text>
+          <path d="M624,124 L710,124" class="svg-arrow"/><text x="668" y="104" class="svg-small" text-anchor="middle">送入細菌</text>
+          <rect x="720" y="82" width="160" height="84" rx="42" fill="#f7d8cf" stroke="#bc4b36" stroke-width="3"/>
+          <circle cx="770" cy="124" r="9" fill="#bc4b36"/><circle cx="815" cy="124" r="9" fill="#bc4b36"/>
+          <text x="800" y="205" class="svg-small" text-anchor="middle">篩選、培養、表現蛋白質</text>
+          <text x="490" y="270" class="svg-small" text-anchor="middle">應用：胰島素、疫苗、抗蟲作物；疑慮：食安、基因污染、生態與倫理。</text>
+        </svg>
+      </div>
+      <table class="note-table">
+        <tr><th>步驟</th><th>說明</th></tr>
+        <tr><td>取得目標基因</td><td>用限制酶切割 DNA，取得需要的基因片段。</td></tr>
+        <tr><td>接入載體</td><td>常用質體作為載體，將目標基因接入。</td></tr>
+        <tr><td>轉入宿主</td><td>把重組 DNA 送入細菌或其他細胞。</td></tr>
+        <tr><td>篩選與培養</td><td>找出成功轉殖的細胞，讓其大量繁殖或表現蛋白質。</td></tr>
+      </table>
+      <table class="note-table">
+        <tr><th>工具 / 名詞</th><th>功能</th></tr>
+        <tr><td>限制酶</td><td>像分子剪刀，可在特定序列切割 DNA。</td></tr>
+        <tr><td>DNA 接合酶</td><td>像分子膠水，可把 DNA 片段接合成重組 DNA。</td></tr>
+        <tr><td>質體</td><td>細菌中的小型環狀 DNA，常作為基因載體。</td></tr>
+        <tr><td>重組 DNA</td><td>把不同來源的 DNA 片段接在一起形成的新 DNA。</td></tr>
+        <tr><td>轉殖生物</td><td>含有外來基因並能表現該基因的生物。</td></tr>
+      </table>
+      <div class="grid">
+        <div class="card"><h3>醫學</h3><div>生產胰島素、疫苗、診斷疾病、基因檢測。</div></div>
+        <div class="card"><h3>農業</h3><div>抗蟲、抗病、耐旱、耐鹽、延長保存。</div></div>
+        <div class="card"><h3>環境</h3><div>分解污染物、改良微生物處理廢棄物。</div></div>
+        <div class="card"><h3>爭議</h3><div>食品安全、基因污染、生態影響、倫理與標示問題。</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="evo" class="chapter">
+  <div class="ch-head">
+    <div class="ch-num">05</div>
+    <div>
+      <h1>演化與生物分類</h1>
+      <div class="ch-note">對應掃描頁 32-39：演化理論、分類系統、演化證據、親緣關係樹</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title open" onclick="toggle(this)"><span><span class="tag tag-evo">理論</span>演化思想</span><span class="arrow">›</span></div>
+    <div class="section-body open">
+      <div class="diagram">
+        <div class="diagram-title">拉馬克 vs 達爾文：長頸鹿例子</div>
+        <svg viewBox="0 0 980 310" role="img" aria-label="拉馬克與達爾文演化解釋比較圖">
+          <defs>
+            <marker id="arrow-red" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#bc4b36"/></marker>
+          </defs>
+          <text x="245" y="30" class="svg-label" text-anchor="middle">拉馬克：用進廢退、獲得性遺傳</text>
+          <text x="735" y="30" class="svg-label" text-anchor="middle">達爾文：先有變異，再由環境選擇</text>
+          <rect x="58" y="58" width="380" height="210" rx="8" fill="#fff4f2" stroke="#bc4b36" stroke-width="3"/>
+          <path d="M130,220 L130,140 L150,140 L150,220" stroke="#9a6b20" stroke-width="10" fill="none" stroke-linecap="round"/>
+          <circle cx="145" cy="124" r="18" fill="#f3c072" stroke="#9a6b20" stroke-width="3"/>
+          <path d="M255,220 L255,95 L275,95 L275,220" stroke="#9a6b20" stroke-width="10" fill="none" stroke-linecap="round"/>
+          <circle cx="270" cy="78" r="18" fill="#f3c072" stroke="#9a6b20" stroke-width="3"/>
+          <path d="M170,152 L232,112" class="svg-arrow"/>
+          <text x="188" y="92" class="svg-small" text-anchor="middle">常伸長脖子</text>
+          <text x="248" y="252" class="svg-small" text-anchor="middle">後天獲得的長脖子被遺傳</text>
+          <rect x="545" y="58" width="380" height="210" rx="8" fill="#f4fbf6" stroke="#2f7d4b" stroke-width="3"/>
+          <path d="M605,220 L605,150 L625,150 L625,220" stroke="#9a6b20" stroke-width="10" fill="none" stroke-linecap="round"/>
+          <circle cx="620" cy="134" r="18" fill="#f3c072" stroke="#9a6b20" stroke-width="3"/>
+          <path d="M705,220 L705,95 L725,95 L725,220" stroke="#9a6b20" stroke-width="10" fill="none" stroke-linecap="round"/>
+          <circle cx="720" cy="78" r="18" fill="#f3c072" stroke="#9a6b20" stroke-width="3"/>
+          <path d="M810,220 L810,122 L830,122 L830,220" stroke="#9a6b20" stroke-width="10" fill="none" stroke-linecap="round"/>
+          <circle cx="825" cy="106" r="18" fill="#f3c072" stroke="#9a6b20" stroke-width="3"/>
+          <text x="735" y="282" class="svg-small" text-anchor="middle">長頸個體較容易取得食物，留下較多後代</text>
+        </svg>
+      </div>
+      <table class="note-table">
+        <tr><th>人物 / 理論</th><th>重點</th><th>問題或意義</th></tr>
+        <tr><td>拉馬克</td><td>用進廢退、獲得性遺傳。</td><td>認為常使用的構造逐漸發達，不常使用則退化；但獲得性狀通常不能遺傳。</td></tr>
+        <tr><td>達爾文</td><td>天擇說：個體有差異，環境選擇適合者留下後代。</td><td>演化不是個體改變，而是族群中有利性狀比例改變。</td></tr>
+        <tr><td>現代演化理論</td><td>結合天擇、遺傳學、突變、基因重組、族群概念。</td><td>以族群基因頻率改變解釋演化。</td></tr>
+        <tr><td>魏斯曼實驗</td><td>連續剪掉老鼠尾巴，後代仍有尾巴。</td><td>說明體細胞後天變化不會直接遺傳，遺傳主要與生殖細胞基因有關。</td></tr>
+      </table>
+      <div class="callout red">自然選擇的重點：先有變異，再由環境篩選。不是生物「想要變」才變。</div>
+      <table class="note-table">
+        <tr><th>觀念</th><th>整理</th></tr>
+        <tr><td>用進廢退</td><td>拉馬克提出，生物特徵不是永久不變，越常使用會越發達，不常使用逐漸退化。</td></tr>
+        <tr><td>獲得性遺傳</td><td>拉馬克認為生物一生因環境或行為產生的性狀可傳給下一代。</td></tr>
+        <tr><td>天擇</td><td>達爾文認為族群原本就有個體差異，環境讓適合者生存、繁殖較多。</td></tr>
+        <tr><td>生存競爭</td><td>生物繁殖快但資源有限，因此會產生競爭，自然選擇在競爭中發生。</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="toggle(this)"><span><span class="tag tag-evo">證據</span>演化證據</span><span class="arrow">›</span></div>
+    <div class="section-body">
+      <div class="diagram">
+        <div class="diagram-title">演化證據：化石地層、同源器官、分子序列</div>
+        <svg viewBox="0 0 980 300" role="img" aria-label="演化證據圖">
+          <rect x="40" y="45" width="250" height="210" fill="#fffdf8" stroke="#d7cdbb" stroke-width="3"/>
+          <rect x="40" y="45" width="250" height="52" fill="#f1eadb"/><rect x="40" y="97" width="250" height="52" fill="#fff0dd"/><rect x="40" y="149" width="250" height="52" fill="#e8f1fa"/><rect x="40" y="201" width="250" height="54" fill="#e4f4e9"/>
+          <text x="165" y="28" class="svg-label" text-anchor="middle">化石地層</text>
+          <text x="300" y="76" class="svg-small">新</text><text x="300" y="238" class="svg-small">老</text>
+          <circle cx="105" cy="224" r="12" fill="#2f7d4b"/><text x="130" y="230" class="svg-small">較簡單</text>
+          <path d="M92,120 C130,96 165,138 205,112" stroke="#bc4b36" stroke-width="4" fill="none"/><text x="130" y="145" class="svg-small">過渡型</text>
+          <text x="490" y="28" class="svg-label" text-anchor="middle">同源器官</text>
+          <path d="M390,220 L455,90 L520,220" stroke="#2d6694" stroke-width="12" fill="none" stroke-linecap="round"/>
+          <path d="M445,120 L405,175 M455,120 L460,188 M470,120 L510,176" stroke="#2d6694" stroke-width="5" fill="none"/>
+          <path d="M575,220 L640,90 L705,220" stroke="#bc4b36" stroke-width="12" fill="none" stroke-linecap="round"/>
+          <path d="M630,120 L590,175 M640,120 L645,188 M655,120 L695,176" stroke="#bc4b36" stroke-width="5" fill="none"/>
+          <text x="490" y="260" class="svg-small" text-anchor="middle">來源相同，功能可能不同</text>
+          <text x="820" y="28" class="svg-label" text-anchor="middle">分子證據</text>
+          <text x="770" y="84" class="svg-small">物種 A：ATG CCA GTT</text>
+          <text x="770" y="116" class="svg-small">物種 B：ATG CCA GTC</text>
+          <text x="770" y="148" class="svg-small">物種 C：TTA ACG GAC</text>
+          <text x="820" y="210" class="svg-small" text-anchor="middle">DNA / 蛋白質越相似，親緣通常越近</text>
+        </svg>
+      </div>
+      <table class="note-table">
+        <tr><th>證據</th><th>說明</th></tr>
+        <tr><td>化石證據</td><td>保存在地層中的生物遺體或生活痕跡。越古老地層的化石通常越簡單。</td></tr>
+        <tr><td>比較解剖</td><td>同源器官顯示共同祖先，如人手、蝙蝠翼、鯨前肢。</td></tr>
+        <tr><td>痕跡構造</td><td>祖先具有功能、經長時間演化後在現今物種失去或弱化功能的構造，如人類尾椎。</td></tr>
+        <tr><td>同功構造</td><td>功能相似但來源不同，常因相似環境而演化出相似功能，不一定代表親緣近。</td></tr>
+        <tr><td>胚胎發生</td><td>不同脊椎動物早期胚胎相似，顯示親緣關係。</td></tr>
+        <tr><td>生物地理</td><td>地理隔離會造成不同地區物種分化。</td></tr>
+        <tr><td>分子證據</td><td>DNA 或蛋白質序列越相似，親緣關係通常越近。</td></tr>
+      </table>
+      <div class="callout red">同源構造看「來源」相同；同功構造看「功能」相同。判斷親緣關係時，同源構造與分子序列通常比外表像不像更可靠。</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="toggle(this)"><span><span class="tag tag-evo">分類</span>生物分類與親緣關係</span><span class="arrow">›</span></div>
+    <div class="section-body">
+      <div class="diagram">
+        <div class="diagram-title">親緣關係樹：越晚分支，關係越近</div>
+        <svg viewBox="0 0 900 310" role="img" aria-label="親緣關係樹示意圖">
+          <defs>
+            <marker id="arrow-red" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#bc4b36"/></marker>
+          </defs>
+          <path d="M110,260 L110,210 L250,210 L250,150 L390,150 L390,88 L520,88" class="svg-line"/>
+          <path d="M250,210 L250,260" class="svg-line"/>
+          <path d="M390,150 L390,260" class="svg-line"/>
+          <path d="M520,88 L520,260" class="svg-line"/>
+          <path d="M520,88 L650,88 L650,260" class="svg-line"/>
+          <text x="110" y="284" class="svg-label" text-anchor="middle">魚類</text>
+          <text x="250" y="284" class="svg-label" text-anchor="middle">兩棲類</text>
+          <text x="390" y="284" class="svg-label" text-anchor="middle">爬蟲類</text>
+          <text x="520" y="284" class="svg-label" text-anchor="middle">鳥類</text>
+          <text x="650" y="284" class="svg-label" text-anchor="middle">哺乳類</text>
+          <circle cx="520" cy="88" r="8" fill="#bc4b36"/><text x="560" y="76" class="svg-small">共同祖先</text>
+          <path d="M650,88 L760,42" class="svg-arrow"/><text x="770" y="44" class="svg-small">鳥類與哺乳類在此圖中較晚分支</text>
+          <text x="380" y="30" class="svg-small" text-anchor="middle">分支點代表共同祖先，不是「高低等」排行</text>
+        </svg>
+      </div>
+      <table class="note-table">
+        <tr><th>分類階層</th><td>界 → 門 → 綱 → 目 → 科 → 屬 → 種</td></tr>
+        <tr><th>種</th><td>能自然交配並產生具有生殖能力後代的一群生物。</td></tr>
+        <tr><th>雙名法</th><td>屬名 + 種小名，用拉丁文表示。</td></tr>
+        <tr><th>五界</th><td>原核生物界、原生生物界、真菌界、植物界、動物界。</td></tr>
+        <tr><th>三域</th><td>細菌域、古菌域、真核生物域。</td></tr>
+      </table>
+      <table class="note-table">
+        <tr><th>五界</th><th>細胞型態</th><th>營養方式與例子</th></tr>
+        <tr><td>原核生物界</td><td>原核細胞，無核膜。</td><td>細菌、藍綠菌；有些自營，有些異營。</td></tr>
+        <tr><td>原生生物界</td><td>真核，多為單細胞或簡單多細胞。</td><td>草履蟲、眼蟲、藻類等。</td></tr>
+        <tr><td>真菌界</td><td>真核，有細胞壁，主要成分為幾丁質。</td><td>異營，靠吸收養分；如黴菌、酵母菌、菇類。</td></tr>
+        <tr><td>植物界</td><td>真核，多細胞，有纖維素細胞壁與葉綠體。</td><td>多為自營，行光合作用。</td></tr>
+        <tr><td>動物界</td><td>真核，多細胞，無細胞壁。</td><td>異營，通常可運動並攝食。</td></tr>
+      </table>
+      <div class="callout">親緣關係樹中，分支點代表共同祖先；越晚分開，親緣關係越近。</div>
+      <table class="note-table">
+        <tr><th>親緣樹判讀</th><th>說明</th></tr>
+        <tr><td>分支點</td><td>代表共同祖先。</td></tr>
+        <tr><td>越晚分支</td><td>通常親緣關係越近。</td></tr>
+        <tr><td>最早分支</td><td>代表較早和其他類群分開，不代表比較低等。</td></tr>
+        <tr><td>判讀重點</td><td>看共同祖先遠近，不只看圖上左右距離。</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" onclick="toggle(this)"><span><span class="tag tag-evo">整理</span>生物多樣性與演化比較</span><span class="arrow">›</span></div>
+    <div class="section-body">
+      <table class="note-table">
+        <tr><th>比較</th><th>拉馬克</th><th>達爾文</th></tr>
+        <tr><td>變異來源</td><td>環境使個體產生需求。</td><td>族群原本就有差異。</td></tr>
+        <tr><td>演化方式</td><td>用進廢退、獲得性狀遺傳。</td><td>自然選擇使適合環境者留下較多後代。</td></tr>
+        <tr><td>例子</td><td>長頸鹿因常伸長脖子而變長。</td><td>原本脖子較長者較容易取得食物，留下較多後代。</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="exams" class="chapter">
+  <div class="ch-head">
+    <div class="ch-num">Q</div>
+    <div>
+      <h1>歷屆題型練習</h1>
+      <div class="ch-note">依歷屆常見考法改寫：細胞、能量、遺傳、DNA、演化分類</div>
+    </div>
+  </div>
+  <div class="callout gold">題目以歷屆考點與題型改寫整理，重點放在觀念判斷、圖表判讀與比例推算。作答後會立即顯示答案與解析。</div>
+  <div class="exam-panel">
+    <div class="exam-controls">
+      <label>篩選單元
+        <select id="examFilter" onchange="renderQuestions()">
+          <option value="all">全部</option>
+          <option value="細胞">細胞</option>
+          <option value="能量">能量</option>
+          <option value="遺傳">遺傳</option>
+          <option value="DNA">DNA</option>
+          <option value="演化">演化</option>
+        </select>
+      </label>
+      <button class="tool-button" type="button" onclick="resetQuestions()">重新作答</button>
+      <div id="examScore" class="exam-score">尚未作答</div>
+    </div>
+    <div id="questionList" class="question-list"></div>
+  </div>
+</section>
+
+<section id="wrong" class="chapter">
+  <div class="ch-head">
+    <div class="ch-num">W</div>
+    <div>
+      <h1>錯題本</h1>
+      <div class="ch-note">答錯自動收錄；在這裡重新答對後，自動移出</div>
+    </div>
+  </div>
+  <div class="exam-panel">
+    <div class="wrong-book-summary">
+      <div>
+        <div class="wrong-count" id="wrongCount">目前 0 題</div>
+        <div class="exam-score">紀錄會保存在這台裝置的瀏覽器中。</div>
+      </div>
+      <button class="tool-button" type="button" onclick="clearWrongBook()">清空錯題本</button>
+    </div>
+    <div id="wrongQuestionList" class="question-list"></div>
+  </div>
+</section>
+
+<section id="review" class="chapter">
+  <div class="ch-head">
+    <div class="ch-num">RV</div>
+    <div>
+      <h1>需複習專區</h1>
+      <div class="ch-note">集中顯示你標記為需複習的段落</div>
+    </div>
+  </div>
+  <div class="callout gold">在各段落標題右上角點選書籤標記後，這裡會自動收集。再次取消標記，項目也會從這裡移除。</div>
+  <div id="reviewList" class="review-list"></div>
+</section>
+
+<section id="cards" class="chapter">
+  <div class="ch-head">
+    <div class="ch-num">FC</div>
+    <div>
+      <h1>重點字卡</h1>
+      <div class="ch-note">點一下翻面，適合考前快速背誦</div>
+    </div>
+  </div>
+  <div class="mini">點擊字卡查看解釋。</div>
+  <div class="fc-grid">
+    <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="front">細胞學說</div><div class="back">生物由細胞組成；細胞是構造與功能基本單位；新細胞來自既有細胞。</div></div></div>
+    <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="front">磷脂雙層</div><div class="back">細胞膜主要構造，親水端朝外，疏水端朝內，使膜具選擇性通透。</div></div></div>
+    <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="front">細胞壁</div><div class="back">植物為纖維素，真菌為幾丁質，細菌為肽聚醣；功能是保護、支持並維持形狀。</div></div></div>
+    <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="front">細胞質</div><div class="back">由胞質液、膜狀胞器和非膜構造組成；胞質液含水、離子、酵素與膠狀物質。</div></div></div>
+    <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="front">粒線體</div><div class="back">有氧呼吸主要場所，將葡萄糖能量轉為 ATP。</div></div></div>
+    <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="front">葉綠體</div><div class="back">光合作用場所，含葉綠素，可把光能轉成糖類中的化學能。</div></div></div>
+    <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="front">ATP</div><div class="back">由腺嘌呤、核糖與三個磷酸基組成；水解成 ADP + Pi 時釋放能量。</div></div></div>
+    <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="front">光合作用</div><div class="back">6CO2 + 6H2O + 光能 → C6H12O6 + 6O2。</div></div></div>
+    <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="front">呼吸作用</div><div class="back">C6H12O6 + 6O2 → 6CO2 + 6H2O + ATP。</div></div></div>
+    <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="front">有絲分裂</div><div class="back">產生兩個與母細胞相同的子細胞，用於生長、修補與無性生殖。</div></div></div>
+    <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="front">減數分裂</div><div class="back">產生四個染色體數減半且彼此不同的配子。</div></div></div>
+    <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="front">同源染色體</div><div class="back">一條來自父方、一條來自母方，大小形狀與基因位置相似。</div></div></div>
+    <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="front">分離律</div><div class="back">成對等位基因在形成配子時分離，每個配子只得到一個。</div></div></div>
+    <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="front">獨立分配律</div><div class="back">控制不同性狀的基因在形成配子時可自由組合。</div></div></div>
+    <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="front">ABO 血型</div><div class="back">複等位基因例子：IA、IB、i；IA 與 IB 共顯性，i 為隱性。</div></div></div>
+    <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="front">DNA 複製</div><div class="back">以舊股為模板合成新股，A-T、C-G 互補配對。</div></div></div>
+    <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="front">核苷酸</div><div class="back">核酸基本單位，由磷酸基、五碳糖與含氮鹼基組成。</div></div></div>
+    <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="front">中心法則</div><div class="back">DNA 經轉錄形成 RNA，RNA 經翻譯形成蛋白質。</div></div></div>
+    <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="front">自然選擇</div><div class="back">環境使適應較佳的個體留下較多後代，使族群性狀比例改變。</div></div></div>
+    <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="front">獲得性遺傳</div><div class="back">拉馬克主張後天獲得的性狀可遺傳；魏斯曼剪鼠尾實驗反駁此觀念。</div></div></div>
+    <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="front">同源器官</div><div class="back">來源相同但功能可不同，是共同祖先的重要證據。</div></div></div>
+    <div class="fc" onclick="flip(this)"><div class="fc-inner"><div class="front">親緣樹</div><div class="back">分支點代表共同祖先；越晚分支通常親緣越近，不能只看左右距離。</div></div></div>
+  </div>
+</section>
+</main>
+
+<script>
+function showChapter(id) {
+  document.querySelectorAll(".chapter").forEach(ch => ch.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  const order = ["cell","gene","dna","energy","evo","exams","wrong","review","cards"];
+  const choices = document.querySelectorAll(".tab-choice");
+  const idx = order.indexOf(id);
+  if (choices[idx]) choices[idx].checked = true;
+  if (id === "exams") renderQuestions();
+  if (id === "wrong") renderWrongBook();
+  if (id === "review") updateReviewSection();
+  window.scrollTo({ top:0, behavior:"smooth" });
+}
+function toggle(el) {
+  el.classList.toggle("open");
+  el.nextElementSibling.classList.toggle("open");
+}
+function flip(el) {
+  el.classList.toggle("flipped");
+}
+function storageKey(kind, index) {
+  return "bio-notes-" + kind + "-" + index;
+}
+function initReviewMarks() {
+  document.querySelectorAll(".section-title").forEach((title, index) => {
+    if (title.querySelector(".mark")) return;
+    title.dataset.reviewIndex = String(index);
+    const arrow = title.querySelector(".arrow");
+    const tools = document.createElement("span");
+    tools.className = "section-tools";
+    tools.innerHTML = '<label class="mark" title="加入需複習"><input type="checkbox"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5h10a1 1 0 0 1 1 1v14l-6-3.4-6 3.4v-14a1 1 0 0 1 1-1z"/></svg></label>';
+    title.insertBefore(tools, arrow);
+    const input = tools.querySelector("input");
+    const key = storageKey("review", index);
+    input.checked = localStorage.getItem(key) === "1";
+    tools.addEventListener("click", e => e.stopPropagation());
+    input.addEventListener("change", () => {
+      localStorage.setItem(key, input.checked ? "1" : "0");
+      updateReviewSection();
+    });
+  });
+  updateReviewSection();
+}
+function sectionLabel(title) {
+  return title.querySelector("span:first-child")?.textContent.replace(/\s+/g, " ").trim() || "未命名段落";
+}
+function chapterLabel(section) {
+  const chapter = section.closest(".chapter");
+  return chapter?.querySelector("h1")?.textContent.trim() || "";
+}
+function updateReviewSection() {
+  const list = document.getElementById("reviewList");
+  if (!list) return;
+  const items = [];
+  document.querySelectorAll(".section-title").forEach((title, index) => {
+    if (localStorage.getItem(storageKey("review", index)) === "1") {
+      const section = title.closest(".section");
+      items.push({
+        index,
+        title: sectionLabel(title),
+        chapter: chapterLabel(section),
+        chapterId: section.closest(".chapter")?.id || "",
+      });
+    }
+  });
+  if (!items.length) {
+    list.innerHTML = '<div class="empty-review">目前沒有標記需複習的段落。到各章節標題右上角點選書籤，就會出現在這裡。</div>';
+    return;
+  }
+  list.innerHTML = items.map(item => `<div class="review-item">
+    <div><strong>${item.title}</strong><div class="review-meta">${item.chapter}</div></div>
+    <button class="review-jump" type="button" onclick="jumpToReview(${item.index}, '${item.chapterId}')">前往</button>
+  </div>`).join("");
+}
+function jumpToReview(index, chapterId) {
+  showChapter(chapterId);
+  const title = document.querySelector(`.section-title[data-review-index="${index}"]`);
+  if (!title) return;
+  if (!title.classList.contains("open")) toggle(title);
+  title.scrollIntoView({ behavior:"smooth", block:"start" });
+}
+function initRatings() {
+  document.querySelectorAll(".section").forEach((section, index) => {
+    const body = section.querySelector(".section-body");
+    if (!body || body.querySelector(".self-check")) return;
+    const box = document.createElement("div");
+    box.className = "self-check";
+    box.innerHTML = '<span>熟悉程度</span><span class="stars" aria-label="熟悉程度評分"></span><span class="rating-text">尚未評分</span>';
+    body.insertBefore(box, body.firstChild);
+    const stars = box.querySelector(".stars");
+    const text = box.querySelector(".rating-text");
+    const key = storageKey("rating", index);
+    let selected = Number(localStorage.getItem(key) || 0);
+    for (let i = 1; i <= 5; i++) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "star";
+      btn.textContent = "★";
+      btn.dataset.value = String(i);
+      btn.addEventListener("mouseenter", () => paintStars(stars, i));
+      btn.addEventListener("click", () => {
+        selected = i;
+        localStorage.setItem(key, String(i));
+        paintStars(stars, selected);
+        btn.classList.remove("pop");
+        void btn.offsetWidth;
+        btn.classList.add("pop");
+        updateRatingText(text, selected);
+      });
+      stars.appendChild(btn);
+    }
+    stars.addEventListener("mouseleave", () => paintStars(stars, selected));
+    paintStars(stars, selected);
+    updateRatingText(text, selected);
+  });
+}
+function paintStars(stars, value) {
+  stars.querySelectorAll(".star").forEach(star => {
+    star.classList.toggle("on", Number(star.dataset.value) <= value);
+  });
+}
+function updateRatingText(el, value) {
+  const labels = ["尚未評分","完全不熟","有點印象","普通","熟但需複習","很熟"];
+  el.textContent = labels[value] || labels[0];
+}
+const examQuestions = [
+  {
+    unit:"細胞",
+    prompt:"某構造具有磷脂雙層、蛋白質與醣類，可控制物質進出並進行細胞辨識。此構造最可能是？",
+    choices:["細胞壁","細胞膜","核糖體","細胞骨架"],
+    answer:1,
+    explain:"細胞膜主要由磷脂雙層與膜蛋白組成，醣類可參與辨識；細胞壁主要提供支持與保護。"
+  },
+  {
+    unit:"細胞",
+    prompt:"下列何者最能說明粒線體與葉綠體可能由內共生演化而來？",
+    choices:["兩者都有單層膜","兩者都只存在動物細胞","兩者含自己的 DNA 與核糖體","兩者都不能自行分裂"],
+    answer:2,
+    explain:"粒線體與葉綠體有雙層膜、自己的環狀 DNA、核糖體，且可自行分裂，是內共生假說的重要證據。"
+  },
+  {
+    unit:"能量",
+    prompt:"ATP 水解成 ADP + Pi 時，最直接的結果為何？",
+    choices:["儲存光能","釋放可供細胞使用的能量","合成 DNA","產生氧氣"],
+    answer:1,
+    explain:"ATP 是細胞的能量貨幣，末端磷酸鍵水解會釋放能量，供主動運輸、肌肉收縮、合成反應等使用。"
+  },
+  {
+    unit:"能量",
+    prompt:"光合作用的光反應主要發生在葉綠體的哪個位置？",
+    choices:["基質","類囊體膜","細胞質","粒線體內膜"],
+    answer:1,
+    explain:"光反應在類囊體膜進行，水分解產生 O2，並形成 ATP、NADPH；固碳反應在基質進行。"
+  },
+  {
+    unit:"遺傳",
+    prompt:"Aa × Aa 的單性雜交中，若 A 為完全顯性，子代表現型比例為何？",
+    choices:["1 : 1","1 : 2 : 1","3 : 1","9 : 3 : 3 : 1"],
+    answer:2,
+    explain:"Aa × Aa 的基因型比例為 1 AA : 2 Aa : 1 aa。AA 與 Aa 都表現顯性，因此表現型為 3 : 1。"
+  },
+  {
+    unit:"遺傳",
+    prompt:"減數分裂 I 和減數分裂 II 的主要差異，下列何者正確？",
+    choices:["減 I 分離姊妹染色分體，減 II 分離同源染色體","減 I 分離同源染色體，減 II 分離姊妹染色分體","兩者都只分離細胞質","兩者都不改變染色體分配"],
+    answer:1,
+    explain:"減數分裂 I 分離同源染色體，使染色體數減半；減數分裂 II 分離姊妹染色分體。"
+  },
+  {
+    unit:"DNA",
+    prompt:"DNA 與 RNA 的比較，下列何者正確？",
+    choices:["DNA 含 U，RNA 含 T","DNA 多為雙股，RNA 多為單股","DNA 的五碳糖是核糖","RNA 不參與蛋白質合成"],
+    answer:1,
+    explain:"DNA 多為雙股並含 A、T、C、G；RNA 多為單股並含 A、U、C、G，且參與蛋白質合成。"
+  },
+  {
+    unit:"DNA",
+    prompt:"中心法則中，DNA 的訊息先形成 mRNA，此過程稱為？",
+    choices:["複製","轉錄","翻譯","發酵"],
+    answer:1,
+    explain:"DNA 轉成 RNA 的過程是轉錄；mRNA 在核糖體被讀取並形成蛋白質的過程是翻譯。"
+  },
+  {
+    unit:"演化",
+    prompt:"達爾文天擇說的核心概念，下列何者最符合？",
+    choices:["個體想變就會產生新性狀","後天常使用的構造一定會遺傳","族群原有變異，環境篩選適合者留下較多後代","所有生物都朝固定方向進化"],
+    answer:2,
+    explain:"自然選擇強調族群先有遺傳變異，再由環境篩選，使有利性狀比例增加。"
+  },
+  {
+    unit:"演化",
+    prompt:"判讀親緣關係樹時，下列何者最重要？",
+    choices:["看生物名稱在圖上左右距離","看共同祖先的遠近","看哪個生物畫得比較高","看哪個物種比較大"],
+    answer:1,
+    explain:"親緣樹分支點代表共同祖先。越晚分支，通常共同祖先越近，親緣關係也越近。"
+  }
+];
+const WRONG_BOOK_KEY = "bio-notes-wrong-book-v1";
+let examAnswers = {};
+let wrongQuestionIds = loadWrongBook();
+
+function loadWrongBook() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(WRONG_BOOK_KEY) || "[]");
+    return new Set(saved.filter(index => Number.isInteger(index) && examQuestions[index]));
+  } catch {
+    return new Set();
+  }
+}
+function saveWrongBook() {
+  localStorage.setItem(WRONG_BOOK_KEY, JSON.stringify([...wrongQuestionIds]));
+}
+function questionCard(q, pos, source) {
+  const chosen = examAnswers[q.index];
+  return `<div class="question-card">
+    <div class="question-head"><span>${pos + 1}. ${q.prompt}</span><span class="question-unit">${q.unit}</span></div>
+    <div class="choice-grid">
+      ${q.choices.map((choice, i) => {
+        const state = chosen === undefined ? "" : i === q.answer ? " correct" : i === chosen ? " wrong" : "";
+        return `<button class="choice${state}" type="button" onclick="answerQuestion(${q.index}, ${i}, '${source}')">${String.fromCharCode(65 + i)}. ${choice}</button>`;
+      }).join("")}
+    </div>
+    <div class="explain ${chosen === undefined ? "" : "show"}">${chosen === q.answer ? "答對，已從錯題本移除。" : chosen === undefined ? "" : "答錯，已加入錯題本。"}${q.explain}</div>
+  </div>`;
+}
+function renderQuestions() {
+  const list = document.getElementById("questionList");
+  if (!list) return;
+  const filter = document.getElementById("examFilter")?.value || "all";
+  const questions = examQuestions
+    .map((q, index) => ({...q, index}))
+    .filter(q => filter === "all" || q.unit === filter);
+  list.innerHTML = questions.map((q, pos) => questionCard(q, pos, "exam")).join("");
+  updateExamScore();
+}
+function renderWrongBook() {
+  const list = document.getElementById("wrongQuestionList");
+  const count = document.getElementById("wrongCount");
+  if (!list || !count) return;
+  const questions = [...wrongQuestionIds]
+    .sort((a, b) => a - b)
+    .map(index => ({...examQuestions[index], index}));
+  count.textContent = `目前 ${questions.length} 題`;
+  list.innerHTML = questions.length
+    ? questions.map((q, pos) => questionCard(q, pos, "wrong")).join("")
+    : `<div class="empty-state">目前沒有錯題。到「題目」作答，答錯的題目會自動出現在這裡。</div>`;
+}
+function answerQuestion(index, choice, source = "exam") {
+  examAnswers[index] = choice;
+  if (choice === examQuestions[index].answer) wrongQuestionIds.delete(index);
+  else wrongQuestionIds.add(index);
+  saveWrongBook();
+  if (source === "wrong") renderWrongBook();
+  else renderQuestions();
+}
+function resetQuestions() {
+  examAnswers = {};
+  renderQuestions();
+}
+function clearWrongBook() {
+  wrongQuestionIds.clear();
+  saveWrongBook();
+  renderWrongBook();
+}
+function updateExamScore() {
+  const score = document.getElementById("examScore");
+  if (!score) return;
+  const total = Object.keys(examAnswers).length;
+  const correct = Object.entries(examAnswers).filter(([idx, ans]) => examQuestions[Number(idx)].answer === ans).length;
+  score.textContent = total ? `已作答 ${total} 題，答對 ${correct} 題` : "尚未作答";
+}
+function parseGenotype(raw) {
+  const clean = raw.replace(/\s+/g, "").replace(/[×x]/g, "");
+  if (!clean || clean.length % 2 !== 0 || /[^A-Za-z]/.test(clean)) {
+    throw new Error("請輸入成對英文字母，例如 Aa、AA、AaBb。");
+  }
+  const pairs = [];
+  for (let i = 0; i < clean.length; i += 2) {
+    const a = clean[i];
+    const b = clean[i + 1];
+    if (a.toUpperCase() !== b.toUpperCase()) {
+      throw new Error("同一性狀要成對輸入，例如 AaBb 代表 Aa 和 Bb。");
+    }
+    const pair = [a, b].sort((x, y) => {
+      if (x.toUpperCase() !== y.toUpperCase()) return x.toUpperCase().localeCompare(y.toUpperCase());
+      return x === x.toUpperCase() ? -1 : 1;
+    }).join("");
+    pairs.push(pair);
+  }
+  pairs.sort((x, y) => x[0].toUpperCase().localeCompare(y[0].toUpperCase()));
+  return pairs;
+}
+function makeGametes(pairs) {
+  let gametes = [""];
+  pairs.forEach(pair => {
+    const alleles = [...new Set(pair.split(""))];
+    const next = [];
+    gametes.forEach(prefix => alleles.forEach(a => next.push(prefix + a)));
+    gametes = next;
+  });
+  return gametes;
+}
+function normalizeChild(g1, g2, loci) {
+  let out = "";
+  for (let i = 0; i < loci.length; i++) {
+    const pair = [g1[i], g2[i]].sort((a, b) => {
+      if (a.toUpperCase() !== b.toUpperCase()) return a.toUpperCase().localeCompare(b.toUpperCase());
+      return a === a.toUpperCase() ? -1 : 1;
+    });
+    out += pair.join("");
+  }
+  return out;
+}
+function ratioText(counts) {
+  const values = Object.values(counts);
+  const gcd = values.reduce((a, b) => {
+    while (b) [a, b] = [b, a % b];
+    return a;
+  });
+  return Object.entries(counts).map(([k, v]) => `${v / gcd} ${k}`).join(" : ");
+}
+function phenotypeName(genotype, loci) {
+  const parts = [];
+  for (let i = 0; i < loci.length; i++) {
+    const pair = genotype.slice(i * 2, i * 2 + 2);
+    const dominant = pair.split("").some(a => a === a.toUpperCase());
+    parts.push(loci[i] + (dominant ? "顯性" : "隱性"));
+  }
+  return loci.length === 1 ? parts[0].replace(loci[0], "") : parts.join("、");
+}
+function runPunnett() {
+  const error = document.getElementById("punnettError");
+  const output = document.getElementById("punnettOutput");
+  if (!error || !output) return;
+  error.textContent = "";
+  output.innerHTML = "";
+  try {
+    const p1 = parseGenotype(document.getElementById("parentA").value);
+    const p2 = parseGenotype(document.getElementById("parentB").value);
+    const loci1 = p1.map(p => p[0].toUpperCase()).join("");
+    const loci2 = p2.map(p => p[0].toUpperCase()).join("");
+    if (loci1 !== loci2) throw new Error("兩個親代要輸入相同種類的性狀，例如 AaBb × Aabb。");
+    const g1 = makeGametes(p1);
+    const g2 = makeGametes(p2);
+    const genotypeCounts = {};
+    const phenotypeCounts = {};
+    let table = '<div class="punnett-wrap"><table class="punnett"><tr><th>配子</th>' + g2.map(g => `<th>${g}</th>`).join("") + "</tr>";
+    g1.forEach(a => {
+      table += `<tr><th>${a}</th>`;
+      g2.forEach(b => {
+        const child = normalizeChild(a, b, loci1);
+        genotypeCounts[child] = (genotypeCounts[child] || 0) + 1;
+        const pheno = phenotypeName(child, loci1);
+        phenotypeCounts[pheno] = (phenotypeCounts[pheno] || 0) + 1;
+        table += `<td>${child}</td>`;
+      });
+      table += "</tr>";
+    });
+    table += "</table></div>";
+    output.innerHTML = table + `<div class="tool-result">
+      <div class="result-card"><strong>親代配子</strong>親代 1：${g1.join("、")}<br>親代 2：${g2.join("、")}</div>
+      <div class="result-card"><strong>基因型比例</strong>${ratioText(genotypeCounts)}</div>
+      <div class="result-card"><strong>表現型比例</strong>${ratioText(phenotypeCounts)}</div>
+      <div class="result-card"><strong>總格數</strong>${g1.length * g2.length} 格</div>
+    </div>`;
+  } catch (err) {
+    error.textContent = err.message;
+  }
+}
+let lastDiagramButton = null;
+function closeDiagramLightbox() {
+  const lightbox = document.getElementById("diagramLightbox");
+  if (!lightbox) return;
+  lightbox.classList.remove("open");
+  lightbox.setAttribute("aria-hidden", "true");
+  lightbox.querySelector(".diagram-lightbox-canvas").innerHTML = "";
+  document.body.style.overflow = "";
+  lastDiagramButton?.focus();
+}
+function openDiagramLightbox(diagram, button) {
+  const lightbox = document.getElementById("diagramLightbox");
+  const source = diagram.querySelector("svg");
+  if (!lightbox || !source) return;
+  lastDiagramButton = button;
+  lightbox.querySelector(".diagram-lightbox-title").textContent =
+    diagram.querySelector(".diagram-title")?.textContent || "圖表";
+  lightbox.querySelector(".diagram-lightbox-canvas").replaceChildren(source.cloneNode(true));
+  lightbox.classList.add("open");
+  lightbox.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+  lightbox.querySelector(".diagram-lightbox-close").focus();
+}
+function initDiagramZoom() {
+  const lightbox = document.createElement("div");
+  lightbox.id = "diagramLightbox";
+  lightbox.className = "diagram-lightbox";
+  lightbox.setAttribute("role", "dialog");
+  lightbox.setAttribute("aria-modal", "true");
+  lightbox.setAttribute("aria-hidden", "true");
+  lightbox.innerHTML = `<div class="diagram-lightbox-bar">
+    <div class="diagram-lightbox-title">圖表</div>
+    <button class="diagram-lightbox-close" type="button" aria-label="關閉放大圖">×</button>
+  </div><div class="diagram-lightbox-canvas"></div>`;
+  lightbox.querySelector(".diagram-lightbox-close").addEventListener("click", closeDiagramLightbox);
+  document.body.appendChild(lightbox);
+
+  document.querySelectorAll(".diagram").forEach(diagram => {
+    if (!diagram.querySelector("svg")) return;
+    const button = document.createElement("button");
+    button.className = "diagram-zoom";
+    button.type = "button";
+    button.textContent = "⛶";
+    button.title = "放大圖表";
+    button.setAttribute("aria-label", `放大${diagram.querySelector(".diagram-title")?.textContent || "圖表"}`);
+    button.addEventListener("click", () => openDiagramLightbox(diagram, button));
+    diagram.appendChild(button);
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && lightbox.classList.contains("open")) closeDiagramLightbox();
+  });
+}
+document.addEventListener("DOMContentLoaded", () => {
+  initReviewMarks();
+  initRatings();
+  initDiagramZoom();
+  runPunnett();
+  renderQuestions();
+  renderWrongBook();
+});
+</script>
+<script src="../tool-return.js" data-note="閱讀與練習紀錄儲存在此瀏覽器。"></script></body>
+</html>

@@ -1,0 +1,19 @@
+{
+  "name": "學測物理學習筆記",
+  "short_name": "物理筆記",
+  "description": "108 課綱學測物理知識節點、題庫、歷屆題與互動實驗",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fbfaf5",
+  "theme_color": "#18201b",
+  "icons": [
+    {
+      "src": "./physics-icon.png?v=20260725",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

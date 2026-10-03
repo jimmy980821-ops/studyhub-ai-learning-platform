@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#142d25">
+  <meta name="description" content="追蹤各科成績、計算學分加權平均，反推下一次考試的目標分數。">
+  <title>成績雷達｜學期加權計算器</title>
+  <link rel="icon" type="image/svg+xml" href="logo.svg?v=1">
+  <link rel="shortcut icon" href="logo.svg?v=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="成績雷達首頁">
+      <img src="logo.svg?v=1" alt="" width="40" height="40">
+      <span class="brand-wordmark"><b>成績</b>雷達</span>
+    </a>
+    <nav aria-label="主要功能">
+      <button class="nav-button active" data-scroll="dashboard">總覽</button>
+      <button class="nav-button" data-scroll="subjects">科目</button>
+      <button class="nav-button" data-scroll="simulator">目標模擬</button>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-button" id="exportBtn" title="匯出備份" aria-label="匯出備份">⇩</button>
+      <button class="icon-button" id="importBtn" title="匯入備份" aria-label="匯入備份">⇧</button>
+      <input id="importFile" type="file" accept="application/json" hidden>
+      <button class="primary small" id="openSubjectModal">＋ 新增科目</button>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero" id="dashboard">
+      <div class="hero-copy">
+        <span class="overline">SEMESTER DASHBOARD</span>
+        <h1>知道自己在哪，<br><em>下一步就不慌。</em></h1>
+        <p>把每次成績和占比放進來，學期加權平均、各科進度與下一次目標分數一次算清楚。</p>
+      </div>
+      <div class="average-card">
+        <div class="average-top"><span>目前學期加權</span><span class="live-dot">即時計算</span></div>
+        <div class="average-value"><strong id="semesterAverage">—</strong><span>/ 100</span></div>
+        <div class="average-track"><i id="averageBar"></i></div>
+        <div class="average-bottom"><span id="subjectCount">0 個科目</span><span id="creditCount">0 學分</span></div>
+      </div>
+    </section>
+
+    <section class="stat-strip" aria-label="學期摘要">
+      <div><span class="stat-icon coral">◎</span><p>最高科目<strong id="highestSubject">—</strong></p></div>
+      <div><span class="stat-icon gold">↗</span><p>距離目標<strong id="targetGap">尚未設定</strong></p></div>
+      <div><span class="stat-icon mint">✓</span><p>已記錄評量<strong id="assessmentCount">0 次</strong></p></div>
+      <div><span class="stat-icon blue">◒</span><p>資料狀態<strong>儲存在此裝置</strong></p></div>
+    </section>
+
+    <section class="content-section" id="subjects">
+      <div class="section-heading">
+        <div><span class="overline">SUBJECTS</span><h2>各科成績</h2></div>
+        <p>科目分數依「評量成績 × 占比」計算；學期平均再依學分加權。</p>
+      </div>
+      <div class="subject-grid" id="subjectGrid"></div>
+      <button class="add-subject-card" id="addSubjectCard"><span>＋</span><strong>新增一個科目</strong><small>設定學分與評量成績</small></button>
+    </section>
+
+    <section class="simulator" id="simulator">
+      <div class="sim-copy">
+        <span class="overline light">TARGET SIMULATOR</span>
+        <h2>下一次要考幾分？</h2>
+        <p>選擇一個科目，輸入下一次評量占比和想維持的學期平均，我們會反推你需要的成績。</p>
+        <div class="formula-note"><span>i</span> 模擬會假設其他科目分數不變，並把新成績加入該科目前的評量中。</div>
+      </div>
+      <form class="sim-form" id="simForm">
+        <label>要模擬的科目<select id="simSubject"></select></label>
+        <div class="input-row">
+          <label>下次評量占比<div class="suffix-input"><input id="nextWeight" type="number" min="1" max="100" step="1" value="30" required><span>%</span></div></label>
+          <label>目標學期平均<div class="suffix-input"><input id="targetAverage" type="number" min="0" max="100" step="0.1" value="80" required><span>分</span></div></label>
+        </div>
+        <button class="primary wide" type="submit">開始試算 <span>→</span></button>
+        <div class="sim-result" id="simResult" aria-live="polite">
+          <span>需要考到</span><strong>—</strong><p>填完上方條件後開始試算</p>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer><span>GRADE RADAR · 成績雷達</span><span>你的資料不會上傳到伺服器</span></footer>
+
+  <dialog id="subjectModal">
+    <form method="dialog" class="modal-card" id="subjectForm">
+      <button class="modal-close" type="submit" value="cancel" formmethod="dialog" formnovalidate aria-label="關閉">×</button>
+      <span class="overline">NEW SUBJECT</span>
+      <h2>新增科目</h2>
+      <p>之後可以隨時增加評量或修改學分。</p>
+      <label>科目名稱<input id="subjectName" maxlength="20" placeholder="例如：數學" required></label>
+      <label>學分數<input id="subjectCredits" type="number" min="0.5" max="20" step="0.5" value="3" required></label>
+      <label>識別顏色<select id="subjectColor"><option value="coral">珊瑚橘</option><option value="green">森林綠</option><option value="gold">暖金色</option><option value="blue">霧藍色</option><option value="purple">灰紫色</option></select></label>
+      <button class="primary wide" type="submit">建立科目</button>
+    </form>
+  </dialog>
+
+  <dialog id="assessmentModal">
+    <form method="dialog" class="modal-card" id="assessmentForm">
+      <button class="modal-close" type="submit" value="cancel" formmethod="dialog" formnovalidate aria-label="關閉">×</button>
+      <span class="overline">NEW SCORE</span>
+      <h2>記錄評量</h2>
+      <p id="assessmentSubjectLabel"></p>
+      <input id="assessmentSubjectId" type="hidden">
+      <label>評量名稱<input id="assessmentName" maxlength="24" placeholder="例如：第一次期中考" required></label>
+      <div class="input-row">
+        <label>成績<input id="assessmentScore" type="number" min="0" max="100" step="0.1" placeholder="85" required></label>
+        <label>占比（%）<input id="assessmentWeight" type="number" min="1" max="100" step="1" placeholder="30" required></label>
+      </div>
+      <button class="primary wide" type="submit">加入這筆成績</button>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status"></div>
+  <script src="app.js?v=3"></script>
+<script src="../tool-return.js" data-note="成績保存在此瀏覽器，可匯出 JSON 備份。初次開啟為示範成績。"></script></body>
+</html>

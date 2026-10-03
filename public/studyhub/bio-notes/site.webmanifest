@@ -1,0 +1,22 @@
+{
+  "name": "生物學習筆記",
+  "short_name": "生物筆記",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#18201b",
+  "background_color": "#fbfaf5",
+  "display": "standalone",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./"
+}
