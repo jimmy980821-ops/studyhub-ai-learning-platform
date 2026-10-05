@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="化學筆記：燒瓶與分子">
+  <rect width="512" height="512" rx="112" fill="#1b2945"/>
+  <path d="M196 106h120M216 110v119L133 368c-12 21 3 43 27 43h192c24 0 39-22 27-43l-83-139V110" fill="none" stroke="#fffdf8" stroke-width="23" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M184 316h144l43 67c4 8-2 15-11 15H151c-9 0-15-7-11-15z" fill="#73c6a4"/>
+  <path d="M214 333l50 31 57-26" fill="none" stroke="#1b2945" stroke-width="11" stroke-linecap="round"/>
+  <circle cx="214" cy="333" r="15" fill="#fffdf8"/><circle cx="264" cy="364" r="19" fill="#1b2945"/><circle cx="321" cy="338" r="15" fill="#fffdf8"/>
+  <circle cx="259" cy="278" r="13" fill="#d49a54"/><circle cx="280" cy="184" r="9" fill="#d49a54"/>
+</svg>
