@@ -1,0 +1,482 @@
+[
+  {
+    "id": 1,
+    "chapter": "foundation",
+    "question": "25.0 mL 等於多少 L？",
+    "options": [
+      "0.0250 L",
+      "0.250 L",
+      "2.50 L",
+      "25.0 L"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 2,
+    "chapter": "foundation",
+    "question": "0.200 M NaOH 取 50.0 mL，含多少 mol NaOH？",
+    "options": [
+      "10.0",
+      "0.100",
+      "0.0100",
+      "0.00100"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 3,
+    "chapter": "foundation",
+    "question": "10 mL 0.10 M HCl 稀釋到 100 mL，濃度為？",
+    "options": [
+      "1.0 M",
+      "0.010 M",
+      "0.10 M",
+      "0.0010 M"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 4,
+    "chapter": "foundation",
+    "question": "2 mmol H⁺ 與 3 mmol OH⁻ 反應後剩什麼？",
+    "options": [
+      "1 mmol H⁺",
+      "5 mmol OH⁻",
+      "兩者都沒有",
+      "1 mmol OH⁻"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 5,
+    "chapter": "foundation",
+    "question": "完全溶解的 0.010 M Ba(OH)₂，其 [OH⁻] 約為？",
+    "options": [
+      "0.010 M",
+      "0.020 M",
+      "0.0050 M",
+      "0.040 M"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 6,
+    "chapter": "equilibrium",
+    "question": "動態平衡時何者正確？",
+    "options": [
+      "所有濃度相等",
+      "反應停止",
+      "正逆反應速率相等",
+      "反應物全用完"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 7,
+    "chapter": "equilibrium",
+    "question": "[H⁺]=2×10⁻³ M，pH 約為？",
+    "options": [
+      "3.30",
+      "2.70",
+      "−2.70",
+      "5.00"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 8,
+    "chapter": "equilibrium",
+    "question": "pH=5 時，[H⁺] 為？",
+    "options": [
+      "5 M",
+      "10⁵ M",
+      "10⁻⁵ M",
+      "0.5 M"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 9,
+    "chapter": "equilibrium",
+    "question": "pH 由 4 降到 2，[H⁺] 如何變？",
+    "options": [
+      "增 2 倍",
+      "減 100 倍",
+      "增 10 倍",
+      "增 100 倍"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 10,
+    "chapter": "equilibrium",
+    "question": "初始只有 C M 的一元弱酸，解離 x M 後 [HA] 是？",
+    "options": [
+      "C−x",
+      "C+x",
+      "x",
+      "C/x"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 11,
+    "chapter": "naming",
+    "question": "CH₃COOH 在一般酸鹼題中是幾元酸？",
+    "options": [
+      "一元",
+      "二元",
+      "三元",
+      "四元"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 12,
+    "chapter": "naming",
+    "question": "強酸的「強」主要表示？",
+    "options": [
+      "濃度一定很高",
+      "在水中解離傾向很大",
+      "顏色較深",
+      "溶液總量較多"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 13,
+    "chapter": "naming",
+    "question": "下列名稱何者正確？",
+    "options": [
+      "HNO₃ 亞硝酸",
+      "HClO₄ 次氯酸",
+      "HClO 次氯酸",
+      "NaOH 氯化鈉"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 14,
+    "chapter": "naming",
+    "question": "何者不必含 OH，仍可在水中表現鹼性？",
+    "options": [
+      "HCl",
+      "NH₃",
+      "HNO₃",
+      "NaCl"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 15,
+    "chapter": "naming",
+    "question": "稀鹽酸與濃醋酸的分類何者正確？",
+    "options": [
+      "前者弱、後者強",
+      "都是強酸",
+      "都是弱酸",
+      "前者強酸、後者弱酸"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 16,
+    "chapter": "theories",
+    "question": "布洛酸是什麼？",
+    "options": [
+      "接受電子的物種",
+      "提供 H⁺ 的物種",
+      "提供 OH⁻ 的物種",
+      "不帶電的物種"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 17,
+    "chapter": "theories",
+    "question": "NH₃ 的共軛酸是？",
+    "options": [
+      "NH₂⁻",
+      "NO₃⁻",
+      "NH₄⁺",
+      "HNO₃"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 18,
+    "chapter": "theories",
+    "question": "H₂PO₄⁻ 的共軛鹼是？",
+    "options": [
+      "HPO₄²⁻",
+      "H₃PO₄",
+      "PO₄³⁻",
+      "H₂PO₄²⁻"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 19,
+    "chapter": "theories",
+    "question": "哪一組不是共軛對？",
+    "options": [
+      "H₂O/OH⁻",
+      "NH₄⁺/NH₃",
+      "HCl/Cl⁻",
+      "H₂SO₄/SO₄²⁻"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 20,
+    "chapter": "theories",
+    "question": "酸越強，其共軛鹼通常？",
+    "options": [
+      "越強",
+      "越弱",
+      "必為中性分子",
+      "必無電子"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 21,
+    "chapter": "dissociation",
+    "question": "任意溫度的中性溶液必須滿足？",
+    "options": [
+      "pH=7",
+      "[H⁺]=[OH⁻]",
+      "沒有離子",
+      "K𝑤=10⁻¹⁴"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 22,
+    "chapter": "dissociation",
+    "question": "25°C、0.0010 M NaOH 的 pH 約為？",
+    "options": [
+      "3",
+      "7",
+      "11",
+      "14"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 23,
+    "chapter": "dissociation",
+    "question": "弱酸平方根近似求得 x/C=30%，應如何處理？",
+    "options": [
+      "照用近似",
+      "令 x=0",
+      "將 Kₐ 改小",
+      "解二次式等較完整平衡"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 24,
+    "chapter": "dissociation",
+    "question": "醋酸 Kₐ=1.8×10⁻⁵，25°C 時醋酸根 Kᵦ 約為？",
+    "options": [
+      "1.8×10⁻⁵",
+      "5.56×10⁻¹⁰",
+      "1.8×10⁻¹⁹",
+      "5.56×10⁻⁵"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 25,
+    "chapter": "dissociation",
+    "question": "同溫稀釋弱酸，常見近似範圍內何者正確？",
+    "options": [
+      "Kₐ 增加",
+      "解離率降低",
+      "解離率增加但 [H⁺] 降低",
+      "[H⁺] 增加"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 26,
+    "chapter": "salts",
+    "question": "醋酸鈉水溶液通常呈？",
+    "options": [
+      "酸性",
+      "鹼性",
+      "一定中性",
+      "沒有 pH"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 27,
+    "chapter": "salts",
+    "question": "NH₄Cl 溶液的酸性主要來自？",
+    "options": [
+      "Cl⁻ 放 H⁺",
+      "Na⁺ 水解",
+      "NH₄⁺ 的酸解離",
+      "氮原子核裂解"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 28,
+    "chapter": "salts",
+    "question": "酸式鹽一定讓溶液呈酸性嗎？",
+    "options": [
+      "一定",
+      "只有含 Na 才一定",
+      "只有固體才一定",
+      "不一定，要看離子平衡"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 29,
+    "chapter": "salts",
+    "question": "兩性離子近似 pH 式為何？",
+    "options": [
+      "½(pKₐ₁+pKₐ₂)",
+      "pKₐ₁−pKₐ₂",
+      "Kₐ₁+Kₐ₂",
+      "14−pKₐ₁"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 30,
+    "chapter": "salts",
+    "question": "弱酸弱鹼鹽，若 Kₐ(BH⁺)>Kᵦ(A⁻)，通常？",
+    "options": [
+      "偏鹼",
+      "偏酸",
+      "必為中性",
+      "無法有水解"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 31,
+    "chapter": "buffers",
+    "question": "哪一組可形成典型緩衝液？",
+    "options": [
+      "HCl/NaCl",
+      "NaOH/NaCl",
+      "CH₃COOH/CH₃COONa",
+      "NaCl/KCl"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 32,
+    "chapter": "buffers",
+    "question": "等量 HA/A⁻ 緩衝液的 pH 約為？",
+    "options": [
+      "7",
+      "0",
+      "14",
+      "pKₐ"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 33,
+    "chapter": "buffers",
+    "question": "向 HA/A⁻ 加入少量強酸，先發生？",
+    "options": [
+      "A⁻ 轉成 HA",
+      "HA 轉成 A⁻",
+      "Kₐ 變大",
+      "酸完全不反應"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 34,
+    "chapter": "buffers",
+    "question": "同比例的緩衝液適度稀釋，通常？",
+    "options": [
+      "pH 大變、容量不變",
+      "pH 近似不變、容量降低",
+      "pH 與容量皆不變",
+      "容量增加"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 35,
+    "chapter": "buffers",
+    "question": "10 mmol HA 加 4 mmol OH⁻ 後，A⁻/HA 的莫耳比？",
+    "options": [
+      "10/4",
+      "4/10",
+      "4/6",
+      "6/4"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 36,
+    "chapter": "titration",
+    "question": "弱酸滴強鹼的半當量點，通常？",
+    "options": [
+      "pH≈pKₐ",
+      "pH=7",
+      "只剩 A⁻",
+      "酸已完全中和"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 37,
+    "chapter": "titration",
+    "question": "弱酸滴強鹼在當量點，25°C 下通常？",
+    "options": [
+      "pH<7",
+      "pH>7",
+      "pH 必為 7",
+      "沒有離子"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 38,
+    "chapter": "titration",
+    "question": "酚酞適合常見弱酸滴強鹼，主要因為？",
+    "options": [
+      "它一定在 pH7 變色",
+      "它會加快中和",
+      "變色範圍可落在當量附近陡變區",
+      "它是強酸"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 39,
+    "chapter": "titration",
+    "question": "錐形瓶中加入少量蒸餾水，理想當量體積如何？",
+    "options": [
+      "加倍",
+      "減半",
+      "必增加",
+      "不變"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 40,
+    "chapter": "titration",
+    "question": "25.00 mL HCl 用 20.00 mL 0.1000 M NaOH 中和，原酸濃度？",
+    "options": [
+      "0.08000 M",
+      "0.1000 M",
+      "0.1250 M",
+      "0.04444 M"
+    ],
+    "answer": 0
+  }
+]

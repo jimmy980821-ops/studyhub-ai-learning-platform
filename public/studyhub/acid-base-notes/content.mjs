@@ -1,4 +1,5 @@
 // Original explanations and exercises. Topic order follows Hanlin acid/base coverage.
+import {extendTextbook} from './textbook-supplement.mjs';
 const table=(heads,rows)=>`<div class="table-scroll" tabindex="0" role="region" aria-label="比較表，可左右捲動"><table><thead><tr>${heads.map(x=>`<th scope="col">${x}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(x=>`<td>${x}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
 const worked=(title,steps)=>`<div class="worked"><h4>一起做｜${title}</h4><ol>${steps.map(x=>`<li>${x}</li>`).join('')}</ol></div>`;
 const check=(q,a)=>`<details class="check"><summary>停下來想一想：${q}</summary><p>${a}</p></details>`;
@@ -174,3 +175,4 @@ const questions=[
 ['titration','25.00 mL HCl 用 20.00 mL 0.1000 M NaOH 中和，原酸濃度？',['0.08000 M','0.1000 M','0.1250 M','0.04444 M'],0,'n=0.1000×0.02000=0.002000 mol，除原酸體積 0.02500 L 得 0.08000 M。']
 ];
 export const quiz=questions.map(([chapter,question,options,answer,explanation],i)=>({id:i+1,chapter,question,options,answer,explanation}));
+extendTextbook(chapters,quiz);

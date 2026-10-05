@@ -1,5 +1,10 @@
 export const pKa=-Math.log10(1.8e-5);
 export function bufferPH(added){return pKa+Math.log10((10+added)/(10-added));}
+// Valid for the displayed 10^-5 to 1 M range, with water ionization negligible.
+export function ionizationModel(c,ka=1.8e-5){
+  const h=2*ka*c/(ka+Math.sqrt(ka*ka+4*ka*c));
+  return {h,fraction:h/c,ph:-Math.log10(h),approx:Math.sqrt(ka*c)};
+}
 // Ideal 25°C monoprotic acid model, solved by charge balance in log[H+].
 export function titrationPH(ml,weak=true){
   const volume=(25+ml)/1000,ct=.0025/volume,na=.1*ml/1000/volume;
@@ -11,6 +16,12 @@ export function titrationPH(ml,weak=true){
   return -(low+high)/2;
 }
 if(typeof document!=='undefined'){
+  const ion=document.querySelector('[data-demo="ionization"]');
+  if(ion){
+    ion.innerHTML='<h4>動手調整｜越稀，解離比例越大，但 H⁺ 越少</h4><p>一元弱酸，固定 Kₐ=1.8×10⁻⁵。只改初始濃度 C；橫向滑桿採對數尺度。採理想溶液，解二次式，忽略水自解離。</p><label for="ionization-slider">初始濃度：log₁₀(C/M)，由 −5 到 0</label><input id="ionization-slider" type="range" min="-5" max="0" step="0.1" value="-1"><output for="ionization-slider" aria-live="polite"></output><div class="ion-bar" aria-hidden="true"><span></span></div><p class="ion-guide"></p><p>色條的填滿比例表示已解離的比例，其餘是未解離 HA。留意分母 C：同樣多一點離子，在很稀的溶液中可占很大的比例。</p>';
+    function updateIonization(){const c=10**Number(ion.querySelector('input').value),m=ionizationModel(c);ion.querySelector('output').textContent=`C = ${c.toExponential(2)} M；[H⁺] = ${m.h.toExponential(2)} M；pH = ${m.ph.toFixed(2)}；解離率 = ${(100*m.fraction).toFixed(2)}%。`;ion.querySelector('.ion-bar span').style.width=`${m.fraction*100}%`;ion.querySelector('.ion-guide').textContent=`若用平方根近似會得 [H⁺] ≈ ${m.approx.toExponential(2)} M。${m.approx/c<=.05?'估計解離率低於 5%，小 x 近似可用。':'估計解離率超過 5%，不能省略 C−x；上方結果已改用二次式。'}`;}
+    ion.addEventListener('input',updateIonization);updateIonization();
+  }
   const ph=document.querySelector('[data-demo="ph"]');
   ph.innerHTML='<h4>動手調整｜pH 每差 1，濃度差多少？</h4><label for="ph-slider">pH（25°C）</label><input id="ph-slider" type="range" min="0" max="14" step="0.1" value="7"><div class="ph-scale" aria-hidden="true"><span></span></div><output for="ph-slider" aria-live="polite"></output><p>左側酸性，中間 pH 7 中性，右側鹼性。這個滑桿示範 0～14，不代表所有水溶液的 pH 都只能在這個範圍。</p>';
   function updatePH(){const v=Number(ph.querySelector('input').value);ph.querySelector('output').textContent=`pH ${v.toFixed(1)}｜[H⁺] = ${(10**-v).toExponential(2)} M｜[OH⁻] = ${(10**(v-14)).toExponential(2)} M；氫離子濃度是 pH 7 的 ${(10**(7-v)).toExponential(1)} 倍。`;ph.querySelector('.ph-scale span').style.left=`${v/14*100}%`;}

@@ -17,7 +17,7 @@ setTheme(saved.theme==='dark'||(saved.theme!=='light'&&matchMedia('(prefers-colo
 $('#theme').addEventListener('click',()=>{setTheme(document.documentElement.dataset.theme!=='dark');store();});
 const lessons=$$('.lesson');
 function searchable(text) { return text.normalize('NFKC').toLocaleLowerCase(); }
-function search() { const term=searchable($('#search').value.trim());let count=0;$$('.chapter').forEach(article=>{const matched=!term||searchable(article.textContent).includes(term);article.hidden=!matched;if(matched){count++;if(term)article.querySelector('.lesson').open=true;}});$('#empty').hidden=count>0;$('#searchStatus').textContent=term?`找到 ${count} 個相關章節；搜尋範圍為兩堂預備課與六個酸鹼主題。`:'';updateExpand(); }
+function search() { const term=searchable($('#search').value.trim());let count=0;$$('.chapter').forEach(article=>{const matched=!term||searchable(article.textContent).includes(term);article.hidden=!matched;if(matched){count++;if(term)article.querySelector('.lesson').open=true;}});$('#empty').hidden=count>0;$('#searchStatus').textContent=term?`找到 ${count} 個相關章節；搜尋範圍為兩堂預備課、2-1～2-3 與鹽類／緩衝／滴定延伸。`:'';updateExpand(); }
 $('#search').addEventListener('input',search);
 $('#clearSearch').addEventListener('click',()=>{$('#search').value='';search();$('#search').focus();});
 function updateExpand() { const visible=lessons.filter(d=>!d.closest('article').hidden);$('#expand').textContent=visible.length&&visible.every(d=>d.open)?'全部收合':'全部展開'; }
