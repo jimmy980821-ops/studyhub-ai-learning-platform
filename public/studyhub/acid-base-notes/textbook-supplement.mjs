@@ -6,6 +6,8 @@ const check=(q,a)=>`<details class="check"><summary>停下來想一想：${q}</s
 const lesson=(id,number,title,goal,source,body)=>({id,number,title,goal,source,body});
 export function extendTextbook(chapters,quiz){
   const find=id=>chapters.find(c=>c.id===id);
+  // Acid order transcribed from the user's textbook photo; each base loses one H+.
+  const strengthPairs=[['HClO₄','ClO₄⁻'],['HI','I⁻'],['HBr','Br⁻'],['HCl','Cl⁻'],['H₂SO₄','HSO₄⁻'],['HNO₃','NO₃⁻'],['H₃O⁺','H₂O'],['H₂C₂O₄','HC₂O₄⁻'],['H₂SO₃','HSO₃⁻'],['HSO₄⁻','SO₄²⁻'],['H₃PO₄','H₂PO₄⁻'],['HF','F⁻'],['HNO₂','NO₂⁻'],['CH₃COOH','CH₃COO⁻'],['H₂CO₃','HCO₃⁻'],['H₂S','HS⁻'],['HSO₃⁻','SO₃²⁻'],['H₂PO₄⁻','HPO₄²⁻'],['HCN','CN⁻'],['NH₄⁺','NH₃'],['C₆H₅OH','C₆H₅O⁻'],['HCO₃⁻','CO₃²⁻'],['HPO₄²⁻','PO₄³⁻'],['H₂O','OH⁻'],['HS⁻','S²⁻'],['OH⁻','O²⁻']];
   find('naming').number='2-1';find('naming').source='你的講義 p.82～85／PDF 第 1～4 頁；下列補充依此範圍整理。';
   find('theories').number='2-2';find('theories').source='你的講義 p.87～89／PDF 第 5～7 頁；本節含三種學說、兩性與共軛判讀。';
   find('dissociation').number='2-3 A';find('dissociation').source='你的講義 p.93～95、97～98／PDF 第 8～12 頁；接著讀 2-3 B～D 完成這份掃描的計算範圍。';
@@ -49,7 +51,18 @@ ${worked('講義 p.89：為什麼 H₂SO₃ 與 SO₃²⁻ 不能直接配對？
 <p>NaHC₂O₄、NaHCO₃ 先拆出 Na⁺，真正討論的是 HC₂O₄⁻、HCO₃⁻。常見兩性中間物種還有 HSO₄⁻、HSO₃⁻、HS⁻、H₂PO₄⁻、HPO₄²⁻。能有兩種角色，不表示在水中兩種傾向一樣強，也不表示溶液一定中性。</p>
 ${table(['講義 p.89 的粒子／鹽','布・洛判讀'],[['Na₂S（看 S²⁻）','可接受 H⁺；沒有可提供的 H，當鹼'],['H₂O、NaHCO₃、KHSO₃','各看 H₂O、HCO₃⁻、HSO₃⁻，可供也可受 H⁺'],['NH₄⁺、H₃O⁺','本章常見反應中提供 H⁺，當酸'],['Cl⁻','形式上接受 H⁺ 形成 HCl；在水中是極弱鹼，通常忽略水解'],['O²⁻','強烈接受水的 H⁺：O²⁻+H₂O→2OH⁻，不會以大量游離 O²⁻ 留在水中'],['Fe³⁺','裸離子本身沒有 H，不能直接供 H⁺；其水合離子可使配位水釋出 H⁺，也是路易斯酸']])}
 <p>在上述列舉中，H₃O⁺/H₂O 是明確的一組共軛對。不要把「沒有 H 的裸 Fe³⁺」與「水合 Fe³⁺ 溶液呈酸性」混成互相矛盾的敘述。</p>
-<h3>10. 水的拉平效應：強酸排序不能拿 pH 硬套</h3><p>比 H₃O⁺ 更容易提供質子的酸，在水中會把質子交給水；比 OH⁻ 更強的鹼會從水取走質子。以本章水溶液模型而言，能大量存在的最強酸、鹼分別是 H₃O⁺、OH⁻。這稱溶劑的拉平效應。</p>
+<h3>常見物質的酸性與共軛鹼鹼性排序</h3><p>以下酸性順序依你上傳的講義照片整理；照片中的苯環接 OH 寫成 <strong>C₆H₅OH（苯酚）</strong>。這是教材採用的相對強弱次序，不是不同濃度溶液的 pH 排名；數值接近的物種若題目另給 Kₐ，依題目數值比較。</p>
+<h4>酸性：由強到弱（「＞」表示左邊酸性較強）</h4>
+${eq(strengthPairs.map(([acid])=>acid).join(' ＞ '))}
+<h4>鹼性：對應的共軛鹼，由強到弱</h4><p><strong>先把每個酸改成它的共軛鹼，再把順序反過來。</strong>不能把原本的酸性名單直接倒過來，就當成那些相同物種的鹼性排序。</p>
+${eq([...strengthPairs].reverse().map(([,base])=>base).join(' ＞ '))}
+<p>例如酸性 CH₃COOH ＞ H₂CO₃，對應的鹼性就是 HCO₃⁻ ＞ CH₃COO⁻。酸性 HCN ＞ NH₄⁺，對應的鹼性就是 NH₃ ＞ CN⁻。</p>
+<h4>逐對核對：酸往下越弱，共軛鹼往下越強</h4>
+${table(['酸（由強到弱 ↓）','對應的共軛鹼（由弱到強 ↓）'],strengthPairs)}
+<p>NH₃ 已列在鹼性排序中，它的共軛酸是 NH₄⁺。前面補充的 NH₂⁻ 則比 OH⁻ 更強，遇水會產生 NH₃ 與 OH⁻；照片未列 NH₃ 作酸時的相對位置，因此不把 NH₂⁻ 硬插入照片未給出的完整順位。</p>
+${worked('用共軛酸比較 NH₃、CH₃COO⁻、Cl⁻ 的鹼性',['先各加一個 H⁺：得到 NH₄⁺、CH₃COOH、HCl。','由酸性表：HCl ＞ CH₃COOH ＞ NH₄⁺。','共軛鹼順序反向：NH₃ ＞ CH₃COO⁻ ＞ Cl⁻。不是看到帶負電就一定比中性的 NH₃ 更強。'])}
+${check('已知酸性 HF ＞ CH₃COOH，F⁻ 和 CH₃COO⁻ 哪個鹼性較強？','CH₃COO⁻ 較強。HF 是較強酸，所以它的共軛鹼 F⁻ 較弱；鹼性順序為 CH₃COO⁻ ＞ F⁻。')}
+<h3>10. 水的拉平效應：強酸排序不能拿 pH 硬套</h3><p>上面的 O²⁻、S²⁻ 位於 OH⁻ 前方，代表教材中的鹼性更強，<strong>不表示它們可在水中大量穩定存在而不反應</strong>。例如 O²⁻ 遇水會轉成 OH⁻；S²⁻ 會強烈水解產生 HS⁻ 與 OH⁻。比 H₃O⁺ 更容易提供質子的酸，在水中會把質子交給水；比 OH⁻ 更強的鹼會從水取走質子。以本章水溶液模型而言，能大量存在的最強酸、鹼分別是 H₃O⁺、OH⁻。這稱溶劑的拉平效應。</p>
 ${eq('HNO₃ + H₂O → H₃O⁺ + NO₃⁻<br>O²⁻ + H₂O → 2OH⁻')}
 <p>講義列的強酸相對強弱，不能解讀成「同濃度 HCl 和 HNO₃ 在理想稀水溶液中的 pH 必有很大差距」。兩者都近乎完全提供質子；更細的本質差異要考慮其他溶劑或更精細的測量。弱酸則可用同條件的 Kₐ 比較。</p>
 ${check('HCl(g) 與 NH₃(g) 產生 NH₄Cl，沒有生成水，所以不是酸鹼反應嗎？','依布・洛學說仍是酸鹼反應：HCl 提供 H⁺，NH₃ 接受 H⁺。不能把「一定產生水」當成所有酸鹼反應的共同定義。')}`;
